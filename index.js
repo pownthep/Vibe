@@ -22,6 +22,7 @@ app.commandLine.appendSwitch(
 );
 
 require("./server/app.js");
+
 function createWindow() {
   // Create the browser window.
   let win = new BrowserWindow({
@@ -34,7 +35,10 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  win.loadURL("http://localhost:3000");
+  //win.loadURL("http://localhost:3000");
+  //if(isDev) win.loadURL("http://localhost:3000");
+  //else
+  win.loadFile("./build/index.html");
 }
 
 app.whenReady().then(createWindow);

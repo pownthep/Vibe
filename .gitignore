@@ -24,3 +24,6 @@ yarn-error.log*
 
 # dev
 public
+debug.log
+
+react-app-win32-x64

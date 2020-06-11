@@ -18,11 +18,12 @@
     "googleapis": "^23.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start-react": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start-electron": "electron main.js"
+    "start": "electron index.js",
+    "build-app": "electron-packager . --overwrite"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,6 +41,8 @@
     ]
   },
   "devDependencies": {
-    "electron": "^9.0.3"
-  }
+    "electron": "^9.0.3",
+    "electron-packager": "^14.2.1"
+  },
+  "homepage": "./"
 }
