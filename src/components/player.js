@@ -1,5 +1,7 @@
 import React from "react";
 import { ReactMPV } from "mpv.js";
+import path from "path";
+import {remote} from "electron";
 
 export default class Player extends React.Component {
   constructor(props) {
@@ -78,17 +80,17 @@ export default class Player extends React.Component {
   handleSeekMouseUp() {
     this.seeking = false;
   }
-  handleLoad(e) {
-    // e.target.blur();
-    // const items = remote.dialog.showOpenDialog({
-    //   filters: [
-    //     { name: "Videos", extensions: ["mkv", "webm", "mp4", "mov", "avi"] },
-    //     { name: "All files", extensions: ["*"] },
-    //   ],
-    // });
-    // if (items) {
-    //   this.mpv.command("loadfile", items[0]);
-    // }
+  async handleLoad(e) {
+    e.target.blur();
+    const items = await remote.dialog.showOpenDialog({
+      filters: [
+        { name: "Videos", extensions: ["mkv", "webm", "mp4", "mov", "avi"] },
+        { name: "All files", extensions: ["*"] },
+      ],
+    });
+    if (items) {
+      this.mpv.command("loadfile", items.filePaths[0]);
+    }
   }
   render() {
     return (

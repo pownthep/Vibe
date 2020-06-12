@@ -5,7 +5,7 @@ var express = require("express");
 var https = require("https");
 var endMw = require("express-end");
 var stream = require("stream");
-const getDuration = require("get-video-duration");
+const { getVideoDurationInSeconds } = require("get-video-duration");
 var app = express();
 
 // If modifying these scopes, delete your previously saved credentials
@@ -17,7 +17,10 @@ var CHUNK_SIZE = 20000000;
 var PORT = 9001;
 
 // Load client secrets from a local file.
-fs.readFile(__dirname+"/client_secret.json", function processClientSecrets(err, content) {
+fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
+  err,
+  content
+) {
   if (err) {
     console.log("Error loading client secret file: " + err);
     return;
@@ -522,9 +525,10 @@ function addInfo(fileId, fileInfo) {
   var info = { id: fileId, info: fileInfo };
   info.getVideoLength = new Promise((resolve, reject) => {
     if (!info.videoLength) {
-      getDuration("http://127.0.0.1:" + PORT + "/" + fileId)
+      getVideoDurationInSeconds("http://127.0.0.1:" + PORT + "/" + fileId)
         .then((duration) => {
           info.videoLength = duration;
+          console.log(duration);
           resolve(duration);
         })
         .catch((error) => {

@@ -39,6 +39,11 @@ function createWindow() {
   //if(isDev) win.loadURL("http://localhost:3000");
   //else
   win.loadFile("./build/index.html");
+  // if (isDev) {
+  //   // Open the DevTools.
+  //   //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
+  //   win.webContents.openDevTools();
+  //
 }
 
 app.whenReady().then(createWindow);
