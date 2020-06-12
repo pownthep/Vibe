@@ -7,6 +7,9 @@ var endMw = require("express-end");
 var stream = require("stream");
 const { getVideoDurationInSeconds } = require("get-video-duration");
 var app = express();
+var cors = require("cors");
+var elasticlunr = require("elasticlunr");
+app.use(cors());
 
 // If modifying these scopes, delete your previously saved credentials
 var SCOPES = ["https://www.googleapis.com/auth/drive"];
@@ -15,6 +18,18 @@ var TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 var TEMP_DIR = __dirname + "/.temp/";
 var CHUNK_SIZE = 20000000;
 var PORT = 9001;
+var DATA_PATH = __dirname + "/data.json";
+var data = {};
+fs.readFile(DATA_PATH, function processClientSecrets(err, content) {
+  if (err) {
+    console.log("Error loading data file: " + err);
+    return;
+  }
+  // Authorize a client with the loaded credentials, then call the
+  // Drive API.
+  data = JSON.parse(content);
+  data.anime.map(item => index.addDoc(item));
+});
 
 // Load client secrets from a local file.
 fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
@@ -47,6 +62,11 @@ function authorize(credentials, callback) {
     }
   });
 }
+
+var index = elasticlunr(function () {
+  this.addField('name')
+  this.addField('desc')
+});
 
 function getNewToken(oauth2Client, callback) {
   var authUrl = oauth2Client.generateAuthUrl({
@@ -90,6 +110,24 @@ function storeToken(token) {
 }
 
 function startLocalServer(oauth2Client) {
+  app.get("/search/:query", async (req, res) => {
+    const result = index.search(req.params.query).map(item => data[item.ref]);
+    res.json(index.search());
+    console.log(index.search(req.params.query));
+  });
+
+  app.get("/data", async (req, res) => {
+    res.json(data.anime);
+  });
+
+  app.get("/data/:id", async (req, res) => {
+    res.json(data.anime[req.params.id]);
+  });
+
+  app.get("/ready", (req, res) => {
+    res.json(oauth2Client.credentials);
+  });
+
   app.get(/\/code/, function (req, res) {
     if (req.query.code) {
       oauth2Client.getToken(req.query.code, function (err, token) {
@@ -106,46 +144,6 @@ function startLocalServer(oauth2Client) {
       });
       res.send("Successfully authenticated!");
     }
-  });
-
-  app.get("/watch/:id", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      //var urlSplitted = req.url.match("^[^?]*")[0].split("/");
-      //var fileId = urlSplitted[1];
-      var fileId = req.params.id;
-      var action = null;
-      console.log(fileId);
-      //if (urlSplitted[2]) action = urlSplitted[2];
-      var fileInfo = getInfoFromId(fileId);
-      console.log(fileInfo);
-      if (fileInfo) {
-        performRequest(fileInfo);
-      } else {
-        getFileInfo(fileId, access_token, (info) => {
-          addInfo(fileId, info);
-          var fileInfo = getInfoFromId(fileId);
-          console.log(fileInfo);
-          performRequest(fileInfo);
-        });
-      }
-
-      function performRequest(fileInfo) {
-        var skipDefault = false;
-        if (action == "download") {
-          performRequest_download_start(req, res, access_token, fileInfo);
-          skipDefault = true;
-        }
-        if (action == "download_stop") {
-          performRequest_download_stop(req, res, access_token, fileInfo);
-          skipDefault = true;
-        }
-
-        if (!skipDefault) {
-          performRequest_default(req, res, access_token, fileInfo);
-        }
-      }
-    });
   });
 
   app.get(/\/.{15,}/, function (req, res) {

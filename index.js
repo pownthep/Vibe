@@ -26,8 +26,9 @@ require("./server/app.js");
 function createWindow() {
   // Create the browser window.
   let win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1560,
+    height: 720,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       plugins: true,
@@ -42,8 +43,9 @@ function createWindow() {
   // if (isDev) {
   //   // Open the DevTools.
   //   //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-  //   win.webContents.openDevTools();
+  //win.webContents.openDevTools();
   //
+  win.setMenuBarVisibility(false)
 }
 
 app.whenReady().then(createWindow);

@@ -1,0 +1,82 @@
+{
+    "anime": [
+        {
+            "id": 0,
+            "name": "Kaguya-sama - Love is War Season 2",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/112641-mKZe0zng0ndV.jpg",
+            "desc": "The second season of Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen.",
+            "episodes": [
+                {
+                    "num": 1,
+                    "id": "1GP2k0_DxSPeNY-4A0VFTmuvi9_ErXuwP"
+                },
+                {
+                    "num": 2,
+                    "id": "1YbEQe3jvsmA137gxVKmzUXRnySqtabvH"
+                },
+                {
+                    "num": 3,
+                    "id": "14g1ZgyZECay_KkKiAyWDCF2ahY9dVVsZ"
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Kami no Tou: Tower of God",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/115230-wjDIxW77TLv3.jpg",
+            "desc": "Tower of God centers around a boy called Twenty-Fifth Bam, who has spent most of his life trapped beneath a vast and mysterious Tower, with only his close friend, Rachel, to keep him company. When Rachel enters the Tower, Bam manages to open the door into it as well, and faces challenges at each floor of this tower as he tries to find his closest companion.",
+            "episodes": [
+                {
+                    "num": 1,
+                    "id": "1xmy0XLu-bMqXCi2BP2kPvdRkb2vgW6ZV"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Gleipnir",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/108241-Cbfv8GHRMFoQ.jpg",
+            "desc": "Shuuichi Kagaya isn’t human. He has an unnatural sense of smell, and can transform into an incredibly powerful beast… of sorts. He does all he can to avoid standing out and being discovered, but no good deed goes unpunished, and his decision to use his power to save a girl spells the end for his quiet life.",
+            "episodes": [
+
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Yesterday wo Utatte",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/109020-TclHkkKtYgcQ.jpg",
+            "desc": "A story of love and humanity, following four boys and girls trying to live their best lives through hardship and turmoil, in a small town on a private rail line just outside of Shinjuku. Minor misunderstandings lead to big complications, and their various feelings become entangled.",
+            "episodes": [
+
+            ]
+        },
+        {
+            "id": 4,
+            "name": "Otome Game no Hametsu Flag shika Nai Akuyaku Reijou ni Tensei shiteshimatta…",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/104647-emIYPiyZZJnl.jpg",
+            "desc": "Wealthy heiress Katarina Claes is hit in the head with a rock and recovers the memories of her past life. It turns out the world she lives in is the world of the game Fortune Lover, an otome game she was obsessed with in her past life... but she's been cast as the villain character who tries to foil the protagonist's romances! The best ending the game has for Katarina is exile, and the worst, death! She'll have to find a way to avoid triggering the flags of doom, and make her own happy future!",
+            "episodes": [
+
+            ]
+        },
+        {
+            "id": 5,
+            "name": "Kakushigoto",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/113311-QWdL7DIlTmDy.jpg",
+            "desc": "Single father Kakushi Gotou has a secret. He’s a top-selling artist of popular erotic manga, but his impressionable young daughter, Hime, can never find out! Now he’s having to bend over backwards just to keep her inquisitive little mind from discovering what he does for a living. A father-daughter tale of love and laughter.",
+            "episodes": [
+
+            ]
+        },
+        {
+            "id": 6,
+            "name": "Hunter x Hunter (2011)",
+            "banner": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/11061-8WkkTZ6duKpq.jpg",
+            "desc": "A Hunter is one who travels the world doing all sorts of dangerous tasks. From capturing criminals to searching deep within uncharted lands for any lost treasures. Gon is a young boy whose father disappeared long ago, being a Hunter. He believes if he could also follow his father's path, he could one day reunite with him.",
+            "episodes": [
+
+            ]
+        }
+
+    ]
+}

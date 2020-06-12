@@ -1,13 +1,107 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+}
+
+.controls {
+  box-sizing: border-box;
+  padding: 15px;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+  color: white;
+}
+
+.controls:hover {
+  opacity: 1;
+}
+
+button {
+  background-color: none;
+  border: none;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.webfullscreen {
+  position: fixed;
+  height: 100vh;
+  z-index: 10000000;
+  width: 100vw;
+  top: 0px;
+  left: 0px;
+}
+
+.player {
+  height: 60vh;
+}
+
+.banner {
+  width: 100%;
+  height: 400px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  background-position: 50% 35%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-top: -58px;
+  z-index: -1;
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgb(48, 48, 48); 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #2c387e
+  ; 
+}
+
+
+.titlebar {
+  position: fixed;
+  top: 0px;
 }
