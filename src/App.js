@@ -13,9 +13,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useParams,
-  useRouteMatch,
+  Link
 } from "react-router-dom";
 
 import { ThemeProvider } from "@material-ui/styles";
@@ -54,7 +52,8 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     width: "100%",
-    padding: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
   },
 }));
 
@@ -66,11 +65,11 @@ export default function PermanentDrawerLeft() {
     <HistoryIcon />,
     <SettingsIcon />,
   ];
-  const routesList = ["/", "favourites", "history", "topics"];
+  const routesList = ["/", "/favourites", "/history", "/settings"];
 
   return (
     <Router>
-      <Titlebar title="App Title" backgroundColor="#000000" />
+      <Titlebar title="App Title" backgroundColor="#ffff" />
       <ThemeProvider theme={theme}>
         <div className={classes.root}>
           <CssBaseline />
@@ -107,8 +106,14 @@ export default function PermanentDrawerLeft() {
               <Route path="/watch/:id">
                 <Player />
               </Route>
-              <Route path="/topics">
-                <Topics />
+              <Route path="/favourites">
+                <h1>Favourites</h1>
+              </Route>
+              <Route path="/history">
+                <h1>History</h1>
+              </Route>
+              <Route path="/settings">
+                <h1>Settings</h1>
               </Route>
               <Route path="/">
                 <Home />
@@ -121,49 +126,4 @@ export default function PermanentDrawerLeft() {
   );
 }
 
-function Topics() {
-  // The `path` lets us build <Route> paths that are
-  // relative to the parent route, while the `url` lets
-  // us build relative links.
-  let { path, url } = useRouteMatch();
 
-  return (
-    <div>
-      <h2>Topics</h2>
-      <ul>
-        <li>
-          <Link to={`${url}/rendering`}>Rendering with React</Link>
-        </li>
-        <li>
-          <Link to={`${url}/components`}>Components</Link>
-        </li>
-        <li>
-          <Link to={`${url}/props-v-state`}>Props v. State</Link>
-        </li>
-      </ul>
-
-      <Switch>
-        <Route exact path={path}>
-          <h3>Please select a topic.</h3>
-        </Route>
-        <Route path={`${path}/:topicId`}>
-          <Topic />
-        </Route>
-      </Switch>
-    </div>
-  );
-}
-
-function Topic() {
-  // The <Route> that rendered this component has a
-  // path of `/topics/:topicId`. The `:topicId` portion
-  // of the URL indicates a placeholder that we can
-  // get from `useParams()`.
-  let { topicId } = useParams();
-
-  return (
-    <div>
-      <h3>{topicId}</h3>
-    </div>
-  );
-}

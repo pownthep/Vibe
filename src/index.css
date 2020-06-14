@@ -28,7 +28,7 @@ a {
   padding: 15px;
   position: absolute;
   bottom: 0px;
-  width: 100%;
+  width: inherit;
   opacity: 0;
   transition: opacity 300ms ease-in-out;
   color: white;
@@ -60,48 +60,48 @@ button {
 }
 
 .player {
-  height: 60vh;
+  height: 30vh;
+  margin: 0 auto;
+  width: 40%;
 }
 
 .banner {
   width: 100%;
-  height: 400px;
+  height: auto;
   position: fixed;
   left: 0px;
   top: 0px;
-  background-position: 50% 35%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  margin-top: -58px;
   z-index: -1;
-  -webkit-mask-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(rgba(0, 0, 0, 1)),
-    to(rgba(0, 0, 0, 0))
-  );
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
 }
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: rgb(48, 48, 48); 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #2c387e
-  ; 
+  background: inherit;
 }
 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: black;
+}
 
 .titlebar {
   position: fixed;
   top: 0px;
+}
+
+.anime-title {
+  text-align: center;
+  font-size: 46px;
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  margin-bottom: 0;
+}
+
+.title-container {
+
 }

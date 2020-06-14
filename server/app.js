@@ -5,11 +5,11 @@ var express = require("express");
 var https = require("https");
 var endMw = require("express-end");
 var stream = require("stream");
-const { getVideoDurationInSeconds } = require("get-video-duration");
 var app = express();
 var cors = require("cors");
 var elasticlunr = require("elasticlunr");
 app.use(cors());
+const axios = require("axios");
 
 // If modifying these scopes, delete your previously saved credentials
 var SCOPES = ["https://www.googleapis.com/auth/drive"];
@@ -20,16 +20,6 @@ var CHUNK_SIZE = 20000000;
 var PORT = 9001;
 var DATA_PATH = __dirname + "/data.json";
 var data = {};
-fs.readFile(DATA_PATH, function processClientSecrets(err, content) {
-  if (err) {
-    console.log("Error loading data file: " + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Drive API.
-  data = JSON.parse(content);
-  data.anime.map(item => index.addDoc(item));
-});
 
 // Load client secrets from a local file.
 fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
@@ -64,8 +54,8 @@ function authorize(credentials, callback) {
 }
 
 var index = elasticlunr(function () {
-  this.addField('name')
-  this.addField('desc')
+  this.addField("name");
+  this.addField("desc");
 });
 
 function getNewToken(oauth2Client, callback) {
@@ -111,7 +101,7 @@ function storeToken(token) {
 
 function startLocalServer(oauth2Client) {
   app.get("/search/:query", async (req, res) => {
-    const result = index.search(req.params.query).map(item => data[item.ref]);
+    const result = index.search(req.params.query).map((item) => data[item.ref]);
     res.json(index.search());
     console.log(index.search(req.params.query));
   });
@@ -126,6 +116,37 @@ function startLocalServer(oauth2Client) {
 
   app.get("/ready", (req, res) => {
     res.json(oauth2Client.credentials);
+  });
+
+  app.get("/list/:id", async (req, res) => {
+    try {
+      if (isCached(req.params.id)) {
+        res.json(getCached(req.params.id));
+        return;
+      }
+      let resp = await axios.get(
+        "https://drive.google.com/drive/folders/" + req.params.id
+      );
+      let data = await resp.data;
+      let start = data.indexOf(`window['_DRIVE_ivd'] = '`);
+      let sm = data.substring(start);
+      let end = sm.indexOf(";");
+      let assignment = sm.substring(0, end + 1);
+      let code = assignment.replace(`window['_DRIVE_ivd']`, "var driveData");
+      eval(code);
+      let json = JSON.parse(driveData);
+      let final = json[0].map((item) => {
+        return {
+          id: item[0],
+          name: item[2],
+        };
+      });
+      res.json(final);
+      cacheResponse(req.params.id, final);
+    } catch (error) {
+      console.log(error);
+      console.log("https://drive.google.com/drive/folders/" + req.params.id);
+    }
   });
 
   app.get(/\/code/, function (req, res) {
@@ -521,22 +542,22 @@ function getInfoFromId(fileId) {
 
 function addInfo(fileId, fileInfo) {
   var info = { id: fileId, info: fileInfo };
-  info.getVideoLength = new Promise((resolve, reject) => {
-    if (!info.videoLength) {
-      getVideoDurationInSeconds("http://127.0.0.1:" + PORT + "/" + fileId)
-        .then((duration) => {
-          info.videoLength = duration;
-          console.log(duration);
-          resolve(duration);
-        })
-        .catch((error) => {
-          console.log(error);
-          reject(error);
-        });
-    } else {
-      resolve(info.videoLength);
-    }
-  });
+  // info.getVideoLength = new Promise((resolve, reject) => {
+  //   if (!info.videoLength) {
+  //     getVideoDurationInSeconds("http://127.0.0.1:" + PORT + "/" + fileId)
+  //       .then((duration) => {
+  //         info.videoLength = duration;
+  //         console.log(duration);
+  //         resolve(duration);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         reject(error);
+  //       });
+  //   } else {
+  //     resolve(info.videoLength);
+  //   }
+  // });
 
   filesInfo.push(info);
 }
@@ -567,4 +588,35 @@ function removeDownloadStatus(fileId) {
       downloadStatus.splice(i, 1);
     }
   }
+}
+
+var cache = {};
+
+let CACHED_PATH = __dirname + "/cached.json";
+
+fs.readFile(CACHED_PATH, function processClientSecrets(err, content) {
+  if (err) {
+    console.log("Error loading data file: " + err);
+    return;
+  }
+  // Authorize a client with the loaded credentials, then call the
+  // Drive API.
+  cache = JSON.parse(content);
+});
+
+function cacheResponse(key, json) {
+  cache[key] = json;
+  fs.writeFile(CACHED_PATH, JSON.stringify(cache), function (err) {
+    if (err) throw err;
+    console.log("Saved!");
+  });
+  return cache[key] ? true : false;
+}
+
+function isCached(key) {
+  return cache[key] ? true : false;
+}
+
+function getCached(key) {
+  return cache[key];
 }

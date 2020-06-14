@@ -25,5 +25,5 @@ yarn-error.log*
 # dev
 public
 debug.log
-
+index.bundle.js
 react-app-win32-x64

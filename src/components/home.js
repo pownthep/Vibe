@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import MediaCard from "./mediacard";
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import stringData from "./completed-series.json";
 import TextField from "@material-ui/core/TextField";
-// import { useDebounce } from "use-lodash-debounce";
-import { debounce } from "lodash";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import parse from "autosuggest-highlight/parse";
+import match from "autosuggest-highlight/match";
+import Pagination from "@material-ui/lab/Pagination";
+import Fade from "@material-ui/core/Fade";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,75 +20,91 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
-  const [data, setData] = useState([]);
-  const [anime, setAnime] = useState([]);
+  const [anime, setAnime] = useState(stringData.slice(0, 12));
+  const [value, setValue] = useState(null);
   const classes = useStyles();
+  const [page, setPage] = React.useState(1);
+  const [checked, setChecked] = React.useState(false);
 
-  // Create a new instance of Fuse
   useEffect(() => {
-    let ignore = false;
+    if (value) setAnime([stringData[value.id]]);
+    else setAnime(stringData);
+  }, [value]);
 
-    async function fetchData() {
-      const response = await fetch(`http://localhost:9001/data`);
-      const json = await response.json();
-      if (!ignore) setData(json);
-      setAnime(json);
-      console.log("hello");
-    }
-    fetchData();
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  const handleSearchInput = (event) => {
-    event.persist();
-    const debouncedFn = debounce(() => {
-      let searchString = event.target.value;
-      if (!searchString) setAnime(data);
-      else {
-        const result = data.filter(
-          (item) =>
-            item.name.toLowerCase().indexOf(searchString.toLowerCase()) > -1
-        );
-        setAnime(result);
-      }
-    }, 300);
-    debouncedFn();
+  const handleChangePage = (event, newPage) => {
+    var end = 12 * newPage;
+    var start = end - 12;
+    setPage(newPage);
+    setAnime(stringData.slice(start, end));
   };
 
   return (
     <>
-      <form
-        className={classes.root}
-        noValidate
-        autoComplete="off"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <TextField
-          id="filled-secondary"
-          label="Search"
-          variant="filled"
-          color="primary"
-          onChange={handleSearchInput}
-        />
-      </form>
+      <Autocomplete
+        id="highlights-demo"
+        style={{ width: "100%" }}
+        size="small"
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+        options={stringData.map((opt) => ({ id: opt.id, name: opt.name }))}
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search"
+            variant="outlined"
+            margin="normal"
+          />
+        )}
+        renderOption={(option, { inputValue }) => {
+          const matches = match(option.name, inputValue);
+          const parts = parse(option.name, matches);
+
+          return (
+            <div>
+              {parts.map((part, index) => (
+                <span
+                  key={index}
+                  style={{
+                    fontWeight: part.highlight ? 700 : 400,
+                    color: part.highlight ? "#f50057" : "inherit",
+                  }}
+                >
+                  {part.text}
+                </span>
+              ))}
+            </div>
+          );
+        }}
+      />
+
       <Grid
         container
         direction="row"
-        justify="center"
+        justify="space-evenly"
         alignItems="flex-start"
       >
-        {anime.map((item, index) => (
-          <Link to={"/watch/" + item.id} key={item.id}>
-            <MediaCard
-              image={item.banner}
-              title={item.name}
-              description={item.desc}
-            />
-          </Link>
+        {anime.slice(0, 12).map((item, index) => (
+          <MediaCard
+            image={item.banner}
+            title={item.name}
+            description={item.desc}
+            rating={item.rating}
+            path={"/watch/" + item.id}
+            key={item.name}
+            timeout={300 + index * 50}
+          />
         ))}
       </Grid>
+      <div className={classes.root}>
+        <Pagination
+          count={Math.ceil(stringData.length / 12)}
+          page={page}
+          onChange={handleChangePage}
+        />
+      </div>
     </>
   );
 }
