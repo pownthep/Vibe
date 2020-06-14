@@ -1,3 +1,4 @@
+require('v8-compile-cache');
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { getPluginEntry } = require("mpv.js");
@@ -21,7 +22,7 @@ app.commandLine.appendSwitch(
   getPluginEntry(pluginDir)
 );
 
-require("./server/app.js");
+require("./server/app.bundle.js");
 
 function createWindow() {
   // Create the browser window.

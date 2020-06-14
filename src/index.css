@@ -32,6 +32,7 @@ a {
   opacity: 0;
   transition: opacity 300ms ease-in-out;
   color: white;
+  background-color: rgba(0, 0, 0, 0.705);
 }
 
 .controls:hover {
@@ -60,9 +61,9 @@ button {
 }
 
 .player {
-  height: 30vh;
-  margin: 0 auto;
-  width: 40%;
+  height: 40vh;
+  margin: 0 auto; 
+  width: 60%;
 }
 
 .banner {
@@ -87,7 +88,7 @@ button {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: black;
+  background: #212121;
 }
 
 .titlebar {
@@ -100,8 +101,15 @@ button {
   font-size: 46px;
   text-shadow: 0 0 10px rgba(0,0,0,0.8);
   margin-bottom: 0;
+  margin-top: 0;
 }
 
 .title-container {
 
+}
+
+.video-time {
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  margin: 0;
+  display: inline-block;
 }

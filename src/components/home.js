@@ -8,7 +8,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import Pagination from "@material-ui/lab/Pagination";
-import Fade from "@material-ui/core/Fade";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +23,6 @@ export default function Home() {
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
-  const [checked, setChecked] = React.useState(false);
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);

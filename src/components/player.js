@@ -4,30 +4,29 @@ import { remote } from "electron";
 import Slider from "@material-ui/core/Slider";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-// import InputLabel from "@material-ui/core/InputLabel";
-// import MenuItem from "@material-ui/core/MenuItem";
-// import FormControl from "@material-ui/core/FormControl";
-// import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { default as stringData } from "./completed-series.json";
-// import Container from "@material-ui/core/Container";
-// import MaterialTable from "material-table";
-import Grid from "@material-ui/core/Grid";
-import EpisodeCard from "./episode";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
 import Pagination from "@material-ui/lab/Pagination";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import TextField from "@material-ui/core/TextField";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
-import { Grow } from "@material-ui/core";
+import { Grow, Tooltip } from "@material-ui/core";
+import AudiotrackOutlinedIcon from "@material-ui/icons/AudiotrackOutlined";
+import SubtitlesOutlinedIcon from "@material-ui/icons/SubtitlesOutlined";
+import FullscreenExitOutlinedIcon from "@material-ui/icons/FullscreenExitOutlined";
+import FullscreenOutlinedIcon from "@material-ui/icons/FullscreenOutlined";
+import VolumeDown from "@material-ui/icons/VolumeDown";
+import VolumeUp from "@material-ui/icons/VolumeUp";
+import Grid from "@material-ui/core/Grid";
+import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
+import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 
 const styles = (theme) => ({
   root: {
@@ -54,6 +53,33 @@ const styles = (theme) => ({
     width: 200,
     height: 190,
   },
+  volumeContainer: {
+    width: 200,
+    display: "inline-block",
+    verticleAlign: "middle",
+  },
+  unclickable: {
+    pointerEvents: "none",
+  },
+  audio: {
+    display: "inline-block",
+  },
+  sub: {
+    display: "inline-block",
+  },
+  fullscreen: {
+    display: "inline-block",
+  },
+  inline: {
+    display: "inline-block",
+  },
+  slider: {
+    width: 150,
+    paddingTop: 10,
+  },
+  controlContainer: {
+    width: "100%",
+  },
 });
 
 class Player extends React.Component {
@@ -73,6 +99,8 @@ class Player extends React.Component {
       epList: [],
       page: 1,
       checked: true,
+      volume_value: 50,
+      playingName: "",
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -89,6 +117,10 @@ class Player extends React.Component {
     this.myRef = React.createRef();
     this.window = remote.getCurrentWindow();
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleVolumeChange = this.handleVolumeChange.bind(this);
+    this.cycleSub = this.cycleSub.bind(this);
+    this.cycleAudio = this.cycleAudio.bind(this);
+    this.togglePause = this.togglePause.bind(this);
   }
   async componentDidMount() {
     const id = this.props.match.params.id;
@@ -111,6 +143,14 @@ class Player extends React.Component {
   componentWillUnmount() {
     //document.removeEventListener("keydown", this.handleKeyDown, false);
   }
+
+  togglePause(e) {
+    e.target.blur();
+    if (!this.state.duration) return;
+    this.setState({ pause: !this.state.pause });
+    this.mpv.property("pause", !this.state.pause);
+  }
+
   handleKeyDown(e) {
     e.preventDefault();
     if (e.key === "f" || (e.key === "Escape" && this.state.fullscreen)) {
@@ -124,6 +164,7 @@ class Player extends React.Component {
     const observe = mpv.observe.bind(mpv);
     ["pause", "time-pos", "duration", "eof-reached"].forEach(observe);
     this.mpv.property("hwdec", "auto");
+    this.mpv.command("set", "ao-volume", this.state.volume_value);
   }
   handlePropertyChange(name, value) {
     if (name === "time-pos" && this.seeking) {
@@ -145,11 +186,6 @@ class Player extends React.Component {
       this.window.setFullScreen(true);
     }
     this.setState({ fullscreen: !this.state.fullscreen });
-  }
-  togglePause(e) {
-    e.target.blur();
-    if (!this.state.duration) return;
-    this.mpv.property("pause", !this.state.pause);
   }
   handleStop(e) {
     e.target.blur();
@@ -196,9 +232,12 @@ class Player extends React.Component {
 
   handleEpisodeChange(e) {
     console.log(e.currentTarget.id);
-    this.setState({ selectedEpisode: e.currentTarget.id });
     this.mpv.command("loadfile", "http://localhost:9001/" + e.currentTarget.id);
-    this.setState({ loading: true });
+    this.setState({
+      loading: true,
+      selectedEpisode: e.currentTarget.id,
+      playingName: e.currentTarget.name,
+    });
   }
 
   handleSearch(e, nv) {
@@ -212,6 +251,23 @@ class Player extends React.Component {
       this.setState({ epList: this.state.episodes });
       this.setState({ value: nv });
     }
+  }
+
+  handleVolumeChange(e, nv) {
+    this.setState({ volume_value: nv });
+    this.mpv.command("set", "ao-volume", nv);
+  }
+
+  cycleSub(e) {
+    e.target.blur();
+    if (!this.state.duration) return;
+    this.mpv.command("keypress", "j");
+  }
+
+  cycleAudio(e) {
+    e.target.blur();
+    if (!this.state.duration) return;
+    this.mpv.command("keypress", "#");
   }
 
   render() {
@@ -232,6 +288,7 @@ class Player extends React.Component {
               onReady={this.handleMPVReady}
               onPropertyChange={this.handlePropertyChange}
               onMouseDown={this.togglePause}
+              className={classes.unclickable}
             />
             <div className="loader" hidden={!this.state.loading}>
               <CircularIndeterminate />
@@ -247,9 +304,94 @@ class Player extends React.Component {
                 onMouseDown={this.handleSeekMouseDown}
                 onMouseUp={this.handleSeekMouseUp}
               />
-              {this.toHHMMSS(this.state["time-pos"])} /{" "}
-              {this.toHHMMSS(this.state.duration)}
+
+              <div className={classes.controlContainer}>
+                <Grid
+                  container
+                  direction="row"
+                  justify="space-evenly"
+                  alignItems="center"
+                >
+                  <div className={classes.inline}>
+                    <p className="video-time">{this.state.playingName}</p>
+                  </div>
+                  <div className={classes.slider}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <VolumeDown />
+                      </Grid>
+                      <Grid item xs>
+                        <Slider
+                          value={this.state.volume_value}
+                          onChange={this.handleVolumeChange}
+                          aria-labelledby="discrete-slider-custom"
+                          step={10}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <VolumeUp />
+                      </Grid>
+                    </Grid>
+                  </div>
+                  <div className={classes.audio}>
+                    <Tooltip title="Cycle audio track">
+                      <IconButton
+                        aria-label="cycle audio track"
+                        onClick={this.cycleAudio}
+                      >
+                        <AudiotrackOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <div className={classes.inline}>
+                    <Tooltip title="Toggle play/pause">
+                      <IconButton
+                        aria-label="toggle play and pause"
+                        onClick={this.togglePause}
+                        size="medium"
+                      >
+                        {this.state.pause ? (
+                          <PlayArrowOutlinedIcon fontSize="inherit" />
+                        ) : (
+                          <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <div className={classes.sub}>
+                    <Tooltip title="Cycle subtitle track">
+                      <IconButton
+                        aria-label="cycle subtitle track"
+                        onClick={this.cycleSub}
+                      >
+                        <SubtitlesOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <div className={classes.fullscreen}>
+                    <Tooltip title="Toggle fullscreen">
+                      <IconButton
+                        aria-label="cycle subtitle track"
+                        onClick={this.toggleFullscreen}
+                      >
+                        {this.state.fullscreen ? (
+                          <FullscreenExitOutlinedIcon />
+                        ) : (
+                          <FullscreenOutlinedIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <div className={classes.inline}>
+                    <p className="video-time">
+                      {this.toHHMMSS(this.state["time-pos"])} /{" "}
+                      {this.toHHMMSS(this.state.duration)}
+                    </p>
+                  </div>
+                </Grid>
+              </div>
             </div>
+
             <div className={classes.root}>
               <Autocomplete
                 id="highlights-demo"
@@ -303,7 +445,10 @@ class Player extends React.Component {
                       <img
                         src={`https://lh3.googleusercontent.com/u/0/d/${tile.id}=w200-h190-p-k-nu-iv1`}
                         alt={tile.name}
-                        onError={e => (e.target.src = "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")}
+                        onError={(e) =>
+                          (e.target.src =
+                            "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")
+                        }
                       />
                       <GridListTileBar
                         title={this.state.data.name}
@@ -317,6 +462,10 @@ class Player extends React.Component {
                             aria-label={`Play ${tile.name}`}
                             className={classes.icon}
                             id={tile.id}
+                            name={
+                              "Episode: " +
+                              (index + 1 + 8 * (this.state.page - 1))
+                            }
                             onClick={this.handleEpisodeChange}
                           >
                             <PlayCircleFilledIcon />

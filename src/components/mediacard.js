@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 
 export default function MediaCard(props) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState(true);
+  const [checked] = React.useState(true);
 
   return (
     <Grow in={checked} timeout={props.timeout}>
