@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
-  const [anime, setAnime] = useState(stringData.slice(0, 12));
+  const [anime, setAnime] = useState(stringData);
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);

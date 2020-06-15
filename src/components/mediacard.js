@@ -6,7 +6,6 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-import Rating from "@material-ui/lab/Rating";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
@@ -51,7 +50,6 @@ export default function MediaCard(props) {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Rating name="read-only" value={props.rating} readOnly />
           <Link to={props.path}>
             <Button size="small" color="secondary">
               Watch

@@ -206,18 +206,18 @@ class Player extends React.Component {
   handleSeekMouseUp() {
     this.seeking = false;
   }
-  async handleLoad(e) {
-    e.target.blur();
-    const items = await remote.dialog.showOpenDialog({
-      filters: [
-        { name: "Videos", extensions: ["mkv", "webm", "mp4", "mov", "avi"] },
-        { name: "All files", extensions: ["*"] },
-      ],
-    });
-    if (items) {
-      this.mpv.command("loadfile", items.filePaths[0]);
-    }
-  }
+  // async handleLoad(e) {
+  //   e.target.blur();
+  //   const items = await remote.dialog.showOpenDialog({
+  //     filters: [
+  //       { name: "Videos", extensions: ["mkv", "webm", "mp4", "mov", "avi"] },
+  //       { name: "All files", extensions: ["*"] },
+  //     ],
+  //   });
+  //   if (items) {
+  //     this.mpv.command("loadfile", items.filePaths[0]);
+  //   }
+  // }
 
   toHHMMSS(s) {
     var date = new Date(0);
@@ -434,8 +434,8 @@ class Player extends React.Component {
                   );
                 }}
               />
-              <GridList cellHeight={190} className={classes.gridList} cols={4}>
-                {this.state.epList.slice(0, 8).map((tile, index) => (
+              <GridList cellHeight={190} className={classes.gridList} cols={5}>
+                {this.state.epList.slice(0, 10).map((tile, index) => (
                   <Grow
                     in={this.state.checked}
                     timeout={300 + index * 50}
@@ -454,7 +454,14 @@ class Player extends React.Component {
                         title={this.state.data.name}
                         subtitle={
                           <span>
-                            Episode: {index + 1 + 8 * (this.state.page - 1)}
+                            {tile.name
+                              .replace(`${this.state.data.name}`, "")
+                              .replace(/\[(.+?)\]/g, "")
+                              .replace(/\((.+?)\)/g, "")
+                              .replace("Copy of ", "")
+                              .replace(' - ',' ')
+                              .replace('.mkv','')
+                              .trim()}
                           </span>
                         }
                         actionIcon={
@@ -463,8 +470,14 @@ class Player extends React.Component {
                             className={classes.icon}
                             id={tile.id}
                             name={
-                              "Episode: " +
-                              (index + 1 + 8 * (this.state.page - 1))
+                              tile.name
+                              .replace(`${this.state.data.name}`, "")
+                              .replace(/\[(.+?)\]/g, "")
+                              .replace(/\((.+?)\)/g, "")
+                              .replace("Copy of ", "")
+                              .replace(' - ',' ')
+                              .replace('.mkv','')
+                              .trim()
                             }
                             onClick={this.handleEpisodeChange}
                           >
@@ -477,11 +490,11 @@ class Player extends React.Component {
                 ))}
               </GridList>
               <Pagination
-                count={Math.ceil(this.state.episodes.length / 8)}
+                count={Math.ceil(this.state.episodes.length / 10)}
                 page={this.state.page}
                 onChange={(e, nv) => {
-                  var end = 8 * nv;
-                  var start = end - 8;
+                  var end = 10 * nv;
+                  var start = end - 10;
                   this.setState({ page: nv });
                   this.setState({
                     epList: this.state.episodes.slice(start, end),
