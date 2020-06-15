@@ -8,6 +8,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import Pagination from "@material-ui/lab/Pagination";
+import Store from "electron-store";
+
+const store = new Store();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +26,7 @@ export default function Home() {
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
+  const itemCount = 12;
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);
@@ -30,8 +34,8 @@ export default function Home() {
   }, [value]);
 
   const handleChangePage = (event, newPage) => {
-    var end = 12 * newPage;
-    var start = end - 12;
+    var end = itemCount * newPage;
+    var start = end - itemCount;
     setPage(newPage);
     setAnime(stringData.slice(start, end));
   };
@@ -81,24 +85,25 @@ export default function Home() {
       <Grid
         container
         direction="row"
-        justify="space-evenly"
+        justify="space-between"
         alignItems="flex-start"
       >
-        {anime.slice(0, 12).map((item, index) => (
+        {anime.slice(0, itemCount).map((item, index) => (
           <MediaCard
             image={item.banner}
             title={item.name}
             description={item.desc}
             rating={item.rating}
-            path={"/watch/" + item.id}
+            path={item.id}
             key={item.name}
             timeout={300 + index * 50}
+            favourited={store.get(`favourites.${item.id}`) ? true : false}
           />
         ))}
       </Grid>
       <div className={classes.root}>
         <Pagination
-          count={Math.ceil(stringData.length / 12)}
+          count={Math.ceil(stringData.length / itemCount)}
           page={page}
           onChange={handleChangePage}
         />

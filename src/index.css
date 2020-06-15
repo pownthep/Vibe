@@ -113,3 +113,7 @@ button {
   margin: 0;
   display: inline-block;
 }
+
+.favourite-icon {
+  transition: opacity 300ms ease-in-out;
+}

@@ -27,6 +27,7 @@ import VolumeUp from "@material-ui/icons/VolumeUp";
 import Grid from "@material-ui/core/Grid";
 import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
+import Store from "electron-store";
 
 const styles = (theme) => ({
   root: {
@@ -40,7 +41,7 @@ const styles = (theme) => ({
   },
   gridList: {
     width: "100%",
-    height: "auto",
+    height: 200,
   },
   icon: {
     color: "rgba(255, 255, 255, 0.54)",
@@ -82,6 +83,8 @@ const styles = (theme) => ({
   },
 });
 
+const store = new Store();
+
 class Player extends React.Component {
   constructor(props) {
     super(props);
@@ -101,6 +104,7 @@ class Player extends React.Component {
       checked: true,
       volume_value: 50,
       playingName: "",
+      currentEpisode: null,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -111,7 +115,6 @@ class Player extends React.Component {
     this.handleSeek = this.handleSeek.bind(this);
     this.handleSeekMouseDown = this.handleSeekMouseDown.bind(this);
     this.handleSeekMouseUp = this.handleSeekMouseUp.bind(this);
-    this.handleLoad = this.handleLoad.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
     this.handleEpisodeChange = this.handleEpisodeChange.bind(this);
     this.myRef = React.createRef();
@@ -121,6 +124,7 @@ class Player extends React.Component {
     this.cycleSub = this.cycleSub.bind(this);
     this.cycleAudio = this.cycleAudio.bind(this);
     this.togglePause = this.togglePause.bind(this);
+    this.addToHistory = this.addToHistory.bind(this);
   }
   async componentDidMount() {
     const id = this.props.match.params.id;
@@ -137,11 +141,14 @@ class Player extends React.Component {
       }
     }
     this.setState({ epList: this.state.episodes });
-    //document.addEventListener("keydown", this.handleKeyDown, false);
   }
 
   componentWillUnmount() {
-    //document.removeEventListener("keydown", this.handleKeyDown, false);
+    if(!this.state.currentEpisode) return;
+    this.addToHistory({
+      ...this.state.currentEpisode,
+      currentTime: this.state["time-pos"]
+    })
   }
 
   togglePause(e) {
@@ -199,7 +206,7 @@ class Player extends React.Component {
   handleSeek(e, newValue) {
     e.target.blur();
     const timePos = +newValue;
-    console.log(timePos);
+    // console.log(timePos);
     this.setState({ "time-pos": timePos });
     this.mpv.property("time-pos", timePos);
   }
@@ -231,13 +238,30 @@ class Player extends React.Component {
   }
 
   handleEpisodeChange(e) {
-    console.log(e.currentTarget.id);
     this.mpv.command("loadfile", "http://localhost:9001/" + e.currentTarget.id);
     this.setState({
       loading: true,
       selectedEpisode: e.currentTarget.id,
       playingName: e.currentTarget.name,
     });
+    let episode = {
+      id: e.currentTarget.id,
+      ep: e.currentTarget.name,
+      title: this.state.data.name,
+      index: this.props.match.params.id,
+      currentTime: "",
+    };
+
+    if (!this.state.currentEpisode) this.setState({ currentEpisode: episode });
+    else {
+      let prev = {
+        ...this.state.currentEpisode,
+        currentTime: this.state["time-pos"],
+      };
+      this.addToHistory(prev);
+      this.setState({ currentEpisode: episode });
+    }
+    
   }
 
   handleSearch(e, nv) {
@@ -270,6 +294,16 @@ class Player extends React.Component {
     this.mpv.command("keypress", "#");
   }
 
+  addToHistory(episode) {
+    if (!store.get("history") || store.get("history").length === 0) {
+      store.set("history", [episode]);
+      return;
+    }
+    let history = store.get("history");
+    let newHistory = [...history, episode];
+    store.set("history", newHistory);
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -279,7 +313,7 @@ class Player extends React.Component {
         </div>
         <div className="container">
           <img
-            src={this.state.data.banner}
+            src={"http://localhost:9001/img/?url=" + this.state.data.banner}
             className="banner"
             alt={this.state.data.title + "banner"}
           />
@@ -435,7 +469,7 @@ class Player extends React.Component {
                 }}
               />
               <GridList cellHeight={190} className={classes.gridList} cols={5}>
-                {this.state.epList.slice(0, 10).map((tile, index) => (
+                {this.state.epList.slice(0, 5).map((tile, index) => (
                   <Grow
                     in={this.state.checked}
                     timeout={300 + index * 50}
@@ -443,7 +477,7 @@ class Player extends React.Component {
                   >
                     <GridListTile>
                       <img
-                        src={`https://lh3.googleusercontent.com/u/0/d/${tile.id}=w200-h190-p-k-nu-iv1`}
+                        src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}=w200-h190-p-k-nu-iv1`}
                         alt={tile.name}
                         onError={(e) =>
                           (e.target.src =
@@ -459,8 +493,8 @@ class Player extends React.Component {
                               .replace(/\[(.+?)\]/g, "")
                               .replace(/\((.+?)\)/g, "")
                               .replace("Copy of ", "")
-                              .replace(' - ',' ')
-                              .replace('.mkv','')
+                              .replace(" - ", " ")
+                              .replace(".mkv", "")
                               .trim()}
                           </span>
                         }
@@ -469,16 +503,14 @@ class Player extends React.Component {
                             aria-label={`Play ${tile.name}`}
                             className={classes.icon}
                             id={tile.id}
-                            name={
-                              tile.name
+                            name={tile.name
                               .replace(`${this.state.data.name}`, "")
                               .replace(/\[(.+?)\]/g, "")
                               .replace(/\((.+?)\)/g, "")
                               .replace("Copy of ", "")
-                              .replace(' - ',' ')
-                              .replace('.mkv','')
-                              .trim()
-                            }
+                              .replace(" - ", " ")
+                              .replace(".mkv", "")
+                              .trim()}
                             onClick={this.handleEpisodeChange}
                           >
                             <PlayCircleFilledIcon />
@@ -490,11 +522,11 @@ class Player extends React.Component {
                 ))}
               </GridList>
               <Pagination
-                count={Math.ceil(this.state.episodes.length / 10)}
+                count={Math.ceil(this.state.episodes.length / 5)}
                 page={this.state.page}
                 onChange={(e, nv) => {
-                  var end = 10 * nv;
-                  var start = end - 10;
+                  var end = 5 * nv;
+                  var start = end - 5;
                   this.setState({ page: nv });
                   this.setState({
                     epList: this.state.episodes.slice(start, end),

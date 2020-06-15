@@ -8,22 +8,17 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 import SettingsIcon from "@material-ui/icons/Settings";
-import Player from "./components/player";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
 import Titlebar from "react-electron-titlebar";
-import Home from "./components/home";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
 import Avatar from "@material-ui/core/Avatar";
-import Divider from '@material-ui/core/Divider';
+import Divider from "@material-ui/core/Divider";
+import OfflinePinIcon from '@material-ui/icons/OfflinePin';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import CloudIcon from '@material-ui/icons/Cloud';
 
 const drawerWidth = 200;
 
@@ -59,71 +54,88 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
-  const navItem = [
-    <VideoLibraryIcon />,
-    <FavoriteIcon />,
-    <HistoryIcon />,
-    <SettingsIcon />,
+  const ReactLazyPreload = (importStatement) => {
+    const Component = React.lazy(importStatement);
+    Component.preload = importStatement;
+    return Component;
+  };
+
+  const Home = ReactLazyPreload(() => import("./components/home"));
+  const FavouritePage = ReactLazyPreload(() =>
+    import("./components/favourites")
+  );
+  const HistoryPage = ReactLazyPreload(() => import("./components/history"));
+  const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
+  const PlayerPage = ReactLazyPreload(() => import("./components/player"));
+
+  const routes = [
+    { path: "/", exact: true, component: Home, label: "Home", icon: <VideoLibraryIcon /> },
+    { path: "/favourites", exact: true, component: FavouritePage, label: "Favourites", icon: <FavoriteIcon /> },
+    { path: "/downloader", exact: true, component: FavouritePage, label: "Downloader", icon: <CloudDownloadIcon /> },
+    { path: "/offline", exact: true, component: FavouritePage, label: "Offline", icon: <OfflinePinIcon /> },
+    { path: "/drive", exact: true, component: FavouritePage, label: "G Drive", icon: <CloudIcon /> },
+    { path: "/history", exact: true, component: HistoryPage, label: "History", icon: <HistoryIcon /> },
+    { path: "/settings", exact: true, component: SettingsPage, label: "Settings", icon: <SettingsIcon /> },
+    { path: "/watch/:id", exact: true, component: PlayerPage },
   ];
-  const routesList = ["/", "/favourites", "/history", "/settings"];
+
+  Home.preload();
+  FavouritePage.preload();
+  HistoryPage.preload();
+  SettingsPage.preload();
+  PlayerPage.preload();
 
   return (
     <Router>
-      <Titlebar title="App Title" backgroundColor="#ffff" />
-      <ThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <CssBaseline />
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            anchor="left"
-          >
-            <List>
-              <ListItem button>
-                <ListItemIcon>
-                  <Avatar src="https://scontent.fnak3-1.fna.fbcdn.net/v/t1.0-9/12661956_948461535208076_774709796530671292_n.jpg?_nc_cat=104&_nc_sid=85a577&_nc_eui2=AeHXuLgPaPv-p2aW64NXWcoO7UQ1t09Hw1HtRDW3T0fDURrCjSmiUhRg_dCJFX2qWOhbA3j1iAZqpFxph8rKIGP-&_nc_ohc=6gpEgtfaB3cAX-i4q11&_nc_ht=scontent.fnak3-1.fna&oh=27875adbca764c230c3a0f6492874f73&oe=5F0A8E01" />
-                </ListItemIcon>
-                <ListItemText primary="Pownthep" />
-              </ListItem>
-              <Divider />
-              {["Library", "Favourites", "History", "Setting"].map(
-                (text, index) => (
-                  <Link to={routesList[index]} key={text}>
-                    <ListItem button>
-                      <ListItemIcon>{navItem[index]}</ListItemIcon>
-                      <ListItemText primary={text} />
-                    </ListItem>
-                  </Link>
-                )
-              )}
-            </List>
-          </Drawer>
-          <main className={classes.content}>
-            <Switch>
-              <Route path="/watch/:id">
-                <Player />
-              </Route>
-              <Route path="/favourites">
-                <h1>Favourites</h1>
-              </Route>
-              <Route path="/history">
-                <h1>History</h1>
-              </Route>
-              <Route path="/settings">
-                <h1>Settings</h1>
-              </Route>
-              <Route path="/">
-                <Home />
-              </Route>
-            </Switch>
-          </main>
-        </div>
-      </ThemeProvider>
+      {" "}
+      <React.Suspense fallback={"Loading"}>
+        <Titlebar title="App Title" backgroundColor="#ffff" />
+        <ThemeProvider theme={theme}>
+          <div className={classes.root}>
+            <CssBaseline />
+            <Drawer
+              className={classes.drawer}
+              variant="permanent"
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+              anchor="left"
+            >
+              <List>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Avatar src="https://mpv.io/images/mpv-logo-128-0baae5aa.png" />
+                  </ListItemIcon>
+                  <ListItemText primary="Pownthep" />
+                </ListItem>
+                <Divider />
+                {routes.map(
+                  (route, index) => (
+                    <Link to={route.path} key={index}>
+                      <ListItem button>
+                        <ListItemIcon>{route.icon}</ListItemIcon>
+                        <ListItemText primary={route.label} />
+                      </ListItem>
+                    </Link>
+                  )
+                )}
+              </List>
+            </Drawer>
+            <main className={classes.content}>
+              <Switch>
+                {routes.map((route) => (
+                  <Route
+                    key={route.path}
+                    exact={route.exact}
+                    path={route.path}
+                    component={route.component}
+                  />
+                ))}
+              </Switch>
+            </main>
+          </div>
+        </ThemeProvider>
+      </React.Suspense>
     </Router>
   );
 }
-
-

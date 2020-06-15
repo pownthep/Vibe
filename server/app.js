@@ -9,6 +9,8 @@ var app = express();
 var cors = require("cors");
 var elasticlunr = require("elasticlunr");
 app.use(cors());
+app.use(express.static("img"));
+
 const axios = require("axios");
 
 // If modifying these scopes, delete your previously saved credentials
@@ -20,6 +22,10 @@ var CHUNK_SIZE = 20000000;
 var PORT = 9001;
 var DATA_PATH = __dirname + "/data.json";
 var data = {};
+const download = require("image-downloader");
+const IMG_DIR = __dirname + "/img/";
+const placeholderImg = IMG_DIR + "placeholder.png";
+const stringHash = require("string-hash");
 
 // Load client secrets from a local file.
 fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
@@ -104,6 +110,29 @@ function startLocalServer(oauth2Client) {
     const result = index.search(req.params.query).map((item) => data[item.ref]);
     res.json(index.search());
     console.log(index.search(req.params.query));
+  });
+
+  app.get("/img", async (req, res) => {
+    let fileID = stringHash(req.query.url);
+    fs.access(IMG_DIR+fileID, fs.F_OK, (err) => {
+      if (err) {
+        const options = {
+          url: req.query.url,
+          dest: IMG_DIR+fileID,
+          extractFilename: false
+        };
+        download
+          .image(options)
+          .then(({ filename }) => {
+            res.sendFile(filename);
+          })
+          .catch((err) => {
+            res.sendFile(placeholderImg);
+          });
+        return;
+      }
+      else res.sendFile(IMG_DIR+fileID);
+    });
   });
 
   app.get("/data", async (req, res) => {

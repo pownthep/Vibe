@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
+import Store from "electron-store";
 
 const useStyles = makeStyles({
   root: {
@@ -24,7 +25,9 @@ const useStyles = makeStyles({
 
 export default function MediaCard(props) {
   const classes = useStyles();
-  const [checked] = React.useState(true);
+  const [checked] = useState(true);
+  const store = new Store();
+  const [fav, setFav] = useState(props.favourited);
 
   return (
     <Grow in={checked} timeout={props.timeout}>
@@ -32,7 +35,7 @@ export default function MediaCard(props) {
         <CardActionArea>
           <CardMedia
             className={classes.media}
-            image={props.image}
+            image={"http://localhost:9001/img/?url=" + props.image}
             title={props.title}
           />
           <CardContent>
@@ -50,13 +53,26 @@ export default function MediaCard(props) {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Link to={props.path}>
+          <Link to={"/watch/" + props.path}>
             <Button size="small" color="secondary">
               Watch
             </Button>
           </Link>
-          <Button size="small" color="secondary">
-            Favourite
+          <Button
+            disabled={fav}
+            size="small"
+            color="secondary"
+            onClick={(e) => {
+              var key = "favourites." + props.path;
+              if (store.get("favourites")) store.set(key, true);
+              else {
+                store.set("favourites", {});
+                store.set(key, 1);
+              }
+              setFav(true);
+            }}
+          >
+            {fav ? "Favourited" : "Add to favourites"}
           </Button>
         </CardActions>
       </Card>
