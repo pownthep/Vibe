@@ -2,7 +2,40 @@
   "name": "react-app",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
+  "dependencies": {},
+  "scripts": {
+    "start": "rescripts start",
+    "build": "rescripts build",
+    "test": "rescripts test",
+    "build-app": "electron-packager . Vibe --overwrite --icon=app_icon.ico --ignore=^/server",
+    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-test": "electron index.js",
+    "bundle": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field index.js > index.bundle.js",
+    "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/app.js > ./server/app.bundle.js",
+    "server": "nodemon ./server/app.js"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "browserify": "^16.5.1",
+    "concurrently": "^5.2.0",
+    "electron": "^9.0.3",
+    "electron-packager": "^14.2.1",
+    "nodemon": "^2.0.4",
+    "wait-on": "^5.0.1",
     "@material-ui/core": "^4.10.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
@@ -40,40 +73,6 @@
     "string-hash": "^1.1.3",
     "use-lodash-debounce": "^1.1.0",
     "v8-compile-cache": "^2.1.1"
-  },
-  "scripts": {
-    "start": "rescripts start",
-    "build": "rescripts build",
-    "test": "rescripts test",
-    "build-app": "electron-packager . --overwrite --icon=./server/img/app_icon2.png --ignore=^/server",
-    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-test": "electron index.js",
-    "bundle": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field index.js > index.bundle.js",
-    "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/app.js > ./server/app.bundle.js",
-    "server": "nodemon ./server/app.js"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "browserify": "^16.5.1",
-    "concurrently": "^5.2.0",
-    "electron": "^9.0.3",
-    "electron-packager": "^14.2.1",
-    "nodemon": "^2.0.4",
-    "wait-on": "^5.0.1"
   },
   "homepage": "./",
   "main": "index.js"
