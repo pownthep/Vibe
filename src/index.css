@@ -104,6 +104,13 @@ button {
   margin-top: 0;
 }
 
+.anime-episode {
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 .title-container {
 
 }

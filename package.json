@@ -45,7 +45,7 @@
     "start": "rescripts start",
     "build": "rescripts build",
     "test": "rescripts test",
-    "build-app": "electron-packager . --overwrite",
+    "build-app": "electron-packager . --overwrite --icon=./server/img/app_icon2.png --ignore=^/server",
     "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-test": "electron index.js",
     "bundle": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field index.js > index.bundle.js",

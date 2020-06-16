@@ -127,7 +127,7 @@ export default function PermanentDrawerLeft() {
       label: "Settings",
       icon: <SettingsIcon />,
     },
-    { path: "/watch/:id/:epId?", exact: true, component: PlayerPage },
+    // { path: "/watch/:id/:epId?", exact: true, component: PlayerPage },
   ];
 
   Home.preload();
@@ -164,9 +164,9 @@ export default function PermanentDrawerLeft() {
               <List>
                 <ListItem button>
                   <ListItemIcon>
-                    <Avatar src="app_icon.png" />
+                    <Avatar src="http://localhost:9001/icon" />
                   </ListItemIcon>
-                  <ListItemText primary="Drive Stream" />
+                  <ListItemText primary="Vibe" />
                 </ListItem>
                 <Divider />
                 {routes.map((route, index) => (
@@ -189,6 +189,12 @@ export default function PermanentDrawerLeft() {
                     component={route.component}
                   />
                 ))}
+                <Route
+                  key={"/watch/:id/:epId?"}
+                  exact={true}
+                  path="/watch/:id/:epId?"
+                  component={PlayerPage}
+                />
                 <Route render={() => <Redirect to="/" />} />
               </Switch>
             </main>

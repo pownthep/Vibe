@@ -22,7 +22,7 @@ app.commandLine.appendSwitch(
   getPluginEntry(pluginDir)
 );
 
-require("./server/app.bundle.js");
+require("./server/app.js");
 
 function createWindow() {
   // Create the browser window.
@@ -38,10 +38,10 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  //win.loadURL("http://localhost:3000/index.html");
+  win.loadURL("http://localhost:3000/index.html");
   //if(isDev) win.loadURL("http://localhost:3000");
   //else
-  win.loadFile(`./build/index.html`);
+  //win.loadFile(`./build/index.html`);
   // if (isDev) {
   //   // Open the DevTools.
   //   //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');

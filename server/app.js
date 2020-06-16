@@ -9,6 +9,7 @@ var app = express();
 var cors = require("cors");
 app.use(cors());
 app.use(express.static("img"));
+// app.use(express.static("static"));
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -111,6 +112,8 @@ function storeToken(token) {
 }
 
 function startLocalServer(oauth2Client) {
+  app.get('/icon', (req,res) => res.sendFile(__dirname+'/img/app_icon2.png'))
+
   app.get("/authenticate", (req, res) => {
     fs.readFile(TOKEN_PATH, function (err, token) {
       if (err) {

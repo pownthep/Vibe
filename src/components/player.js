@@ -362,6 +362,11 @@ class Player extends React.Component {
 
         <div className="title-container">
           <h1 className="anime-title">{this.state.data.name}</h1>
+          <h2 className="anime-episode">
+            {this.state.currentEpisode
+              ? this.fmtName(this.state.currentEpisode.ep)
+              : ""}
+          </h2>
         </div>
         <div className="container">
           <img
@@ -398,13 +403,6 @@ class Player extends React.Component {
                   justify="space-evenly"
                   alignItems="center"
                 >
-                  <div className={classes.inline}>
-                    <p className="video-time">
-                      {this.state.currentEpisode
-                        ? this.fmtName(this.state.currentEpisode.ep)
-                        : ""}
-                    </p>
-                  </div>
                   <div className={classes.slider}>
                     <Grid container spacing={2}>
                       <Grid item>
