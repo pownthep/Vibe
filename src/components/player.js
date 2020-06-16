@@ -28,6 +28,8 @@ import Grid from "@material-ui/core/Grid";
 import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import Store from "electron-store";
+import AuthenticationDialog from "./dialog";
+import AuthenticateUser from "../utils/utils";
 
 const styles = (theme) => ({
   root: {
@@ -96,15 +98,14 @@ class Player extends React.Component {
       fullscreen: false,
       data: {},
       episodes: [],
-      selectedEpisode: "",
       loading: false,
       value: null,
       epList: [],
       page: 1,
       checked: true,
       volume_value: 50,
-      playingName: "",
       currentEpisode: null,
+      auth: null,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -125,8 +126,11 @@ class Player extends React.Component {
     this.cycleAudio = this.cycleAudio.bind(this);
     this.togglePause = this.togglePause.bind(this);
     this.addToHistory = this.addToHistory.bind(this);
+    this.fmtName = this.fmtName.bind(this);
   }
   async componentDidMount() {
+    const user = await AuthenticateUser();
+    this.setState({ auth: user });
     const id = this.props.match.params.id;
     this.setState({ data: stringData[id] });
     let arrLength = stringData[id].episodes.length;
@@ -141,14 +145,22 @@ class Player extends React.Component {
       }
     }
     this.setState({ epList: this.state.episodes });
+    if (this.props.match.params.epId) {
+      const epId = this.props.match.params.epId;
+      const episode = store.get(`history.${epId}`);
+      //const [{ id, name }] = this.state.episodes.filter((ep) => ep.id === epId);
+      this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
+      //console.log(`${name} + ${id}`);
+    }
   }
 
   componentWillUnmount() {
-    if(!this.state.currentEpisode) return;
+    if (!this.state.currentEpisode) return;
     this.addToHistory({
       ...this.state.currentEpisode,
-      currentTime: this.state["time-pos"]
-    })
+      timePos: this.state["time-pos"],
+      currentTime: new Date().getTime(),
+    });
   }
 
   togglePause(e) {
@@ -179,7 +191,16 @@ class Player extends React.Component {
     } else if (name === "eof-reached" && value) {
       this.mpv.property("time-pos", 0);
     } else {
-      if (name === "duration") this.setState({ loading: false });
+      if (name === "duration") {
+        this.setState({ loading: false });
+        if (this.state.currentEpisode.timePos > 0) {
+          this.setState({ "time-pos": this.state.currentEpisode.timePos });
+          this.mpv.property("time-pos", this.state.currentEpisode.timePos);
+
+          this.setState({ pause: false });
+          this.mpv.property("pause", false);
+        }
+      }
       this.setState({ [name]: value });
     }
   }
@@ -206,13 +227,13 @@ class Player extends React.Component {
   handleSeek(e, newValue) {
     e.target.blur();
     const timePos = +newValue;
-    // console.log(timePos);
     this.setState({ "time-pos": timePos });
     this.mpv.property("time-pos", timePos);
   }
   handleSeekMouseUp() {
     this.seeking = false;
   }
+
   // async handleLoad(e) {
   //   e.target.blur();
   //   const items = await remote.dialog.showOpenDialog({
@@ -237,31 +258,42 @@ class Player extends React.Component {
     this.mpv.command("loadfile", "http://localhost:9001/" + id);
   }
 
-  handleEpisodeChange(e) {
-    this.mpv.command("loadfile", "http://localhost:9001/" + e.currentTarget.id);
+  async handleEpisodeChange(id, name, timePos = 0) {
+    const user = await AuthenticateUser();
+    if (!user.authenticated) {
+      this.setState({ auth: user });
+      return;
+    }
+    this.mpv.command("loadfile", "http://localhost:9001/" + id);
     this.setState({
       loading: true,
-      selectedEpisode: e.currentTarget.id,
-      playingName: e.currentTarget.name,
     });
     let episode = {
-      id: e.currentTarget.id,
-      ep: e.currentTarget.name,
+      id: id,
+      ep: name,
       title: this.state.data.name,
       index: this.props.match.params.id,
-      currentTime: "",
+      timePos: timePos,
+      currentTime: new Date().getTime(),
     };
 
     if (!this.state.currentEpisode) this.setState({ currentEpisode: episode });
     else {
       let prev = {
         ...this.state.currentEpisode,
-        currentTime: this.state["time-pos"],
+        timePos: this.state["time-pos"],
       };
       this.addToHistory(prev);
       this.setState({ currentEpisode: episode });
     }
-    
+    //console.log(this.state.currentEpisode);
+  }
+
+  handleContinue(id) {
+    this.mpv.command("loadfile", "http://localhost:9001/" + id);
+    this.setState({
+      loading: true,
+    });
   }
 
   handleSearch(e, nv) {
@@ -296,18 +328,38 @@ class Player extends React.Component {
 
   addToHistory(episode) {
     if (!store.get("history") || store.get("history").length === 0) {
-      store.set("history", [episode]);
+      store.set("history", { [episode.id]: episode });
       return;
     }
-    let history = store.get("history");
-    let newHistory = [...history, episode];
-    store.set("history", newHistory);
+    // let history = store.get("history");
+    // let newHistory = [...history, episode];
+    store.set(`history.${episode.id}`, episode);
+  }
+
+  fmtName(s) {
+    return s
+      .replace(`${this.state.data.name}`, "")
+      .replace(/\[(.+?)\]/g, "")
+      .replace(/\((.+?)\)/g, "")
+      .replace("Copy of ", "")
+      .replace(" - ", " ")
+      .replace(".mkv", "")
+      .trim();
   }
 
   render() {
     const { classes } = this.props;
     return (
       <>
+        {this.state.auth ? (
+          <AuthenticationDialog
+            open={!this.state.auth.authenticated}
+            url={this.state.auth.url}
+          />
+        ) : (
+          <></>
+        )}
+
         <div className="title-container">
           <h1 className="anime-title">{this.state.data.name}</h1>
         </div>
@@ -347,7 +399,11 @@ class Player extends React.Component {
                   alignItems="center"
                 >
                   <div className={classes.inline}>
-                    <p className="video-time">{this.state.playingName}</p>
+                    <p className="video-time">
+                      {this.state.currentEpisode
+                        ? this.fmtName(this.state.currentEpisode.ep)
+                        : ""}
+                    </p>
                   </div>
                   <div className={classes.slider}>
                     <Grid container spacing={2}>
@@ -486,32 +542,14 @@ class Player extends React.Component {
                       />
                       <GridListTileBar
                         title={this.state.data.name}
-                        subtitle={
-                          <span>
-                            {tile.name
-                              .replace(`${this.state.data.name}`, "")
-                              .replace(/\[(.+?)\]/g, "")
-                              .replace(/\((.+?)\)/g, "")
-                              .replace("Copy of ", "")
-                              .replace(" - ", " ")
-                              .replace(".mkv", "")
-                              .trim()}
-                          </span>
-                        }
+                        subtitle={<span>{this.fmtName(tile.name)}</span>}
                         actionIcon={
                           <IconButton
                             aria-label={`Play ${tile.name}`}
                             className={classes.icon}
-                            id={tile.id}
-                            name={tile.name
-                              .replace(`${this.state.data.name}`, "")
-                              .replace(/\[(.+?)\]/g, "")
-                              .replace(/\((.+?)\)/g, "")
-                              .replace("Copy of ", "")
-                              .replace(" - ", " ")
-                              .replace(".mkv", "")
-                              .trim()}
-                            onClick={this.handleEpisodeChange}
+                            onClick={(e) =>
+                              this.handleEpisodeChange(tile.id, tile.name)
+                            }
                           >
                             <PlayCircleFilledIcon />
                           </IconButton>

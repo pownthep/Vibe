@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -8,7 +8,13 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
 import Titlebar from "react-electron-titlebar";
@@ -16,9 +22,12 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
-import OfflinePinIcon from '@material-ui/icons/OfflinePin';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import CloudIcon from '@material-ui/icons/Cloud';
+import OfflinePinIcon from "@material-ui/icons/OfflinePin";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import CloudIcon from "@material-ui/icons/Cloud";
+import Store from "electron-store";
+import Loader from "./components/loader";
+const store = new Store();
 
 const drawerWidth = 200;
 
@@ -69,14 +78,56 @@ export default function PermanentDrawerLeft() {
   const PlayerPage = ReactLazyPreload(() => import("./components/player"));
 
   const routes = [
-    { path: "/", exact: true, component: Home, label: "Home", icon: <VideoLibraryIcon /> },
-    { path: "/favourites", exact: true, component: FavouritePage, label: "Favourites", icon: <FavoriteIcon /> },
-    { path: "/downloader", exact: true, component: FavouritePage, label: "Downloader", icon: <CloudDownloadIcon /> },
-    { path: "/offline", exact: true, component: FavouritePage, label: "Offline", icon: <OfflinePinIcon /> },
-    { path: "/drive", exact: true, component: FavouritePage, label: "G Drive", icon: <CloudIcon /> },
-    { path: "/history", exact: true, component: HistoryPage, label: "History", icon: <HistoryIcon /> },
-    { path: "/settings", exact: true, component: SettingsPage, label: "Settings", icon: <SettingsIcon /> },
-    { path: "/watch/:id", exact: true, component: PlayerPage },
+    {
+      path: "/",
+      exact: true,
+      component: Home,
+      label: "Home",
+      icon: <VideoLibraryIcon />,
+    },
+    {
+      path: "/favourites",
+      exact: true,
+      component: FavouritePage,
+      label: "Favourites",
+      icon: <FavoriteIcon />,
+    },
+    {
+      path: "/downloader",
+      exact: true,
+      component: FavouritePage,
+      label: "Downloader",
+      icon: <CloudDownloadIcon />,
+    },
+    {
+      path: "/offline",
+      exact: true,
+      component: FavouritePage,
+      label: "Offline",
+      icon: <OfflinePinIcon />,
+    },
+    {
+      path: "/drive",
+      exact: true,
+      component: FavouritePage,
+      label: "G Drive",
+      icon: <CloudIcon />,
+    },
+    {
+      path: "/history",
+      exact: true,
+      component: HistoryPage,
+      label: "History",
+      icon: <HistoryIcon />,
+    },
+    {
+      path: "/settings",
+      exact: true,
+      component: SettingsPage,
+      label: "Settings",
+      icon: <SettingsIcon />,
+    },
+    { path: "/watch/:id/:epId?", exact: true, component: PlayerPage },
   ];
 
   Home.preload();
@@ -85,11 +136,20 @@ export default function PermanentDrawerLeft() {
   SettingsPage.preload();
   PlayerPage.preload();
 
+  useEffect(() => {
+    const authenticate = async () => {
+      const res = await fetch("http://localhost:9001/authenticate");
+      const auth = await res.json();
+      store.set("auth", auth);
+    };
+    authenticate();
+  }, []);
+
   return (
     <Router>
       {" "}
-      <React.Suspense fallback={"Loading"}>
-        <Titlebar title="App Title" backgroundColor="#ffff" />
+      <React.Suspense fallback={<Loader />}>
+        <Titlebar title="App Title" backgroundColor="#fffffff" />
         <ThemeProvider theme={theme}>
           <div className={classes.root}>
             <CssBaseline />
@@ -104,21 +164,19 @@ export default function PermanentDrawerLeft() {
               <List>
                 <ListItem button>
                   <ListItemIcon>
-                    <Avatar src="https://mpv.io/images/mpv-logo-128-0baae5aa.png" />
+                    <Avatar src="app_icon.png" />
                   </ListItemIcon>
-                  <ListItemText primary="Pownthep" />
+                  <ListItemText primary="Drive Stream" />
                 </ListItem>
                 <Divider />
-                {routes.map(
-                  (route, index) => (
-                    <Link to={route.path} key={index}>
-                      <ListItem button>
-                        <ListItemIcon>{route.icon}</ListItemIcon>
-                        <ListItemText primary={route.label} />
-                      </ListItem>
-                    </Link>
-                  )
-                )}
+                {routes.map((route, index) => (
+                  <Link to={route.path} key={index}>
+                    <ListItem button>
+                      <ListItemIcon>{route.icon}</ListItemIcon>
+                      <ListItemText primary={route.label} />
+                    </ListItem>
+                  </Link>
+                ))}
               </List>
             </Drawer>
             <main className={classes.content}>
@@ -131,6 +189,7 @@ export default function PermanentDrawerLeft() {
                     component={route.component}
                   />
                 ))}
+                <Route render={() => <Redirect to="/" />} />
               </Switch>
             </main>
           </div>

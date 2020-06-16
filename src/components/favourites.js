@@ -50,65 +50,71 @@ export default function Favourites() {
   return (
     <>
       <h1>My Favourites</h1>
-      <div className={classes.root}>
-        <GridList
-          cellHeight={230}
-          spacing={1}
-          className={classes.gridList}
-          cols={4}
-        >
-          {Object.keys(favourites).map((key, index) => (
-            <Grow in={checked} timeout={300 + index * 50} key={key}>
-              <GridListTile>
-                <Link to={"/watch/" + key}>
-                  <img
-                    src={
-                      "http://localhost:9001/img/?url=" +
-                      stringData[parseInt(key)].banner
-                    }
-                    alt={stringData[parseInt(key)].name}
-                    className={classes.banner}
-                  />
-                </Link>
-                <GridListTileBar
-                  title={stringData[parseInt(key)].name}
-                  titlePosition="top"
-                  actionIcon={
-                    <IconButton
-                      aria-label={`star ${stringData[parseInt(key)].name}`}
-                      className="favourite-icon"
-                      onClick={(e) => {
-                        store.delete(`favourites.${key}`);
-                        setFavourites(store.get("favourites"));
-                      }}
-                      onMouseEnter={() =>
-                        setFavourites((prev) => ({
-                          ...prev,
-                          [key]: false,
-                        }))
+      {favourites ? (
+        <>
+          <div className={classes.root}>
+            <GridList
+              cellHeight={230}
+              spacing={1}
+              className={classes.gridList}
+              cols={4}
+            >
+              {Object.keys(favourites).map((key, index) => (
+                <Grow in={checked} timeout={300 + index * 50} key={key}>
+                  <GridListTile>
+                    <Link to={"/watch/" + key}>
+                      <img
+                        src={
+                          "http://localhost:9001/img/?url=" +
+                          stringData[parseInt(key)].banner
+                        }
+                        alt={stringData[parseInt(key)].name}
+                        className={classes.banner}
+                      />
+                    </Link>
+                    <GridListTileBar
+                      title={stringData[parseInt(key)].name}
+                      titlePosition="top"
+                      actionIcon={
+                        <IconButton
+                          aria-label={`star ${stringData[parseInt(key)].name}`}
+                          className="favourite-icon"
+                          onClick={(e) => {
+                            store.delete(`favourites.${key}`);
+                            setFavourites(store.get("favourites"));
+                          }}
+                          onMouseEnter={() =>
+                            setFavourites((prev) => ({
+                              ...prev,
+                              [key]: false,
+                            }))
+                          }
+                          onMouseLeave={() =>
+                            setFavourites((prev) => ({
+                              ...prev,
+                              [key]: true,
+                            }))
+                          }
+                        >
+                          {!favourites[key] ? (
+                            <HighlightOffIcon />
+                          ) : (
+                            <FavoriteIcon />
+                          )}
+                        </IconButton>
                       }
-                      onMouseLeave={() =>
-                        setFavourites((prev) => ({
-                          ...prev,
-                          [key]: true,
-                        }))
-                      }
-                    >
-                      {!favourites[key] ? (
-                        <HighlightOffIcon />
-                      ) : (
-                        <FavoriteIcon />
-                      )}
-                    </IconButton>
-                  }
-                  actionPosition="left"
-                  className={classes.titleBar}
-                />
-              </GridListTile>
-            </Grow>
-          ))}
-        </GridList>
-      </div>
+                      actionPosition="left"
+                      className={classes.titleBar}
+                    />
+                  </GridListTile>
+                </Grow>
+              ))}
+            </GridList>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

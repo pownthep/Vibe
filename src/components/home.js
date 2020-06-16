@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MediaCard from "./mediacard";
-import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import stringData from "./completed-series.json";
 import TextField from "@material-ui/core/TextField";
@@ -18,6 +17,12 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: "100%",
     },
+  },
+  gridList: {
+    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between"
   },
 }));
 
@@ -81,13 +86,7 @@ export default function Home() {
           );
         }}
       />
-
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="flex-start"
-      >
+      <div className={classes.gridList}>
         {anime.slice(0, itemCount).map((item, index) => (
           <MediaCard
             image={item.banner}
@@ -100,7 +99,7 @@ export default function Home() {
             favourited={store.get(`favourites.${item.id}`) ? true : false}
           />
         ))}
-      </Grid>
+      </div>
       <div className={classes.root}>
         <Pagination
           count={Math.ceil(stringData.length / itemCount)}
