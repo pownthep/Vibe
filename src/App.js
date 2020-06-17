@@ -25,6 +25,7 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloudIcon from "@material-ui/icons/Cloud";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
+import PlayerPage from './components/player';
 
 const store = window.store ? new window.store() : false;
 
@@ -88,7 +89,7 @@ export default function PermanentDrawerLeft() {
   );
   const HistoryPage = ReactLazyPreload(() => import("./components/history"));
   const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
-  const PlayerPage = ReactLazyPreload(() => import("./components/player"));
+  //const PlayerPage = ReactLazyPreload(() => import("./components/player"));
   const Titlebar = store
     ? ReactLazyPreload(() => import("react-electron-titlebar"))
     : false;
