@@ -30,6 +30,7 @@ import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlin
 import Store from "electron-store";
 import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const styles = (theme) => ({
   root: {
@@ -78,10 +79,19 @@ const styles = (theme) => ({
   },
   slider: {
     width: 150,
-    paddingTop: 10,
+    paddingTop: 5,
   },
   controlContainer: {
     width: "100%",
+  },
+  progress: {
+    width: "100%",
+  },
+  playBtn: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
   },
 });
 
@@ -106,6 +116,8 @@ class Player extends React.Component {
       volume_value: 50,
       currentEpisode: null,
       auth: null,
+      progress: 0,
+      showProgress: true,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -127,6 +139,7 @@ class Player extends React.Component {
     this.togglePause = this.togglePause.bind(this);
     this.addToHistory = this.addToHistory.bind(this);
     this.fmtName = this.fmtName.bind(this);
+    this.valueLabelFormat = this.valueLabelFormat.bind(this);
   }
   async componentDidMount() {
     const user = await AuthenticateUser();
@@ -142,7 +155,9 @@ class Player extends React.Component {
         const json = await res.json();
         tmp = tmp.concat(json);
         if (i === arrLength - 1) this.setState({ episodes: tmp });
+        this.setState({ progress: ((i + 1) * 100) / arrLength });
       }
+      this.setState({ showProgress: false });
     }
     this.setState({ epList: this.state.episodes });
     if (this.props.match.params.epId) {
@@ -347,6 +362,10 @@ class Player extends React.Component {
       .trim();
   }
 
+  valueLabelFormat(value) {
+    return this.toHHMMSS(value);
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -375,12 +394,14 @@ class Player extends React.Component {
             alt={this.state.data.title + "banner"}
           />
           <div ref={this.myRef} className="player">
-            <ReactMPV
-              onReady={this.handleMPVReady}
-              onPropertyChange={this.handlePropertyChange}
-              onMouseDown={this.togglePause}
-              className={classes.unclickable}
-            />
+            <Grow in={this.state.checked} timeout={300}>
+              <ReactMPV
+                onReady={this.handleMPVReady}
+                onPropertyChange={this.handlePropertyChange}
+                onMouseDown={this.togglePause}
+                className={classes.unclickable}
+              />
+            </Grow>
             <div className="loader" hidden={!this.state.loading}>
               <CircularIndeterminate />
             </div>
@@ -394,6 +415,7 @@ class Player extends React.Component {
                 aria-labelledby="continuous-slider"
                 onMouseDown={this.handleSeekMouseDown}
                 onMouseUp={this.handleSeekMouseUp}
+                ValueLabelComponent={ValueLabelComponent}
               />
 
               <div className={classes.controlContainer}>
@@ -403,6 +425,28 @@ class Player extends React.Component {
                   justify="space-evenly"
                   alignItems="center"
                 >
+                  <div className={classes.inline}>
+                    <Tooltip title="Toggle play/pause">
+                      <IconButton
+                        aria-label="toggle play and pause"
+                        onClick={this.togglePause}
+                        size="medium"
+                      >
+                        {this.state.pause ? (
+                          <PlayArrowOutlinedIcon fontSize="inherit" />
+                        ) : (
+                          <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <div className={classes.inline}>
+                    <p className="video-time">
+                      {this.toHHMMSS(this.state["time-pos"])} /{" "}
+                      {this.toHHMMSS(this.state.duration)}
+                    </p>
+                  </div>
+
                   <div className={classes.slider}>
                     <Grid container spacing={2}>
                       <Grid item>
@@ -431,21 +475,6 @@ class Player extends React.Component {
                       </IconButton>
                     </Tooltip>
                   </div>
-                  <div className={classes.inline}>
-                    <Tooltip title="Toggle play/pause">
-                      <IconButton
-                        aria-label="toggle play and pause"
-                        onClick={this.togglePause}
-                        size="medium"
-                      >
-                        {this.state.pause ? (
-                          <PlayArrowOutlinedIcon fontSize="inherit" />
-                        ) : (
-                          <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </div>
                   <div className={classes.sub}>
                     <Tooltip title="Cycle subtitle track">
                       <IconButton
@@ -469,12 +498,6 @@ class Player extends React.Component {
                         )}
                       </IconButton>
                     </Tooltip>
-                  </div>
-                  <div className={classes.inline}>
-                    <p className="video-time">
-                      {this.toHHMMSS(this.state["time-pos"])} /{" "}
-                      {this.toHHMMSS(this.state.duration)}
-                    </p>
                   </div>
                 </Grid>
               </div>
@@ -522,6 +545,18 @@ class Player extends React.Component {
                   );
                 }}
               />
+              {this.state.progress !== 100 ? (
+                <div className={classes.progress}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={this.state.progress}
+                    color="secondary"
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
+
               <GridList cellHeight={190} className={classes.gridList} cols={5}>
                 {this.state.epList.slice(0, 5).map((tile, index) => (
                   <Grow
@@ -595,5 +630,21 @@ function CircularIndeterminate() {
     <div className={classes.root}>
       <CircularProgress />
     </div>
+  );
+}
+
+function ValueLabelComponent(props) {
+  const { children, open, value } = props;
+  var date = new Date(0);
+  date.setSeconds(value); // specify value for SECONDS here
+  return (
+    <Tooltip
+      open={open}
+      enterTouchDelay={0}
+      placement="top"
+      title={date.toISOString().substr(11, 8)}
+    >
+      {children}
+    </Tooltip>
   );
 }

@@ -9,16 +9,17 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
-import Store from "electron-store";
 
 const useStyles = makeStyles({
   root: {
     maxWidth: 360,
-    margin: "8px",
+    marginBottom: 20,
+    width: "100%",
+    height: "auto"
   },
   media: {
     height: 140,
-    width: 360,
+    width: "auto",
     backgroundSize: "cover",
   },
 });
@@ -26,12 +27,17 @@ const useStyles = makeStyles({
 export default function MediaCard(props) {
   const classes = useStyles();
   const [checked] = useState(true);
-  const store = new Store();
   const [fav, setFav] = useState(props.favourited);
 
+  const handleFavClick = () => {
+    var key = "favourites." + props.path;
+    props.onChildClick(key);
+    setFav(true);
+  }
+
   return (
-    <Grow in={checked} timeout={props.timeout}>
-      <Card className={classes.root}>
+    <Grow in={checked} timeout={props.timeout} className={classes.root}>
+      <Card>
         <CardActionArea>
           <CardMedia
             className={classes.media}
@@ -50,11 +56,19 @@ export default function MediaCard(props) {
             >
               {props.description}
             </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              noWrap
+            >
+              {props.keywords}
+            </Typography>
           </CardContent>
         </CardActionArea>
         <CardActions>
           <Link to={"/watch/" + props.path}>
-            <Button size="small" color="secondary">
+            <Button size="small" color="primary">
               Watch
             </Button>
           </Link>
@@ -62,15 +76,7 @@ export default function MediaCard(props) {
             disabled={fav}
             size="small"
             color="secondary"
-            onClick={(e) => {
-              var key = "favourites." + props.path;
-              if (store.get("favourites")) store.set(key, true);
-              else {
-                store.set("favourites", {});
-                store.set(key, 1);
-              }
-              setFav(true);
-            }}
+            onClick={handleFavClick}
           >
             {fav ? "Favourited" : "Add to favourites"}
           </Button>

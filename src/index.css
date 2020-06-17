@@ -32,7 +32,7 @@ a {
   opacity: 0;
   transition: opacity 300ms ease-in-out;
   color: white;
-  background-color: rgba(0, 0, 0, 0.705);
+  /* background-color: rgba(0, 0, 0, 0.705); */
 }
 
 .controls:hover {
@@ -52,10 +52,10 @@ button {
 }
 
 .webfullscreen {
-  position: fixed;
-  height: 100vh;
-  z-index: 10000000;
   width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 10000000;
   top: 0px;
   left: 0px;
 }
@@ -88,7 +88,7 @@ button {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #212121;
+  background: #11cb5f;
 }
 
 .titlebar {
@@ -123,4 +123,18 @@ button {
 
 .favourite-icon {
   transition: opacity 300ms ease-in-out;
+}
+
+
+.playBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
+
+.playBtn:hover {
+  opacity: 1;
 }

@@ -14,7 +14,7 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
-import Fade from "@material-ui/core/Fade";
+import Grow from "@material-ui/core/Grow";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,14 +29,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const store = new Store();
-
 export default function History() {
+  const store = new Store({ watch: true });
   const classes = useStyles();
   const [history, setHistory] = useState(store.get("history"));
   const [checked] = useState(true);
 
-  //console.log(store.get("history"));
+  store.onDidAnyChange((e) => {
+    setHistory(store.get("history"));
+  });
 
   return (
     <>
@@ -56,12 +57,12 @@ export default function History() {
         </IconButton>
       </Tooltip>
       {history ? (
-        <Fade in={checked}>
-          <List className={classes.root} subheader={<li />}>
-            {Object.values(history)
-              .sort((a, b) => (a.currentTime < b.currentTime ? 1 : -1))
-              .map((section, index) => (
-                <div key={"listitem-" + section.id + index}>
+        <List className={classes.root} subheader={<li />}>
+          {Object.values(history)
+            .sort((a, b) => (a.currentTime < b.currentTime ? 1 : -1))
+            .map((section, index) => (
+              <Grow in={checked} timeout={300 + index * 50} key={"listitem-" + section.id + index}>
+                <div>
                   <ListItem alignItems="flex-start">
                     <ListItemAvatar>
                       <Avatar
@@ -70,7 +71,7 @@ export default function History() {
                       />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={toDate(section.currentTime)}
+                      primary={section.title+" - "+ toDate(section.currentTime)}
                       secondary={
                         <React.Fragment>
                           <Typography
@@ -79,7 +80,7 @@ export default function History() {
                             className={classes.inline}
                             color="textPrimary"
                           >
-                            {section.title}
+                            
                           </Typography>
                           {` Episode: ${section.ep} - ${toHHMMSS(
                             section.timePos
@@ -103,9 +104,9 @@ export default function History() {
                     <Divider variant="inset" component="li" />
                   )}
                 </div>
-              ))}
-          </List>
-        </Fade>
+              </Grow>
+            ))}
+        </List>
       ) : (
         <></>
       )}

@@ -112,7 +112,9 @@ function storeToken(token) {
 }
 
 function startLocalServer(oauth2Client) {
-  app.get('/icon', (req,res) => res.sendFile(__dirname+'/img/app_icon2.png'))
+  app.get("/icon", (req, res) =>
+    res.sendFile(__dirname + "/img/app_icon2.png")
+  );
 
   app.get("/authenticate", (req, res) => {
     fs.readFile(TOKEN_PATH, function (err, token) {
@@ -190,6 +192,34 @@ function startLocalServer(oauth2Client) {
           id: item[0],
           name: item[2],
         };
+      });
+      res.json(final);
+      cacheResponse(req.params.id, final);
+    } catch (error) {
+      console.log(error);
+      console.log("https://drive.google.com/drive/folders/" + req.params.id);
+    }
+  });
+
+  app.get("/listfolder/:id", async (req, res) => {
+    try {
+      if (isCached(req.params.id)) {
+        res.json(getCached(req.params.id));
+        return;
+      }
+      let resp = await axios.get(
+        "https://drive.google.com/drive/folders/" + req.params.id
+      );
+      let data = await resp.data;
+      let start = data.indexOf(`window['_DRIVE_ivd'] = '`);
+      let sm = data.substring(start);
+      let end = sm.indexOf(";");
+      let assignment = sm.substring(0, end + 1);
+      let code = assignment.replace(`window['_DRIVE_ivd']`, "var driveData");
+      eval(code);
+      let json = JSON.parse(driveData);
+      let final = json[0].map((item) => {
+        return item[0];
       });
       res.json(final);
       cacheResponse(req.params.id, final);

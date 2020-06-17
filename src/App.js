@@ -6,7 +6,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 import SettingsIcon from "@material-ui/icons/Settings";
 import {
   BrowserRouter as Router,
@@ -27,13 +26,23 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloudIcon from "@material-ui/icons/Cloud";
 import Store from "electron-store";
 import Loader from "./components/loader";
+import SearchIcon from "@material-ui/icons/Search";
+
 const store = new Store();
 
-const drawerWidth = 200;
+const drawerWidth = 170;
 
 const theme = createMuiTheme({
   palette: {
     type: "dark",
+    primary: {
+      // Purple and green play nicely together.
+      main: "#11cb5f",
+    },
+    secondary: {
+      // This is green.A700 as hex.
+      main: "#11cb5f",
+    },
   },
 });
 
@@ -48,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    opacity: "0.95"
   },
   drawerPaper: {
     width: drawerWidth,
@@ -59,6 +69,11 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
   },
+  titlebar: {
+    textAlign: "center",
+    zIndex: 10000,
+    color: "white"
+  }
 }));
 
 export default function PermanentDrawerLeft() {
@@ -82,8 +97,8 @@ export default function PermanentDrawerLeft() {
       path: "/",
       exact: true,
       component: Home,
-      label: "Home",
-      icon: <VideoLibraryIcon />,
+      label: "Search",
+      icon: <SearchIcon />,
     },
     {
       path: "/favourites",
@@ -134,7 +149,7 @@ export default function PermanentDrawerLeft() {
   FavouritePage.preload();
   HistoryPage.preload();
   SettingsPage.preload();
-  PlayerPage.preload();
+  //PlayerPage.preload();
 
   useEffect(() => {
     const authenticate = async () => {
@@ -146,61 +161,65 @@ export default function PermanentDrawerLeft() {
   }, []);
 
   return (
-    <Router>
-      {" "}
-      <React.Suspense fallback={<Loader />}>
-        <Titlebar title="App Title" backgroundColor="#fffffff" />
-        <ThemeProvider theme={theme}>
-          <div className={classes.root}>
-            <CssBaseline />
-            <Drawer
-              className={classes.drawer}
-              variant="permanent"
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              anchor="left"
-            >
-              <List>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Avatar src="http://localhost:9001/icon" />
-                  </ListItemIcon>
-                  <ListItemText primary="Vibe" />
-                </ListItem>
-                <Divider />
-                {routes.map((route, index) => (
-                  <Link to={route.path} key={index}>
-                    <ListItem button>
-                      <ListItemIcon>{route.icon}</ListItemIcon>
-                      <ListItemText primary={route.label} />
-                    </ListItem>
-                  </Link>
-                ))}
-              </List>
-            </Drawer>
-            <main className={classes.content}>
-              <Switch>
-                {routes.map((route) => (
+    <>
+      <div className={classes.titlebar}>
+        <Titlebar title="" backgroundColor="#11cb5f" />
+      </div>
+      <Router>
+        {" "}
+        <React.Suspense fallback={<Loader />}>
+          <ThemeProvider theme={theme}>
+            <div className={classes.root}>
+              <CssBaseline />
+              <Drawer
+                className={classes.drawer}
+                variant="permanent"
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                anchor="left"
+              >
+                <List dense={true}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Avatar src="http://localhost:9001/icon" />
+                    </ListItemIcon>
+                    <ListItemText primary="VIBE" />
+                  </ListItem>
+                  <Divider />
+                  {routes.map((route, index) => (
+                    <Link to={route.path} key={index}>
+                      <ListItem button>
+                        <ListItemIcon>{route.icon}</ListItemIcon>
+                        <ListItemText primary={route.label} />
+                      </ListItem>
+                    </Link>
+                  ))}
+                </List>
+              </Drawer>
+              <main className={classes.content}>
+                <Switch>
+                  {routes.map((route) => (
+                    <Route
+                      key={route.path}
+                      exact={route.exact}
+                      path={route.path}
+                      component={route.component}
+                    />
+                  ))}
                   <Route
-                    key={route.path}
-                    exact={route.exact}
-                    path={route.path}
-                    component={route.component}
+                    key={"/watch/:id/:epId?"}
+                    exact={true}
+                    path="/watch/:id/:epId?"
+                    component={PlayerPage}
                   />
-                ))}
-                <Route
-                  key={"/watch/:id/:epId?"}
-                  exact={true}
-                  path="/watch/:id/:epId?"
-                  component={PlayerPage}
-                />
-                <Route render={() => <Redirect to="/" />} />
-              </Switch>
-            </main>
-          </div>
-        </ThemeProvider>
-      </React.Suspense>
-    </Router>
+                  <Route render={() => <Redirect to="/" />} />
+                </Switch>
+              </main>
+            </div>
+          </ThemeProvider>
+        </React.Suspense>
+      </Router>
+    </>
   );
 }

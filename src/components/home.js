@@ -9,8 +9,6 @@ import match from "autosuggest-highlight/match";
 import Pagination from "@material-ui/lab/Pagination";
 import Store from "electron-store";
 
-const store = new Store();
-
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
@@ -22,11 +20,24 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-between"
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignContent: "flex-start",
+    maxHeight: "80vh",
+    overflow: "auto",
+    position: "relative",
   },
+  pagination: {
+    margin: theme.spacing(1),
+    display: "flex",
+    justifyContent: "center"
+  }
 }));
 
+const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
+
 export default function Home() {
+  const store = new Store();
   const [anime, setAnime] = useState(stringData);
   const [value, setValue] = useState(null);
   const classes = useStyles();
@@ -45,6 +56,14 @@ export default function Home() {
     setAnime(stringData.slice(start, end));
   };
 
+  const addToFavourite = (key) => {
+    if (store.get("favourites")) store.set(key, true);
+    else {
+      store.set("favourites", {});
+      store.set(key, 1);
+    }
+  }
+
   return (
     <>
       <Autocomplete
@@ -55,7 +74,7 @@ export default function Home() {
         onChange={(event, newValue) => {
           setValue(newValue);
         }}
-        options={stringData.map((opt) => ({ id: opt.id, name: opt.name }))}
+        options={options}
         getOptionLabel={(option) => option.name}
         renderInput={(params) => (
           <TextField
@@ -95,12 +114,14 @@ export default function Home() {
             rating={item.rating}
             path={item.id}
             key={item.name}
+            keyworkds={item.keywords}
             timeout={300 + index * 50}
             favourited={store.get(`favourites.${item.id}`) ? true : false}
+            onChildClick={addToFavourite}
           />
         ))}
       </div>
-      <div className={classes.root}>
+      <div className={classes.pagination}>
         <Pagination
           count={Math.ceil(stringData.length / itemCount)}
           page={page}
