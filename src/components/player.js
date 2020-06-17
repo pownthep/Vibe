@@ -141,6 +141,7 @@ class Player extends React.Component {
     this.valueLabelFormat = this.valueLabelFormat.bind(this);
   }
   async componentDidMount() {
+    if(!store) return;
     const user = await AuthenticateUser();
     this.setState({ auth: user });
     const id = this.props.match.params.id;
@@ -159,7 +160,7 @@ class Player extends React.Component {
       this.setState({ showProgress: false });
     }
     this.setState({ epList: this.state.episodes });
-    if (this.props.match.params.epId && store) {
+    if (this.props.match.params.epId) {
       const epId = this.props.match.params.epId;
       const episode = store.get(`history.${epId}`);
       //const [{ id, name }] = this.state.episodes.filter((ep) => ep.id === epId);

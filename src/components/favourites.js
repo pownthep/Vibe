@@ -68,6 +68,12 @@ export default function Favourites() {
   );
   const [checked] = React.useState(true);
 
+  const deleteFav = (e) => {
+    if(!store) return;
+    store.delete(`favourites.${e.currentTarget.id}`);
+    setFavourites(store.get("favourites"));
+  }
+
   return (
     <>
       <h1>My Favourites</h1>
@@ -102,10 +108,8 @@ export default function Favourites() {
                         <IconButton
                           aria-label={`star ${stringData[parseInt(key)].name}`}
                           className="favourite-icon"
-                          onClick={(e) => {
-                            store.delete(`favourites.${key}`);
-                            setFavourites(store.get("favourites"));
-                          }}
+                          id={key}
+                          onClick={deleteFav}
                           onMouseEnter={() =>
                             setFavourites((prev) => ({
                               ...prev,

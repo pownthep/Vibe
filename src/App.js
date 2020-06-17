@@ -16,7 +16,6 @@ import {
 } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-//import Titlebar from "react-electron-titlebar";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
 import Avatar from "@material-ui/core/Avatar";
@@ -188,7 +187,7 @@ export default function PermanentDrawerLeft() {
                 <List dense={true}>
                   <ListItem button>
                     <ListItemIcon>
-                      <Avatar src="http://localhost:9001/icon" />
+                      <Avatar src={store ? "http://localhost:9001/icon":"app_icon.ico"} />
                     </ListItemIcon>
                     <ListItemText primary="VIBE" />
                   </ListItem>

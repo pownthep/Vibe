@@ -94,7 +94,11 @@ export default function History() {
                     <ListItemAvatar>
                       <Avatar
                         alt={section.title}
-                        src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${section.id}=w200-h190-p-k-nu-iv1`}
+                        src={
+                          store
+                            ? `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${section.id}=w200-h190-p-k-nu-iv1`
+                            : `https://lh3.googleusercontent.com/u/0/d/${section.id}=w200-h190-p-k-nu-iv1`
+                        }
                       />
                     </ListItemAvatar>
                     <ListItemText
