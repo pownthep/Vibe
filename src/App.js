@@ -27,7 +27,7 @@ import CloudIcon from "@material-ui/icons/Cloud";
 import Store from "electron-store";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
-import PlayerPage from "./components/player";
+//import PlayerPage from "./components/player";
 
 const store = new Store();
 
@@ -91,7 +91,7 @@ export default function PermanentDrawerLeft() {
   );
   const HistoryPage = ReactLazyPreload(() => import("./components/history"));
   const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
-  //const PlayerPage = ReactLazyPreload(() => import("./components/player"));
+  const PlayerPage = ReactLazyPreload(() => import("./components/player"));
 
   const routes = [
     {

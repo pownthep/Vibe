@@ -22,10 +22,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignContent: "flex-start",
-    maxHeight: "80vh",
-    overflow: "auto",
-    position: "relative",
+    alignContent: "flex-start"
   },
   pagination: {
     margin: theme.spacing(1),

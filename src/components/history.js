@@ -39,6 +39,12 @@ export default function History() {
     setHistory(store.get("history"));
   });
 
+  const clearHistory = (e) => {
+    if (history) {
+      store.delete("history", {});
+    }
+  }
+
   return (
     <>
       <h1>History</h1>
@@ -46,12 +52,7 @@ export default function History() {
         <IconButton
           edge="end"
           aria-label="clear history"
-          onClick={(e) => {
-            if (history.length > 0) {
-              store.delete("history");
-              setHistory(store.get("history"));
-            }
-          }}
+          onClick={clearHistory}
         >
           <ClearAllIcon />
         </IconButton>
