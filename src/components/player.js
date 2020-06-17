@@ -390,7 +390,7 @@ class Player extends React.Component {
         </div>
         <div className="container">
           <img
-            src={"http://localhost:9001/img/?url=" + this.state.data.banner}
+            src={this.state.data.banner ? "http://localhost:9001/img/?url=" + this.state.data.banner: this.state.data.banner}
             className="banner"
             alt={this.state.data.title + "banner"}
           />
