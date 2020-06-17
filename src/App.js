@@ -16,7 +16,7 @@ import {
 } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-import Titlebar from "react-electron-titlebar";
+//import Titlebar from "react-electron-titlebar";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
 import Avatar from "@material-ui/core/Avatar";
@@ -24,12 +24,10 @@ import Divider from "@material-ui/core/Divider";
 import OfflinePinIcon from "@material-ui/icons/OfflinePin";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloudIcon from "@material-ui/icons/Cloud";
-import Store from "electron-store";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
-//import PlayerPage from "./components/player";
 
-const store = new Store();
+const store = window.store ? new window.store() : false;
 
 const drawerWidth = 170;
 
@@ -92,6 +90,9 @@ export default function PermanentDrawerLeft() {
   const HistoryPage = ReactLazyPreload(() => import("./components/history"));
   const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
   const PlayerPage = ReactLazyPreload(() => import("./components/player"));
+  const Titlebar = store
+    ? ReactLazyPreload(() => import("react-electron-titlebar"))
+    : false;
 
   const routes = [
     {
@@ -153,6 +154,7 @@ export default function PermanentDrawerLeft() {
   //PlayerPage.preload();
 
   useEffect(() => {
+    if (!store) return;
     const authenticate = async () => {
       const res = await fetch("http://localhost:9001/authenticate");
       const auth = await res.json();
@@ -163,12 +165,15 @@ export default function PermanentDrawerLeft() {
 
   return (
     <>
-      <div className={classes.titlebar}>
-        <Titlebar title="" backgroundColor="#11cb5f" />
-      </div>
       <Router>
-        {" "}
         <React.Suspense fallback={<Loader />}>
+          {store ? (
+            <div className={classes.titlebar}>
+              <Titlebar title="" backgroundColor="#11cb5f" />
+            </div>
+          ) : (
+            <></>
+          )}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />

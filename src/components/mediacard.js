@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     maxWidth: 360,
     marginBottom: 20,
     width: "100%",
-    height: "auto"
+    height: "auto",
   },
   media: {
     height: 140,
@@ -33,7 +33,7 @@ export default function MediaCard(props) {
     var key = "favourites." + props.path;
     props.onChildClick(key);
     setFav(true);
-  }
+  };
 
   return (
     <Grow in={checked} timeout={props.timeout} className={classes.root}>
@@ -41,7 +41,11 @@ export default function MediaCard(props) {
         <CardActionArea>
           <CardMedia
             className={classes.media}
-            image={"http://localhost:9001/img/?url=" + props.image}
+            image={
+              window.store
+                ? "http://localhost:9001/img/?url=" + props.image
+                : props.image
+            }
             title={props.title}
           />
           <CardContent>

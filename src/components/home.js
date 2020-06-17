@@ -7,7 +7,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import Pagination from "@material-ui/lab/Pagination";
-import Store from "electron-store";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
 
 export default function Home() {
-  const store = new Store();
+  const store = window.store ? new window.store() : false;
   const [anime, setAnime] = useState(stringData);
   const [value, setValue] = useState(null);
   const classes = useStyles();
@@ -54,6 +53,7 @@ export default function Home() {
   };
 
   const addToFavourite = (key) => {
+    if(!store) return;
     if (store.get("favourites")) store.set(key, true);
     else {
       store.set("favourites", {});
@@ -113,7 +113,7 @@ export default function Home() {
             key={item.name}
             keyworkds={item.keywords}
             timeout={300 + index * 50}
-            favourited={store.get(`favourites.${item.id}`) ? true : false}
+            favourited={store ? (store.get(`favourites.${item.id}`) ? true : false):false}
             onChildClick={addToFavourite}
           />
         ))}

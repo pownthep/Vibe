@@ -22,7 +22,6 @@ app.commandLine.appendSwitch(
   getPluginEntry(pluginDir)
 );
 
-require("./server/app.js");
 
 function createWindow() {
   // Create the browser window.
@@ -34,11 +33,13 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       plugins: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
-
+  
   // and load the index.html of the app.
   win.loadURL("http://localhost:3000/index.html");
+  require("./server/app.js");
   //if(isDev) win.loadURL("http://localhost:3000");
   //else
   //win.loadFile(`./build/index.html`);

@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactMPV } from "mpv.js";
-import { remote } from "electron";
+//import { remote } from "electron";
 import Slider from "@material-ui/core/Slider";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
@@ -27,7 +27,6 @@ import VolumeUp from "@material-ui/icons/VolumeUp";
 import Grid from "@material-ui/core/Grid";
 import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
-import Store from "electron-store";
 import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -95,7 +94,7 @@ const styles = (theme) => ({
   },
 });
 
-const store = new Store();
+const store = window.store ? new window.store({ watch: true }) : false;
 
 class Player extends React.Component {
   constructor(props) {
@@ -131,7 +130,7 @@ class Player extends React.Component {
     this.handlePlay = this.handlePlay.bind(this);
     this.handleEpisodeChange = this.handleEpisodeChange.bind(this);
     this.myRef = React.createRef();
-    this.window = remote.getCurrentWindow();
+    this.window = window.remote ? window.remote.getCurrentWindow():false;
     this.handleSearch = this.handleSearch.bind(this);
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.cycleSub = this.cycleSub.bind(this);
@@ -160,7 +159,7 @@ class Player extends React.Component {
       this.setState({ showProgress: false });
     }
     this.setState({ epList: this.state.episodes });
-    if (this.props.match.params.epId) {
+    if (this.props.match.params.epId && store) {
       const epId = this.props.match.params.epId;
       const episode = store.get(`history.${epId}`);
       //const [{ id, name }] = this.state.episodes.filter((ep) => ep.id === epId);
@@ -220,6 +219,7 @@ class Player extends React.Component {
     }
   }
   toggleFullscreen() {
+    if(!this.window) return;
     const node = this.myRef.current;
     if (this.state.fullscreen) {
       node.className = "player";
@@ -342,6 +342,7 @@ class Player extends React.Component {
   }
 
   addToHistory(episode) {
+    if(!store) return;
     if (!store.get("history") || store.get("history").length === 0) {
       store.set("history", { [episode.id]: episode });
       return;

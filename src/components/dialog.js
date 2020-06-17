@@ -8,7 +8,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
-import { shell } from "electron";
 
 export default function ResponsiveDialog(props) {
   const [open, setOpen] = React.useState(props.open);
@@ -16,7 +15,7 @@ export default function ResponsiveDialog(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = (e) => {
-    shell.openExternal(props.url);
+    window.shell.openExternal(props.url);
     setOpen(false);
   };
 

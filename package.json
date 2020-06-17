@@ -10,11 +10,12 @@
     "build": "rescripts build",
     "test": "rescripts test",
     "build-app": "electron-packager . Vibe --overwrite --icon=app_icon.ico --ignore=^/server",
-    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-test": "electron index.js",
     "bundle": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field index.js > index.bundle.js",
     "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/app.js > ./server/app.bundle.js",
-    "server": "nodemon ./server/app.js"
+    "server": "nodemon ./server/app.js",
+    "react-start": "react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"

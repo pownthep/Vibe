@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Store from "electron-store";
 import stringData from "./completed-series.json";
 import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
@@ -10,8 +9,6 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import { Link } from "react-router-dom";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Grow from "@material-ui/core/Grow";
-
-const store = new Store();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,8 +40,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Favourites() {
+  const store = window.store ? new window.store() : false;
   const classes = useStyles();
-  const [favourites, setFavourites] = useState(store.get("favourites"));
+  const [favourites, setFavourites] = useState(
+    store
+      ? store.get("favourites")
+      : {
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true,
+          "4": true,
+          "5": true,
+          "6": true,
+          "7": true,
+          "8": true,
+          "9": true,
+          "10": true,
+          "11": true,
+          "18": true,
+          "19": true,
+          "20": true,
+          "21": true,
+          "22": true,
+          "23": true,
+        }
+  );
   const [checked] = React.useState(true);
 
   return (
@@ -65,8 +86,10 @@ export default function Favourites() {
                     <Link to={"/watch/" + key}>
                       <img
                         src={
-                          "http://localhost:9001/img/?url=" +
-                          stringData[parseInt(key)].banner
+                          store
+                            ? "http://localhost:9001/img/?url=" +
+                              stringData[parseInt(key)].banner
+                            : stringData[parseInt(key)].banner
                         }
                         alt={stringData[parseInt(key)].name}
                         className={classes.banner}
