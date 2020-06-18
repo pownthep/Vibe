@@ -192,6 +192,7 @@ class Titlebar extends PureComponent {
           src="https://vibe.pownthep.vercel.app/app_icon.ico"
           key="app_icon"
           className="titlebar-icon"
+          alt="app icon"
         />
       );
       elements.push(
@@ -207,6 +208,7 @@ class Titlebar extends PureComponent {
           src="https://vibe.pownthep.vercel.app/app_icon.ico"
           key="app_icon"
           className="titlebar-icon"
+          alt="app icon"
         />
       );
       elements.push(
