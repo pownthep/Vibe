@@ -92,7 +92,7 @@ export default function PermanentDrawerLeft() {
   //const PlayerPage = ReactLazyPreload(() => import("./components/player"));
 
   const Titlebar = store
-    ? ReactLazyPreload(() => import("react-electron-titlebar"))
+    ? ReactLazyPreload(() => import("./components/titlebar"))
     : false;
 
   const routes = [

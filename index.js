@@ -31,14 +31,14 @@ function createWindow() {
     frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegration: true,
+      //nodeIntegration: true,
       plugins: true,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
   
   // and load the index.html of the app.
-  win.loadURL("http://localhost:3000/index.html");
+  win.loadURL("http://localhost:3000");
   require("./server/app.js");
   //if(isDev) win.loadURL("http://localhost:3000");
   //else
