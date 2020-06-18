@@ -141,11 +141,11 @@ class Player extends React.Component {
     this.valueLabelFormat = this.valueLabelFormat.bind(this);
   }
   async componentDidMount() {
+    const id = this.props.match.params.id;
+    this.setState({ data: stringData[id] });
     if(!store) return;
     const user = await AuthenticateUser();
     this.setState({ auth: user });
-    const id = this.props.match.params.id;
-    this.setState({ data: stringData[id] });
     let arrLength = stringData[id].episodes.length;
     var tmp = [];
     if (arrLength > 0) {
@@ -391,7 +391,7 @@ class Player extends React.Component {
         </div>
         <div className="container">
           <img
-            src={this.state.data.banner ? "http://localhost:9001/img/?url=" + this.state.data.banner: this.state.data.banner}
+            src={store ? "http://localhost:9001/img/?url=" + this.state.data.banner: this.state.data.banner}
             className="banner"
             alt={this.state.data.title + "banner"}
           />
