@@ -5,15 +5,16 @@
   "dependencies": {
     "v8-compile-cache": "^2.1.1",
     "electron-store": "^5.2.0",
-    "mpv.js": "^0.3.0"
+    "mpv.js": "^0.3.0",
+    "react": "^16.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "server": "nodemon ./server/app.js",
-    "electron-dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "package-window": "electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server\/gitignore|src*|server\/img*|server\/.temp|public|server\/server.js)\"",
+    "server": "nodemon ./server/server.js",
+    "electron-dev": "SET DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
+    "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js)\"",
     "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/server.js > ./server/server.bundle.js"
   },
   "eslintConfig": {
@@ -32,12 +33,6 @@
     ]
   },
   "devDependencies": {
-    "browserify": "^16.5.1",
-    "concurrently": "^5.2.0",
-    "electron": "^9.0.3",
-    "electron-packager": "^14.2.1",
-    "nodemon": "^2.0.4",
-    "wait-on": "^5.0.1",
     "@material-ui/core": "^4.10.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
@@ -46,21 +41,27 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "autosuggest-highlight": "^3.1.1",
     "axios": "^0.19.2",
+    "browserify": "^16.5.1",
+    "colorthief": "^2.3.0",
+    "concurrently": "^5.2.0",
     "cors": "^2.8.5",
+    "electron": "^9.0.3",
+    "electron-packager": "^14.2.1",
     "express": "^4.16.2",
     "express-end": "0.0.8",
     "google-auth-library": "^0.12.0",
     "googleapis": "^23.0.0",
     "image-downloader": "^4.0.1",
-    "react": "^16.13.1",
+    "nodemon": "^2.0.4",
     "react-dom": "^16.13.1",
     "react-electron-titlebar": "^1.0.9",
     "react-instantsearch-dom": "^6.5.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "string-hash": "^1.1.3",
-    "autosuggest-highlight": "^3.1.1"
+    "wait-on": "^5.0.1"
   },
   "homepage": "./",
   "main": "main.js"

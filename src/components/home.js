@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     display: "flex",
     justifyContent: "center"
-  }
+  },
 }));
 
 const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
@@ -76,7 +76,7 @@ export default function Home() {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Search"
+            label="🔎 Search"
             variant="outlined"
             margin="normal"
           />
@@ -92,7 +92,7 @@ export default function Home() {
                   key={index}
                   style={{
                     fontWeight: part.highlight ? 700 : 400,
-                    color: part.highlight ? "#f50057" : "inherit",
+                    color: part.highlight ? "#11cb5f" : "inherit",
                   }}
                 >
                   {part.text}

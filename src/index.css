@@ -1,3 +1,7 @@
+:root {
+  --scroll-thumb-color: #0000009c;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -88,7 +92,7 @@ button {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #11cb5f;
+  background: var(--scroll-thumb-color);
 }
 
 .titlebar {

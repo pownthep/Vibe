@@ -26,6 +26,7 @@ import CloudIcon from "@material-ui/icons/Cloud";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
 import PlayerPage from "./components/player";
+import icon from "./icon.ico";
 
 const store = window.store ? new window.store() : false;
 
@@ -56,7 +57,8 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    opacity: "0.95",
+    opacity: 0.96,
+    zIndex: 3,
   },
   drawerPaper: {
     width: drawerWidth,
@@ -67,12 +69,12 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
+    marginTop: 28,
   },
-  titlebar: {
-    textAlign: "center",
-    zIndex: 10000,
-    color: "white",
-  },
+  titlebar: theme.palette.background.paper,
+  padding: {
+    height: 28
+  }
 }));
 
 export default function PermanentDrawerLeft() {
@@ -169,9 +171,7 @@ export default function PermanentDrawerLeft() {
       <Router>
         <React.Suspense fallback={<Loader />}>
           {store ? (
-            <div className={classes.titlebar}>
-              <Titlebar title="" backgroundColor="#11cb5f" />
-            </div>
+            <Titlebar title="" backgroundColor="#303030" />
           ) : (
             <></>
           )}
@@ -189,15 +189,11 @@ export default function PermanentDrawerLeft() {
                 <List dense={true}>
                   <ListItem button>
                     <ListItemIcon>
-                      <Avatar
-                        src={
-                          store ? "http://localhost:9001/icon" : "https://vibe.pownthep.vercel.app/app_icon.ico"
-                        }
-                      />
+                      <Avatar src={icon} />
                     </ListItemIcon>
                     <ListItemText primary="VIBE" />
                   </ListItem>
-                  <Divider />
+                  <Divider /> 
                   {routes.map((route, index) => (
                     <Link to={route.path} key={index}>
                       <ListItem button>

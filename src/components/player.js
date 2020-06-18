@@ -130,7 +130,7 @@ class Player extends React.Component {
     this.handlePlay = this.handlePlay.bind(this);
     this.handleEpisodeChange = this.handleEpisodeChange.bind(this);
     this.myRef = React.createRef();
-    this.window = window.remote ? window.remote.getCurrentWindow():false;
+    this.window = window.remote ? window.remote.getCurrentWindow() : false;
     this.handleSearch = this.handleSearch.bind(this);
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.cycleSub = this.cycleSub.bind(this);
@@ -139,11 +139,12 @@ class Player extends React.Component {
     this.addToHistory = this.addToHistory.bind(this);
     this.fmtName = this.fmtName.bind(this);
     this.valueLabelFormat = this.valueLabelFormat.bind(this);
+    this.bannerRef = React.createRef();
   }
   async componentDidMount() {
     const id = this.props.match.params.id;
     this.setState({ data: stringData[id] });
-    if(!store) return;
+    if (!store) return;
     const user = await AuthenticateUser();
     this.setState({ auth: user });
     let arrLength = stringData[id].episodes.length;
@@ -220,7 +221,7 @@ class Player extends React.Component {
     }
   }
   toggleFullscreen() {
-    if(!this.window) return;
+    if (!this.window) return;
     const node = this.myRef.current;
     if (this.state.fullscreen) {
       node.className = "player";
@@ -343,7 +344,7 @@ class Player extends React.Component {
   }
 
   addToHistory(episode) {
-    if(!store) return;
+    if (!store) return;
     if (!store.get("history") || store.get("history").length === 0) {
       store.set("history", { [episode.id]: episode });
       return;
@@ -391,9 +392,15 @@ class Player extends React.Component {
         </div>
         <div className="container">
           <img
-            src={store ? "http://localhost:9001/img/?url=" + this.state.data.banner: this.state.data.banner}
+            src={
+              store
+                ? "http://localhost:9001/img/?url=" + this.state.data.banner
+                : this.state.data.banner
+            }
             className="banner"
             alt={this.state.data.title + "banner"}
+            ref={this.bannerRef}
+            onLoadedData={this.getPallete}
           />
           <div ref={this.myRef} className="player">
             <Grow in={this.state.checked} timeout={300}>

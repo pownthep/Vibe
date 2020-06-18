@@ -30,6 +30,14 @@ const stringHash = require("string-hash");
 let authStatus;
 
 // Load client secrets from a local file.
+
+fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
+  if (err)
+    fs.mkdir(IMG_DIR, (err) => {
+      if (err) console.error(err);
+    });
+});
+
 fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
   err,
   content
@@ -42,6 +50,37 @@ fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
   // Drive API.
   authorize(JSON.parse(content), startLocalServer);
 });
+
+var cache = {};
+
+let CACHED_PATH = __dirname + "/cached.json";
+
+fs.readFile(CACHED_PATH, function readCache(err, content) {
+  if (err) {
+    console.log("Error loading data file: " + err);
+    return;
+  }
+  // Authorize a client with the loaded credentials, then call the
+  // Drive API.
+  cache = JSON.parse(content);
+});
+
+function cacheResponse(key, json) {
+  cache[key] = json;
+  fs.writeFile(CACHED_PATH, JSON.stringify(cache), function (err) {
+    if (err) throw err;
+    console.log("Saved!");
+  });
+  return cache[key] ? true : false;
+}
+
+function isCached(key) {
+  return cache[key] ? true : false;
+}
+
+function getCached(key) {
+  return cache[key];
+}
 
 function authorize(credentials, callback) {
   var clientSecret = credentials.web.client_secret;
@@ -668,35 +707,4 @@ function removeDownloadStatus(fileId) {
       downloadStatus.splice(i, 1);
     }
   }
-}
-
-var cache = {};
-
-let CACHED_PATH = __dirname + "/cached.json";
-
-fs.readFile(CACHED_PATH, function readCache(err, content) {
-  if (err) {
-    console.log("Error loading data file: " + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Drive API.
-  cache = JSON.parse(content);
-});
-
-function cacheResponse(key, json) {
-  cache[key] = json;
-  fs.writeFile(CACHED_PATH, JSON.stringify(cache), function (err) {
-    if (err) throw err;
-    console.log("Saved!");
-  });
-  return cache[key] ? true : false;
-}
-
-function isCached(key) {
-  return cache[key] ? true : false;
-}
-
-function getCached(key) {
-  return cache[key];
 }
