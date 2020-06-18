@@ -8,14 +8,13 @@ export const Container = styled.div`
   user-select: none;
   width: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-  background-color: #424242;
+  background-color: rgb(33, 33, 33);
   color: #FFF;
   -webkit-app-region: drag;
   flex-direction: row;
   position: fixed;
   z-index:2;
   margin-bottom: ${props => props.isWin ? '28px' : '24px'};
-  opacity: 0.96;
 `;
 
 export const Text = styled.div`

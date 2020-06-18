@@ -29,7 +29,7 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1560,
-    height: 720,
+    height: 760,
     frame: false,
     titleBarStyle: "hidden",
     backgroundColor: "#303030",
@@ -40,7 +40,7 @@ function createWindow() {
     icon: path.join(__dirname, "assets/icon.ico"),
   });
 
-  if(process.env.DEV) win.loadURL("http://localhost:3000")
+  if (process.env.DEV) win.loadURL("http://localhost:3000");
   else {
     win.loadURL(
       url.format({

@@ -20,13 +20,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignContent: "flex-start"
+    justifyContent: "center",
+    alignContent: "flex-start",
   },
   pagination: {
     margin: theme.spacing(1),
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 }));
 
@@ -38,7 +38,7 @@ export default function Home() {
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
-  const itemCount = 12;
+  const itemCount = 6;
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);
@@ -53,13 +53,13 @@ export default function Home() {
   };
 
   const addToFavourite = (key) => {
-    if(!store) return;
+    if (!store) return;
     if (store.get("favourites")) store.set(key, true);
     else {
       store.set("favourites", {});
       store.set(key, 1);
     }
-  }
+  };
 
   return (
     <>
@@ -102,6 +102,13 @@ export default function Home() {
           );
         }}
       />
+      <div className={classes.pagination}>
+        <Pagination
+          count={Math.ceil(stringData.length / itemCount)}
+          page={page}
+          onChange={handleChangePage}
+        />
+      </div>
       <div className={classes.gridList}>
         {anime.slice(0, itemCount).map((item, index) => (
           <MediaCard
@@ -113,17 +120,16 @@ export default function Home() {
             key={item.name}
             keyworkds={item.keywords}
             timeout={300 + index * 50}
-            favourited={store ? (store.get(`favourites.${item.id}`) ? true : false):false}
+            favourited={
+              store
+                ? store.get(`favourites.${item.id}`)
+                  ? true
+                  : false
+                : false
+            }
             onChildClick={addToFavourite}
           />
         ))}
-      </div>
-      <div className={classes.pagination}>
-        <Pagination
-          count={Math.ceil(stringData.length / itemCount)}
-          page={page}
-          onChange={handleChangePage}
-        />
       </div>
     </>
   );

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "v8-compile-cache": "^2.1.1",
     "electron-store": "^5.2.0",
     "mpv.js": "^0.3.0",
-    "react": "^16.13.1"
+    "react": "^16.13.1",
+    "v8-compile-cache": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -15,7 +15,8 @@
     "server": "nodemon ./server/server.js",
     "electron-dev": "SET DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
     "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js)\"",
-    "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/server.js > ./server/server.bundle.js"
+    "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/server.js > ./server/server.bundle.js",
+    "build-test": "electron ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,6 +61,7 @@
     "react-instantsearch-dom": "^6.5.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-snapshot": "^1.3.0",
     "string-hash": "^1.1.3",
     "wait-on": "^5.0.1"
   },

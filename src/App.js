@@ -5,7 +5,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import SettingsIcon from "@material-ui/icons/Settings";
 import {
   BrowserRouter as Router,
@@ -18,7 +17,6 @@ import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
-import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import OfflinePinIcon from "@material-ui/icons/OfflinePin";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
@@ -26,11 +24,15 @@ import CloudIcon from "@material-ui/icons/Cloud";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
 import PlayerPage from "./components/player";
-import icon from "./icon.ico";
+import Home from "./components/home";
+import FavouritePage from "./components/favourites";
+import HistoryPage from "./components/history";
+import SettingsPage from "./components/settings";
+import Titlebar from "./components/titlebar";
 
 const store = window.store ? new window.store() : false;
 
-const drawerWidth = 170;
+const drawerWidth = 55;
 
 const theme = createMuiTheme({
   palette: {
@@ -49,6 +51,8 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    height: "100vh",
+    overflow: "auto"
   },
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -57,8 +61,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    opacity: 0.96,
-    zIndex: 3,
+    zIndex: 1,
   },
   drawerPaper: {
     width: drawerWidth,
@@ -73,29 +76,32 @@ const useStyles = makeStyles((theme) => ({
   },
   titlebar: theme.palette.background.paper,
   padding: {
-    height: 28
-  }
+    height: 20,
+  },
+  navIcon: {
+    minWidth: "100%",
+  },
 }));
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
-  const ReactLazyPreload = (importStatement) => {
-    const Component = React.lazy(importStatement);
-    Component.preload = importStatement;
-    return Component;
-  };
+  // const ReactLazyPreload = (importStatement) => {
+  //   const Component = React.lazy(importStatement);
+  //   Component.preload = importStatement;
+  //   return Component;
+  // };
 
-  const Home = ReactLazyPreload(() => import("./components/home"));
-  const FavouritePage = ReactLazyPreload(() =>
-    import("./components/favourites")
-  );
-  const HistoryPage = ReactLazyPreload(() => import("./components/history"));
-  const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
-  //const PlayerPage = ReactLazyPreload(() => import("./components/player"));
+  // const Home = ReactLazyPreload(() => import("./components/home"));
+  // const FavouritePage = ReactLazyPreload(() =>
+  //   import("./components/favourites")
+  // );
+  // const HistoryPage = ReactLazyPreload(() => import("./components/history"));
+  // const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
+  // const PlayerPage = ReactLazyPreload(() => import("./components/player"));
 
-  const Titlebar = store
-    ? ReactLazyPreload(() => import("./components/titlebar"))
-    : false;
+  // const Titlebar = store
+  //   ? ReactLazyPreload(() => import("./components/titlebar"))
+  //   : false;
 
   const routes = [
     {
@@ -150,10 +156,10 @@ export default function PermanentDrawerLeft() {
     // { path: "/watch/:id/:epId?", exact: true, component: PlayerPage },
   ];
 
-  Home.preload();
-  FavouritePage.preload();
-  HistoryPage.preload();
-  SettingsPage.preload();
+  //Home.preload();
+  // FavouritePage.preload();
+  // HistoryPage.preload();
+  // SettingsPage.preload();
   //PlayerPage.preload();
 
   useEffect(() => {
@@ -170,11 +176,7 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {store ? (
-            <Titlebar title="" backgroundColor="#303030" />
-          ) : (
-            <></>
-          )}
+          {store ? <Titlebar title="VIBE" backgroundColor="#303030" /> : <></>}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />
@@ -186,19 +188,17 @@ export default function PermanentDrawerLeft() {
                 }}
                 anchor="left"
               >
-                <List dense={true}>
-                  <ListItem button>
-                    <ListItemIcon>
-                      <Avatar src={icon} />
-                    </ListItemIcon>
-                    <ListItemText primary="VIBE" />
-                  </ListItem>
-                  <Divider /> 
+                {" "}
+                <Divider />
+                <div className={classes.padding}></div>
+                <List dense={false}>
                   {routes.map((route, index) => (
                     <Link to={route.path} key={index}>
                       <ListItem button>
-                        <ListItemIcon>{route.icon}</ListItemIcon>
-                        <ListItemText primary={route.label} />
+                        <ListItemIcon classes={{ root: classes.navIcon }}>
+                          {route.icon}
+                        </ListItemIcon>
+                        {/* <ListItemText primary={route.label} /> */}
                       </ListItem>
                     </Link>
                   ))}

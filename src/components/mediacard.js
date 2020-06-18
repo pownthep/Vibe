@@ -9,11 +9,13 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 const useStyles = makeStyles({
   root: {
     maxWidth: 360,
-    marginBottom: 20,
+    margin: 10,
     width: "100%",
     height: "auto",
   },
@@ -72,7 +74,11 @@ export default function MediaCard(props) {
         </CardActionArea>
         <CardActions>
           <Link to={"/watch/" + props.path}>
-            <Button size="small" color="primary">
+            <Button
+              size="small"
+              color="primary"
+              startIcon={<PlayCircleOutlineIcon />}
+            >
               Watch
             </Button>
           </Link>
@@ -81,6 +87,7 @@ export default function MediaCard(props) {
             size="small"
             color="secondary"
             onClick={handleFavClick}
+            startIcon={<FavoriteBorderIcon />}
           >
             {fav ? "Favourited" : "Add to favourites"}
           </Button>

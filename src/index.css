@@ -142,3 +142,10 @@ button {
 .playBtn:hover {
   opacity: 1;
 }
+
+.titlebar-icon {
+  margin-left: 16px;
+  margin-top: 4px;
+  width: 20px;
+  height: 20px;
+}
