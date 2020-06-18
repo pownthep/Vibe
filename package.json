@@ -15,7 +15,8 @@
     "bundle": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field index.js > index.bundle.js",
     "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/app.js > ./server/app.bundle.js",
     "server": "nodemon ./server/app.js",
-    "react-start": "react-scripts start"
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
