@@ -189,7 +189,7 @@ class Titlebar extends PureComponent {
     if (this.isWindows) {
       elements.push(
         <img
-          src="https://vibe.pownthep.vercel.app/app_icon.ico"
+          src="https://vibe.pownthep.vercel.app/icon.ico"
           key="app_icon"
           className="titlebar-icon"
           alt="app icon"
@@ -205,7 +205,7 @@ class Titlebar extends PureComponent {
       elements.push(this.renderMac());
       elements.push(
         <img
-          src="https://vibe.pownthep.vercel.app/app_icon.ico"
+          src="https://vibe.pownthep.vercel.app/icon.ico"
           key="app_icon"
           className="titlebar-icon"
           alt="app icon"

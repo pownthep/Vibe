@@ -28,7 +28,7 @@ import Home from "./components/home";
 import FavouritePage from "./components/favourites";
 import HistoryPage from "./components/history";
 import SettingsPage from "./components/settings";
-// import Titlebar from "./components/titlebar";
+import Titlebar from "./components/titlebar";
 
 const store = window.store ? new window.store() : false;
 
@@ -85,11 +85,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
-  const ReactLazyPreload = (importStatement) => {
-    const Component = React.lazy(importStatement);
-    Component.preload = importStatement;
-    return Component;
-  };
+  // const ReactLazyPreload = (importStatement) => {
+  //   const Component = React.lazy(importStatement);
+  //   Component.preload = importStatement;
+  //   return Component;
+  // };
 
   // const Home = ReactLazyPreload(() => import("./components/home"));
   // const FavouritePage = ReactLazyPreload(() =>
@@ -99,9 +99,9 @@ export default function PermanentDrawerLeft() {
   // const SettingsPage = ReactLazyPreload(() => import("./components/settings"));
   // const PlayerPage = ReactLazyPreload(() => import("./components/player"));
 
-  const Titlebar = store
-    ? ReactLazyPreload(() => import("./components/titlebar"))
-    : false;
+  // const Titlebar = store
+  //   ? ReactLazyPreload(() => import("./components/titlebar"))
+  //   : false;
 
   const routes = [
     {
