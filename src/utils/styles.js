@@ -8,12 +8,12 @@ export const Container = styled.div`
   user-select: none;
   width: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-  background-color: rgba(33, 33, 33, 0.99);
+  background-color: transparent;
   color: #FFF;
   -webkit-app-region: drag;
   flex-direction: row;
   position: fixed;
-  z-index:2;
+  z-index:5;
   margin-bottom: ${props => props.isWin ? '28px' : '24px'};
 `;
 
@@ -152,7 +152,7 @@ export const ButtonWindows = styled.button`
   color: #FFF;
   background-color: transparent;
   transition: background-color 0.25s ease;
-  opacity: 0.5;
+  opacity: 1.0;
   & svg {
     fill: currentColor;
   }

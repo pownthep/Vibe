@@ -30,6 +30,7 @@ import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlin
 import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import ColorThief from "colorthief";
 
 const styles = (theme) => ({
   root: {
@@ -95,6 +96,7 @@ const styles = (theme) => ({
 });
 
 const store = window.store ? new window.store({ watch: true }) : false;
+const colorThief = new ColorThief();
 
 class Player extends React.Component {
   constructor(props) {
@@ -117,6 +119,7 @@ class Player extends React.Component {
       auth: null,
       progress: 0,
       showProgress: true,
+      palette: "217, 194, 211",
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -390,17 +393,31 @@ class Player extends React.Component {
               : ""}
           </h2>
         </div>
+        <div
+          className="overlay"
+          style={{
+            background: `linear-gradient(to top, rgba(${this.state.palette}, 0),rgba(${this.state.palette},21))`,
+          }}
+        ></div>
         <div className="container">
           <img
+            crossOrigin={"anonymous"}
+            ref={this.bannerRef}
             src={
               store
                 ? "http://localhost:9001/img/?url=" + this.state.data.banner
                 : this.state.data.banner
             }
+            alt={this.state.data.title + "-banner"}
             className="banner"
-            alt={this.state.data.title + "banner"}
-            ref={this.bannerRef}
-            onLoadedData={this.getPallete}
+            onLoad={(e) => {
+              let img = e.currentTarget;
+              let color = colorThief.getColor(img);
+              this.setState({
+                palette: `${color[0]},${color[1]},${color[2]}`,
+              });
+              console.log(color);
+            }}
           />
           <div ref={this.myRef} className="player">
             <Grow in={this.state.checked} timeout={300}>

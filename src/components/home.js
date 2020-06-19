@@ -31,14 +31,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
+const store = window.store ? new window.store() : false;
 
 export default function Home() {
-  const store = window.store ? new window.store() : false;
   const [anime, setAnime] = useState(stringData);
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
   const itemCount = 6;
+  //store.set('barColor', '#000000000')
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);
@@ -77,7 +78,7 @@ export default function Home() {
           <TextField
             {...params}
             label="🔎 Search"
-            variant="outlined"
+            variant="standard"
             margin="normal"
           />
         )}

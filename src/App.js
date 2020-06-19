@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -61,11 +61,11 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    zIndex: 1,
+    zIndex: 3,
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: "rgba(0,0,0,0.1)"
+    backgroundColor: "rgba(0,0,0,0.0)"
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -84,16 +84,22 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerBg: {
     
+  },
+  noBorder: {
+    borderRight: "0px"
   }
 }));
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
-  // const ReactLazyPreload = (importStatement) => {
-  //   const Component = React.lazy(importStatement);
-  //   Component.preload = importStatement;
-  //   return Component;
-  // };
+  // store.set('barColor', 'green');
+  // console.log(store.get('barColor'));
+  //const [barColor, setColor] = useState('#000000');
+  const ReactLazyPreload = (importStatement) => {
+    const Component = React.lazy(importStatement);
+    Component.preload = importStatement;
+    return Component;
+  };
 
   // const Home = ReactLazyPreload(() => import("./components/home"));
   // const FavouritePage = ReactLazyPreload(() =>
@@ -113,50 +119,50 @@ export default function PermanentDrawerLeft() {
       exact: true,
       component: Home,
       label: "Search",
-      icon: <SearchIcon />,
+      icon: <SearchIcon/>,
     },
     {
       path: "/favourites",
       exact: true,
       component: FavouritePage,
       label: "Favourites",
-      icon: <FavoriteIcon />,
+      icon: <FavoriteIcon/>,
     },
-    {
-      path: "/downloader",
-      exact: true,
-      component: FavouritePage,
-      label: "Downloader",
-      icon: <CloudDownloadIcon />,
-    },
-    {
-      path: "/offline",
-      exact: true,
-      component: FavouritePage,
-      label: "Offline",
-      icon: <OfflinePinIcon />,
-    },
-    {
-      path: "/drive",
-      exact: true,
-      component: FavouritePage,
-      label: "G Drive",
-      icon: <CloudIcon />,
-    },
+    // {
+    //   path: "/downloader",
+    //   exact: true,
+    //   component: FavouritePage,
+    //   label: "Downloader",
+    //   icon: <CloudDownloadIcon />,
+    // },
+    // {
+    //   path: "/offline",
+    //   exact: true,
+    //   component: FavouritePage,
+    //   label: "Offline",
+    //   icon: <OfflinePinIcon />,
+    // },
+    // {
+    //   path: "/drive",
+    //   exact: true,
+    //   component: FavouritePage,
+    //   label: "G Drive",
+    //   icon: <CloudIcon />,
+    // },
     {
       path: "/history",
       exact: true,
       component: HistoryPage,
       label: "History",
-      icon: <HistoryIcon />,
+      icon: <HistoryIcon/>,
     },
-    {
-      path: "/settings",
-      exact: true,
-      component: SettingsPage,
-      label: "Settings",
-      icon: <SettingsIcon />,
-    },
+    // {
+    //   path: "/settings",
+    //   exact: true,
+    //   component: SettingsPage,
+    //   label: "Settings",
+    //   icon: <SettingsIcon />,
+    // },
     // { path: "/watch/:id/:epId?", exact: true, component: PlayerPage },
   ];
 
@@ -180,7 +186,7 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {store ? <Titlebar title="VIBE" backgroundColor="#303030" /> : <></>}
+          {store ? <Titlebar title="" /> : <></>}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />
@@ -189,12 +195,12 @@ export default function PermanentDrawerLeft() {
                 variant="permanent"
                 classes={{
                   paper: classes.drawerPaper,
-                  root: classes.drawerBg
+                  root: classes.drawerBg,
+                  paperAnchorDockedLeft: classes.noBorder
                 }}
                 anchor="left"
               >
                 {" "}
-                <Divider />
                 <div className={classes.padding}></div>
                 <List dense={false}>
                   {routes.map((route, index) => (

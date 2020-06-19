@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-
 import {
   Container,
   Text,
@@ -154,6 +153,7 @@ class Titlebar extends PureComponent {
             <path d="M 0,5 10,5 10,6 0,6 Z" />
           </svg>
         </ButtonWindows>
+
         <ButtonWindows
           aria-label="maximize"
           tabIndex="-1"
@@ -188,14 +188,6 @@ class Titlebar extends PureComponent {
 
     if (this.isWindows) {
       elements.push(
-        <img
-          src="https://vibe.pownthep.vercel.app/icon.ico"
-          key="app_icon"
-          className="titlebar-icon"
-          alt="app icon"
-        />
-      );
-      elements.push(
         <Text key="title-text" isWin={this.isWindows}>
           {title}
         </Text>
@@ -204,14 +196,6 @@ class Titlebar extends PureComponent {
     } else {
       elements.push(this.renderMac());
       elements.push(
-        <img
-          src="https://vibe.pownthep.vercel.app/icon.ico"
-          key="app_icon"
-          className="titlebar-icon"
-          alt="app icon"
-        />
-      );
-      elements.push(
         <Text key="title-text" isWin={this.isWindows}>
           {title}
         </Text>
@@ -219,7 +203,7 @@ class Titlebar extends PureComponent {
     }
 
     return (
-      <Container isWin={this.isWindows} backgroundColor={backgroundColor}>
+      <Container isWin={this.isWindows} backgroundColor={this.state.color}>
         {elements}
       </Container>
     );

@@ -14,7 +14,7 @@
     "test": "react-scripts test",
     "server": "nodemon ./server/server.js",
     "electron-dev": "SET DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
-    "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|server\/.credentials*)\"",
+    "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|server/.credentials*)\"",
     "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/server.js > ./server/server.bundle.js",
     "build-test": "electron ."
   },
@@ -55,6 +55,8 @@
     "google-auth-library": "^0.12.0",
     "googleapis": "^23.0.0",
     "image-downloader": "^4.0.1",
+    "image-palette-core": "^0.2.2",
+    "node-vibrant": "^3.1.5",
     "nodemon": "^2.0.4",
     "react-dom": "^16.13.1",
     "react-electron-titlebar": "^1.0.9",
@@ -63,6 +65,7 @@
     "react-scripts": "3.4.1",
     "react-snapshot": "^1.3.0",
     "string-hash": "^1.1.3",
+    "uglify-js": "^3.9.4",
     "wait-on": "^5.0.1"
   },
   "homepage": "./",
