@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    backgroundColor: "rgba(0,0,0,0.1)"
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -81,6 +82,9 @@ const useStyles = makeStyles((theme) => ({
   navIcon: {
     minWidth: "100%",
   },
+  drawerBg: {
+    
+  }
 }));
 
 export default function PermanentDrawerLeft() {
@@ -185,6 +189,7 @@ export default function PermanentDrawerLeft() {
                 variant="permanent"
                 classes={{
                   paper: classes.drawerPaper,
+                  root: classes.drawerBg
                 }}
                 anchor="left"
               >

@@ -8,7 +8,7 @@ export const Container = styled.div`
   user-select: none;
   width: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-  background-color: rgb(33, 33, 33);
+  background-color: rgba(33, 33, 33, 0.99);
   color: #FFF;
   -webkit-app-region: drag;
   flex-direction: row;

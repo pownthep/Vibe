@@ -65,7 +65,7 @@ export default function Home() {
     <>
       <Autocomplete
         id="highlights-demo"
-        style={{ width: "100%" }}
+        style={{ width: "50%", margin: "0 auto" }}
         size="small"
         value={value}
         onChange={(event, newValue) => {
@@ -102,13 +102,6 @@ export default function Home() {
           );
         }}
       />
-      <div className={classes.pagination}>
-        <Pagination
-          count={Math.ceil(stringData.length / itemCount)}
-          page={page}
-          onChange={handleChangePage}
-        />
-      </div>
       <div className={classes.gridList}>
         {anime.slice(0, itemCount).map((item, index) => (
           <MediaCard
@@ -130,6 +123,13 @@ export default function Home() {
             onChildClick={addToFavourite}
           />
         ))}
+      </div>
+      <div className={classes.pagination}>
+        <Pagination
+          count={Math.ceil(stringData.length / itemCount)}
+          page={page}
+          onChange={handleChangePage}
+        />
       </div>
     </>
   );
