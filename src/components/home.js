@@ -6,12 +6,10 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
+import ListboxComponent from "./listbox";
 import Pagination from "@material-ui/lab/Pagination";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import { useTheme } from "@material-ui/core/styles";
-import { VariableSizeList } from "react-window";
-import PropTypes from "prop-types";
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,107 +40,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LISTBOX_PADDING = 8; // px
-
-function renderRow(props) {
-  const { data, index, style } = props;
-  return React.cloneElement(data[index], {
-    style: {
-      ...style,
-      top: style.top + LISTBOX_PADDING,
-    },
-  });
-}
-
-const OuterElementContext = React.createContext({});
-
-const OuterElementType = React.forwardRef((props, ref) => {
-  const outerProps = React.useContext(OuterElementContext);
-  return <div ref={ref} {...props} {...outerProps} />;
-});
-
-function useResetCache(data) {
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    if (ref.current != null) {
-      ref.current.resetAfterIndex(0, true);
-    }
-  }, [data]);
-  return ref;
-}
-const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
-//const options = stringData.map((opt) => opt.name);
-
-// Adapter for react-window
-const ListboxComponent = React.forwardRef(function ListboxComponent(
-  props,
-  ref
-) {
-  const { children, ...other } = props;
-  console.log(props);
-  const itemData = React.Children.toArray(children);
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up("sm"), { noSsr: true });
-  const itemCount = itemData.length;
-  const itemSize = smUp ? 36 : 48;
-
-  const getChildSize = (child) => {
-    if (React.isValidElement(child) && child.type === ListSubheader) {
-      return 48;
-    }
-
-    return itemSize;
-  };
-
-  const getHeight = () => {
-    if (itemCount > 8) {
-      return 8 * itemSize;
-    }
-    return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
-  };
-
-  const gridRef = useResetCache(itemCount);
-
-  return (
-    <div ref={ref}>
-      <OuterElementContext.Provider value={other}>
-        <VariableSizeList
-          itemData={itemData}
-          height={getHeight() + 2 * LISTBOX_PADDING}
-          width="100%"
-          ref={gridRef}
-          outerElementType={OuterElementType}
-          innerElementType="ul"
-          itemSize={(index) => getChildSize(itemData[index])}
-          overscanCount={5}
-          itemCount={itemCount}
-        >
-          {renderRow}
-        </VariableSizeList>
-      </OuterElementContext.Provider>
-    </div>
-  );
-});
-
-ListboxComponent.propTypes = {
-  children: PropTypes.node,
-};
-
-const renderGroup = (params) => [
-  <ListSubheader key={params.key} component="div">
-    {params.group}
-  </ListSubheader>,
-  params.children,
-];
-
-const store = window.store ? new window.store() : false;
-
 export default function Home() {
+  const store = window.store ? new window.store() : false;
+  const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
   const [anime, setAnime] = useState(stringData.slice(0, 100));
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
-  const itemCount = 6;
+  const itemCount = 12;
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);
@@ -179,7 +84,19 @@ export default function Home() {
         options={options}
         getOptionLabel={(option) => option.name}
         renderInput={(params) => (
-          <TextField {...params} variant="standard" label="🔎 Search" />
+          <TextField
+            {...params}
+            variant="outlined"
+            size="small"
+            label="Search"
+            // // InputProps={{
+            // //   startAdornment: (
+            // //     <InputAdornment position="start">
+            // //       <SearchIcon />
+            // //     </InputAdornment>
+            // //   ),
+            // }}
+          />
         )}
         renderOption={(option, { inputValue }) => {
           const matches = match(option.name, inputValue);
@@ -210,7 +127,7 @@ export default function Home() {
             rating={item.rating}
             path={item.id}
             key={item.name}
-            keyworkds={item.keywords}
+            keywords={item.keywords}
             timeout={300 + index * 50}
             favourited={
               store
@@ -227,6 +144,7 @@ export default function Home() {
         <Pagination
           count={Math.ceil(stringData.length / itemCount)}
           page={page}
+          color="primary"
           onChange={handleChangePage}
         />
       </div>

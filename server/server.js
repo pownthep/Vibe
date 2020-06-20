@@ -12,8 +12,8 @@ const prettyBytes = require("pretty-bytes");
 const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
-var FlexSearch = require("flexsearch");
-const searchData = require("./completed-series.json");
+//var FlexSearch = require("flexsearch");
+//const searchData = require("./completed-series.json");
 //console.log(searchData);
 
 // Express setup
@@ -35,25 +35,25 @@ const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 let authStatus;
 let isLatest = false;
-var index = new FlexSearch("speed");
+// var index = new FlexSearch("speed");
 
-console.time("creating index");
-searchData.map((item) => {
-  index.add(item.id, item.name);
-});
-console.timeEnd("creating index");
+// console.time("creating index");
+// searchData.map((item) => {
+//   index.add(item.id, item.name);
+// });
+// console.timeEnd("creating index");
 
-console.time("searching index");
-index.search("hero", function (result) {
-  //result.map((id) => console.log(searchData[id]));
-  console.log(result.length);
-});
-console.timeEnd("searching index");
+// console.time("searching index");
+// index.search("hero", function (result) {
+//   //result.map((id) => console.log(searchData[id]));
+//   console.log(result.length);
+// });
+// console.timeEnd("searching index");
 
-console.time("searching json");
-const result = searchData.filter((item) => item.name.toLowerCase().includes("hero"));
-console.log(result.length);
-console.timeEnd("searching json");
+// console.time("searching json");
+// const result = searchData.filter((item) => item.name.toLowerCase().includes("hero"));
+// console.log(result.length);
+// console.timeEnd("searching json");
 
 // Check for img dir or create one
 fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
@@ -191,6 +191,24 @@ function startLocalServer(oauth2Client) {
     });
   });
 
+  app.get("/cachesize", (req, res) => {
+    fs.readdir(TEMP_DIR, (err, files) => {
+      let bytes = files ? files.length * 20 * 1000000:0;
+      res.json({ size: prettyBytes(bytes) });
+    });
+  });
+
+  app.get("/clearcache", (req, res) => {
+    fs.rmdir(TEMP_DIR, { recursive: true }, (err) => {
+      if (err) {
+        console.error(err);
+        res.json({ error: true });
+        return;
+      }
+      res.json({ error: false });
+    });
+  });
+
   app.get("/data", async (req, res) => {
     res.json(data.anime);
   });
@@ -236,7 +254,7 @@ function startLocalServer(oauth2Client) {
 
   app.get("/listfolder/:id", async (req, res) => {
     try {
-      if (isCached(req.params.id)) {
+      if (store.get(req.params.id)) {
         res.json(store.get(req.params.id));
         return;
       }

@@ -31,6 +31,7 @@ import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ColorThief from "colorthief";
+import ListboxComponent from "./listbox";
 
 const styles = (theme) => ({
   root: {
@@ -120,7 +121,8 @@ class Player extends React.Component {
       auth: null,
       progress: 0,
       showProgress: true,
-      palette: "0, 0, 0",
+      palette1: "0, 0, 0, 0",
+      palette2: "0, 0, 0, 0",
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -382,7 +384,7 @@ class Player extends React.Component {
           <div
             className="overlay"
             style={{
-              background: `linear-gradient(to top, rgba(${this.state.palette}, 0),rgba(${this.state.palette},21))`,
+              background: `linear-gradient(to top, rgba(${this.state.palette1}),rgba(${this.state.palette2}))`,
             }}
           ></div>
         </Fade>
@@ -403,7 +405,8 @@ class Player extends React.Component {
                 let img = e.currentTarget;
                 let color = colorThief.getColor(img);
                 this.setState({
-                  palette: `${color[0]},${color[1]},${color[2]}`,
+                  palette1: `${color[0]},${color[1]},${color[2]},0`,
+                  palette2: `${color[0]},${color[1]},${color[2]},1`,
                 });
               }}
             />
@@ -524,6 +527,8 @@ class Player extends React.Component {
                 id="highlights-demo"
                 style={{ width: "100%" }}
                 size="small"
+                disableListWrap
+                ListboxComponent={ListboxComponent}
                 value={this.state.value}
                 onChange={this.handleSearch}
                 options={this.state.episodes.map((e, i) => ({
@@ -538,6 +543,7 @@ class Player extends React.Component {
                     margin="normal"
                     color="primary"
                     size="small"
+                    variant="filled"
                   />
                 )}
                 renderOption={(option, { inputValue }) => {
@@ -584,7 +590,7 @@ class Player extends React.Component {
                       <img
                         src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}=w200-h190-p-k-nu-iv1`}
                         alt={tile.name}
-                        style={{ maxWidth: 200, maxHeight: 190 }}
+                        style={{ maxHeight: 190 }}
                         onError={(e) =>
                           (e.target.src =
                             "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")

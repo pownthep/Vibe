@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 const useStyles = makeStyles({
   root: {
@@ -54,22 +54,14 @@ export default function MediaCard(props) {
             <Typography gutterBottom variant="h5" component="h2" noWrap>
               {props.title}
             </Typography>
-            <Typography
+            {/* <Typography
               variant="body2"
               color="textSecondary"
               component="p"
-              noWrap
-            >
-              {props.description}
-            </Typography>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-              noWrap
+              // noWrap
             >
               {props.keywords}
-            </Typography>
+            </Typography> */}
           </CardContent>
         </CardActionArea>
         <CardActions>

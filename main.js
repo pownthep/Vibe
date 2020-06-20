@@ -40,11 +40,11 @@ function createWindow() {
   });
 
   if (process.env.DEV) {
-    require("./server/server.js");
+    require(__dirname+"/server/server.js");
     win.loadURL("http://localhost:3000")
   }
   else {
-    require("./server/server.bundle.js");
+    require(__dirname+"/server/server.bundle.js");
     win.loadURL(
       url.format({
         pathname: path.join(__dirname, "/build/index.html"),

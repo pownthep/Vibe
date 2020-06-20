@@ -4,5 +4,5 @@
 node_modules/**
 img
 cached.json
-app.bundle.js
+server.bundle.js
 cached.json

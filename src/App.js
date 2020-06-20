@@ -29,8 +29,9 @@ import HistoryPage from "./components/history";
 import SettingsPage from "./components/settings";
 import Titlebar from "./components/titlebar";
 import DrivePage from "./components/drive";
-// import DownloadPage from "./components/download";
+import DownloadPage from "./components/download";
 // import OfflinePage from "./components/offline";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const store = window.store ? new window.store() : false;
 
@@ -45,7 +46,7 @@ const theme = createMuiTheme({
     },
     secondary: {
       // This is green.A700 as hex.
-      main: "#11cb5f",
+      main: "#f50057",
     },
   },
 });
@@ -108,13 +109,13 @@ export default function PermanentDrawerLeft() {
       label: "Favourites",
       icon: <FavoriteIcon />,
     },
-    // {
-    //   path: "/downloader",
-    //   exact: true,
-    //   component: DownloadPage,
-    //   label: "Downloader",
-    //   icon: <CloudDownloadIcon />,
-    // },
+    {
+      path: "/downloader",
+      exact: true,
+      component: DownloadPage,
+      label: "Downloader",
+      icon: <GetAppIcon />,
+    },
     // {
     //   path: "/offline",
     //   exact: true,
