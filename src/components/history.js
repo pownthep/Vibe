@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -14,7 +14,7 @@ import ClearAllIcon from "@material-ui/icons/ClearAll";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
-
+import Loader from "./loader";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -29,46 +29,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function History() {
-  const store = window.store ? new window.store({ watch: true }) : false;
+  const store = new window.store({ watch: true });
   const classes = useStyles();
-  const [history, setHistory] = useState(
-    store
-      ? store.get("history")
-      : {
-          "1chkhb6T49eDcALVlaQ4OFhjsHb3k1SV9": {
-            id: "1chkhb6T49eDcALVlaQ4OFhjsHb3k1SV9",
-            ep: "02. The Threat of Left.mkv",
-            title: "HAIKYU!! 3rd Season",
-            index: "3",
-            timePos: 0,
-            currentTime: 1592434605479,
-          },
-          "1dlx2KIJFa4r4rJQH879qG62IqxPNye10": {
-            id: "1dlx2KIJFa4r4rJQH879qG62IqxPNye10",
-            ep: "01. SelfProclaimed Psychic Reigen Arataka - And Mob.mkv",
-            title: "Mob Psycho 100",
-            index: "6",
-            timePos: 0,
-            currentTime: 1592431085715,
-          },
-        }
-  );
+  const [state, setState] = useState({
+    history: {},
+    loading: true,
+  });
   const [checked] = useState(true);
 
-  if (store) {
-    store.onDidAnyChange((e) => {
-      setHistory(store.get("history"));
-    });
-  }
-
   const clearHistory = (e) => {
-    if (history) {
+    if (state.history) {
       store.delete("history", {});
     }
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      setState({ history: store.get("history"), loading: false });
+    }, 1000);
+  }, []);
+
   return (
     <>
+      {state.loading ? <Loader /> : <></>}
       <h1>History</h1>
       <Tooltip title="Clear history">
         <IconButton
@@ -79,9 +62,9 @@ export default function History() {
           <ClearAllIcon />
         </IconButton>
       </Tooltip>
-      {history ? (
+      {state.history ? (
         <List className={classes.root} subheader={<li />}>
-          {Object.values(history)
+          {Object.values(state.history)
             .sort((a, b) => (a.currentTime < b.currentTime ? 1 : -1))
             .map((section, index) => (
               <Grow
@@ -129,7 +112,7 @@ export default function History() {
                       </Link>
                     </ListItemSecondaryAction>
                   </ListItem>
-                  {index === Object.values(history).length - 1 ? (
+                  {index === Object.values(state.history).length - 1 ? (
                     <></>
                   ) : (
                     <Divider variant="inset" component="li" />

@@ -7,12 +7,18 @@ var endMw = require("express-end");
 var stream = require("stream");
 var app = express();
 var cors = require("cors");
+const axios = require("axios");
+const prettyBytes = require("pretty-bytes");
+const store = require("data-store")({ path: __dirname + "/store.json" });
+const download = require("image-downloader");
+const stringHash = require("string-hash");
+
+// Express setup
 app.use(cors());
 app.use(express.static("img"));
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-const axios = require("axios");
 
 // If modifying these scopes, delete your previously saved credentials
 var SCOPES = ["https://www.googleapis.com/auth/drive"];
@@ -22,15 +28,11 @@ var TEMP_DIR = __dirname + "/.temp/";
 var CHUNK_SIZE = 20000000;
 var PORT = 9001;
 var data = {};
-const download = require("image-downloader");
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
-const stringHash = require("string-hash");
-
 let authStatus;
 
-// Load client secrets from a local file.
-
+// Check for img dir or create one
 fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
   if (err)
     fs.mkdir(IMG_DIR, (err) => {
@@ -38,6 +40,7 @@ fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
     });
 });
 
+// Load client secrets from a local file.
 fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
   err,
   content
@@ -50,37 +53,6 @@ fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
   // Drive API.
   authorize(JSON.parse(content), startLocalServer);
 });
-
-var cache = {};
-
-let CACHED_PATH = __dirname + "/cached.json";
-
-fs.readFile(CACHED_PATH, function readCache(err, content) {
-  if (err) {
-    console.log("Error loading data file: " + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Drive API.
-  cache = JSON.parse(content);
-});
-
-function cacheResponse(key, json) {
-  cache[key] = json;
-  fs.writeFile(CACHED_PATH, JSON.stringify(cache), function (err) {
-    if (err) throw err;
-    console.log("Saved!");
-  });
-  return cache[key] ? true : false;
-}
-
-function isCached(key) {
-  return cache[key] ? true : false;
-}
-
-function getCached(key) {
-  return cache[key];
-}
 
 function authorize(credentials, callback) {
   var clientSecret = credentials.web.client_secret;
@@ -210,8 +182,8 @@ function startLocalServer(oauth2Client) {
 
   app.get("/list/:id", async (req, res) => {
     try {
-      if (isCached(req.params.id)) {
-        res.json(getCached(req.params.id));
+      if (store.get(req.params.id)) {
+        res.json(store.get(req.params.id));
         return;
       }
       let resp = await axios.get(
@@ -232,7 +204,7 @@ function startLocalServer(oauth2Client) {
         };
       });
       res.json(final);
-      cacheResponse(req.params.id, final);
+      store.set(req.params.id, final);
     } catch (error) {
       console.log(error);
       console.log("https://drive.google.com/drive/folders/" + req.params.id);
@@ -242,7 +214,7 @@ function startLocalServer(oauth2Client) {
   app.get("/listfolder/:id", async (req, res) => {
     try {
       if (isCached(req.params.id)) {
-        res.json(getCached(req.params.id));
+        res.json(store.get(req.params.id));
         return;
       }
       let resp = await axios.get(
@@ -260,11 +232,72 @@ function startLocalServer(oauth2Client) {
         return item[0];
       });
       res.json(final);
-      cacheResponse(req.params.id, final);
+      store.set(req.params.id, final);
     } catch (error) {
       console.log(error);
       console.log("https://drive.google.com/drive/folders/" + req.params.id);
     }
+  });
+
+  app.get("/drive", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var options = {
+        host: "www.googleapis.com",
+        path: "/drive/v3/files?&fields=*&pageSize=1000",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + access_token,
+          Accept: "application/json",
+        },
+      };
+
+      callback = function (response) {
+        var allData = "";
+        response.on("data", function (chunk) {
+          allData += chunk;
+        });
+        response.on("end", function () {
+          var info = JSON.parse(allData);
+          if (!info.error) {
+            var files = info.files
+              .filter(
+                (file) => file.size > 0 && file.ownedByMe && file.ownedByMe
+              )
+              .sort((a, b) => (a.size < b.size ? 1 : -1))
+              .map((file) => {
+                return {
+                  id: file.id,
+                  name: file.name,
+                  size: file.size ? prettyBytes(parseInt(file.size)) : 0,
+                  thumbnail: file.hasThumbnail
+                    ? file.thumbnailLink
+                    : file.iconLink,
+                };
+              });
+            res.json(files);
+          } else console.log(info.error);
+        });
+      };
+
+      https.request(options, callback).end();
+    });
+  });
+
+  app.get("/copy/:id", async (req, res) => {
+    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var fileId = req.params.id;
+      httpCopyFile(fileId, access_token, res);
+    });
+  });
+
+  app.get("/delete/:id", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var fileId = req.params.id;
+      httpDeleteFile(fileId, access_token, res);
+    });
   });
 
   app.get(/\/code/, function (req, res) {
@@ -284,6 +317,94 @@ function startLocalServer(oauth2Client) {
       res.send("Successfully authenticated!");
       authStatus = { authenticated: true };
     }
+  });
+
+  app.get("/stream/:id", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var fileId = req.params.id;
+      if (store.get(fileId)) {
+        var item = store.get(fileId);
+        var fileInfo = getInfoFromId(item.id);
+        var action = null;
+        if (fileInfo) {
+          performRequest(fileInfo);
+        } else {
+          getFileInfo(item.id, access_token, (info) => {
+            addInfo(item.id, info);
+            var fileInfo = getInfoFromId(item.id);
+            performRequest(fileInfo);
+          });
+        }
+        function performRequest(fileInfo) {
+          var skipDefault = false;
+          if (action == "download") {
+            performRequest_download_start(req, res, access_token, fileInfo);
+            skipDefault = true;
+          }
+          if (action == "download_stop") {
+            performRequest_download_stop(req, res, access_token, fileInfo);
+            skipDefault = true;
+          }
+
+          if (!skipDefault) {
+            performRequest_default(req, res, access_token, fileInfo);
+          }
+        }
+        return;
+      }
+      var options = {
+        host: "www.googleapis.com",
+        path: "/drive/v3/files/" + fileId + "/copy",
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + access_token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      var httpReq = https.request(options, async (response) => {
+        var body = "";
+        response.on("data", function (chunk) {
+          body += chunk;
+        });
+        response.on("end", function () {
+          var item = JSON.parse(body);
+          store.set(req.params.id, item);
+          store.set(item.id,req.params.id);
+          var fileInfo = getInfoFromId(item.id);
+          var action = null;
+          if (fileInfo) {
+            performRequest(fileInfo);
+          } else {
+            getFileInfo(item.id, access_token, (info) => {
+              addInfo(item.id, info);
+              var fileInfo = getInfoFromId(item.id);
+              performRequest(fileInfo);
+            });
+          }
+          function performRequest(fileInfo) {
+            var skipDefault = false;
+            if (action == "download") {
+              performRequest_download_start(req, res, access_token, fileInfo);
+              skipDefault = true;
+            }
+            if (action == "download_stop") {
+              performRequest_download_stop(req, res, access_token, fileInfo);
+              skipDefault = true;
+            }
+
+            if (!skipDefault) {
+              performRequest_default(req, res, access_token, fileInfo);
+            }
+          }
+        });
+      });
+      httpReq.on("error", function (err) {
+        console.log(err);
+      });
+      httpReq.end();
+    });
   });
 
   app.get(/\/.{15,}/, function (req, res) {
@@ -589,6 +710,65 @@ function httpDownloadFile(
   req.on("error", function (err) {});
   req.end();
   onStart(req);
+}
+
+function httpCopyFile(fileId, access_token, response) {
+  var options = {
+    host: "www.googleapis.com",
+    path: "/drive/v3/files/" + fileId + "/copy",
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + access_token,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+  var req = https.request(options, async (res) => {
+    var body = "";
+    res.on("data", function (chunk) {
+      body += chunk;
+    });
+    res.on("end", function () {
+      let json = JSON.parse(body);
+      store.set(fileId, json);
+      store.set(json.id, fileId);
+      response.json(JSON.parse(body));
+    });
+  });
+  req.on("error", function (err) {
+    console.log(err);
+  });
+  req.end();
+}
+
+function httpDeleteFile(fileId, access_token, response) {
+  var options = {
+    host: "www.googleapis.com",
+    path: "/drive/v3/files/" + fileId,
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + access_token,
+      Accept: "application/json",
+    },
+  };
+  var req = https.request(options, async (res) => {
+    var body = "";
+    res.on("data", function (chunk) {
+      body += chunk;
+    });
+    res.on("end", function () {
+      if (body.length === 0) {
+        var pairId = store.get(fileId);
+        store.del(pairId);
+        store.del(fileId);
+        response.json({ deleted: true });
+      } else response.json({ deleted: false });
+    });
+  });
+  req.on("error", function (err) {
+    response.json({ deleted: false });
+  });
+  req.end();
 }
 
 function flushBuffers(arrBuffer, fileId, startByte) {

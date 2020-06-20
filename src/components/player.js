@@ -167,9 +167,7 @@ class Player extends React.Component {
     if (this.props.match.params.epId) {
       const epId = this.props.match.params.epId;
       const episode = store.get(`history.${epId}`);
-      //const [{ id, name }] = this.state.episodes.filter((ep) => ep.id === epId);
       this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
-      //console.log(`${name} + ${id}`);
     }
   }
 
@@ -284,7 +282,7 @@ class Player extends React.Component {
       this.setState({ auth: user });
       return;
     }
-    this.mpv.command("loadfile", "http://localhost:9001/" + id);
+    this.mpv.command("loadfile", "http://localhost:9001/stream/" + id);
     this.setState({
       loading: true,
     });
@@ -306,7 +304,6 @@ class Player extends React.Component {
       this.addToHistory(prev);
       this.setState({ currentEpisode: episode });
     }
-    //console.log(this.state.currentEpisode);
   }
 
   handleContinue(id) {
@@ -317,11 +314,8 @@ class Player extends React.Component {
   }
 
   handleSearch(e, nv) {
-    console.log(nv);
     if (nv) {
-      this.setState({ epList: [this.state.episodes[nv.index]] }, function () {
-        console.log(this.state.epList);
-      });
+      this.setState({ epList: [this.state.episodes[nv.index]] });
       this.setState({ value: nv });
     } else {
       this.setState({ epList: this.state.episodes });
@@ -416,7 +410,6 @@ class Player extends React.Component {
               this.setState({
                 palette: `${color[0]},${color[1]},${color[2]}`,
               });
-              console.log(color);
             }}
           />
           <div ref={this.myRef} className="player">

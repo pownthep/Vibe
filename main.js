@@ -24,7 +24,7 @@ app.commandLine.appendSwitch(
 );
 
 let win;
-require("./server/server.bundle.js");
+require("./server/server.js");
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
