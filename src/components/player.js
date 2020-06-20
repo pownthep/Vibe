@@ -17,7 +17,7 @@ import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import TextField from "@material-ui/core/TextField";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
-import { Grow, Tooltip } from "@material-ui/core";
+import { Grow, Tooltip, Fade } from "@material-ui/core";
 import AudiotrackOutlinedIcon from "@material-ui/icons/AudiotrackOutlined";
 import SubtitlesOutlinedIcon from "@material-ui/icons/SubtitlesOutlined";
 import FullscreenExitOutlinedIcon from "@material-ui/icons/FullscreenExitOutlined";
@@ -99,6 +99,7 @@ const store = window.store ? new window.store({ watch: true }) : false;
 const colorThief = new ColorThief();
 
 class Player extends React.Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.mpv = null;
@@ -119,7 +120,7 @@ class Player extends React.Component {
       auth: null,
       progress: 0,
       showProgress: true,
-      palette: "217, 194, 211",
+      palette: "0, 0, 0",
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -145,26 +146,38 @@ class Player extends React.Component {
     this.bannerRef = React.createRef();
   }
   async componentDidMount() {
+    // Setup
+    this._isMounted = true;
     const id = this.props.match.params.id;
-    this.setState({ data: stringData[id] });
-    if (!store) return;
     const user = await AuthenticateUser();
-    this.setState({ auth: user });
     let arrLength = stringData[id].episodes.length;
-    var tmp = [];
-    if (arrLength > 0) {
+    let tmp = [];
+
+    // Get episodes
+    if (arrLength > 0 && this._isMounted) {
       for (let i = 0; i < arrLength; i++) {
-        const url = stringData[id].episodes[i];
-        const res = await fetch("http://127.0.0.1:9001/list/" + url);
-        const json = await res.json();
-        tmp = tmp.concat(json);
-        if (i === arrLength - 1) this.setState({ episodes: tmp });
-        this.setState({ progress: ((i + 1) * 100) / arrLength });
+        if (this._isMounted) {
+          const url = stringData[id].episodes[i];
+          const res = await fetch("http://127.0.0.1:9001/list/" + url);
+          const json = await res.json();
+          tmp = tmp.concat(json);
+          if (this._isMounted)
+            this.setState({ progress: ((i + 1) * 100) / arrLength });
+        }
       }
-      this.setState({ showProgress: false });
     }
-    this.setState({ epList: this.state.episodes });
-    if (this.props.match.params.epId) {
+    // Set state if the component is mounted
+    if (this._isMounted) {
+      this.setState({
+        data: stringData[id],
+        episodes: tmp,
+        epList: tmp,
+        auth: user,
+        showProgress: false,
+      });
+    }
+    // Setting current episode
+    if (this.props.match.params.epId && this._isMounted) {
       const epId = this.props.match.params.epId;
       const episode = store.get(`history.${epId}`);
       this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
@@ -172,6 +185,7 @@ class Player extends React.Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     if (!this.state.currentEpisode) return;
     this.addToHistory({
       ...this.state.currentEpisode,
@@ -252,22 +266,9 @@ class Player extends React.Component {
     this.seeking = false;
   }
 
-  // async handleLoad(e) {
-  //   e.target.blur();
-  //   const items = await remote.dialog.showOpenDialog({
-  //     filters: [
-  //       { name: "Videos", extensions: ["mkv", "webm", "mp4", "mov", "avi"] },
-  //       { name: "All files", extensions: ["*"] },
-  //     ],
-  //   });
-  //   if (items) {
-  //     this.mpv.command("loadfile", items.filePaths[0]);
-  //   }
-  // }
-
   toHHMMSS(s) {
     var date = new Date(0);
-    date.setSeconds(s); // specify value for SECONDS here
+    date.setSeconds(s);
     return date.toISOString().substr(11, 8);
   }
 
@@ -306,13 +307,6 @@ class Player extends React.Component {
     }
   }
 
-  handleContinue(id) {
-    this.mpv.command("loadfile", "http://localhost:9001/" + id);
-    this.setState({
-      loading: true,
-    });
-  }
-
   handleSearch(e, nv) {
     if (nv) {
       this.setState({ epList: [this.state.episodes[nv.index]] });
@@ -341,13 +335,10 @@ class Player extends React.Component {
   }
 
   addToHistory(episode) {
-    if (!store) return;
     if (!store.get("history") || store.get("history").length === 0) {
       store.set("history", { [episode.id]: episode });
       return;
     }
-    // let history = store.get("history");
-    // let newHistory = [...history, episode];
     store.set(`history.${episode.id}`, episode);
   }
 
@@ -387,38 +378,44 @@ class Player extends React.Component {
               : ""}
           </h2>
         </div>
-        <div
-          className="overlay"
-          style={{
-            background: `linear-gradient(to top, rgba(${this.state.palette}, 0),rgba(${this.state.palette},21))`,
-          }}
-        ></div>
-        <div className="container">
-          <img
-            crossOrigin={"anonymous"}
-            ref={this.bannerRef}
-            src={
-              store
-                ? "http://localhost:9001/img/?url=" + this.state.data.banner
-                : this.state.data.banner
-            }
-            alt={this.state.data.title + "-banner"}
-            className="banner"
-            onLoad={(e) => {
-              let img = e.currentTarget;
-              let color = colorThief.getColor(img);
-              this.setState({
-                palette: `${color[0]},${color[1]},${color[2]}`,
-              });
+        <Fade in={this.state.checked} timeout={600}>
+          <div
+            className="overlay"
+            style={{
+              background: `linear-gradient(to top, rgba(${this.state.palette}, 0),rgba(${this.state.palette},21))`,
             }}
-          />
+          ></div>
+        </Fade>
+        <div className="container">
+          <Fade in={this.state.checked} timeout={600}>
+            <img
+              crossOrigin={"anonymous"}
+              ref={this.bannerRef}
+              src={
+                store
+                  ? "http://localhost:9001/img/?url=" +
+                    stringData[this.props.match.params.id].banner
+                  : this.state.data.banner
+              }
+              alt={this.state.data.title + "-banner"}
+              className="banner"
+              onLoad={(e) => {
+                let img = e.currentTarget;
+                let color = colorThief.getColor(img);
+                this.setState({
+                  palette: `${color[0]},${color[1]},${color[2]}`,
+                });
+              }}
+            />
+          </Fade>
           <div ref={this.myRef} className="player">
-            <Grow in={this.state.checked} timeout={300}>
+            <Grow in={this.state.checked} timeout={1500}>
               <ReactMPV
                 onReady={this.handleMPVReady}
                 onPropertyChange={this.handlePropertyChange}
                 onMouseDown={this.togglePause}
                 className={classes.unclickable}
+                hidden={true}
               />
             </Grow>
             <div className="loader" hidden={!this.state.loading}>
@@ -587,6 +584,7 @@ class Player extends React.Component {
                       <img
                         src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}=w200-h190-p-k-nu-iv1`}
                         alt={tile.name}
+                        style={{ maxWidth: 200, maxHeight: 190 }}
                         onError={(e) =>
                           (e.target.src =
                             "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")
@@ -614,6 +612,8 @@ class Player extends React.Component {
               <Pagination
                 count={Math.ceil(this.state.episodes.length / 5)}
                 page={this.state.page}
+                variant="outlined"
+                color="primary"
                 onChange={(e, nv) => {
                   var end = 5 * nv;
                   var start = end - 5;

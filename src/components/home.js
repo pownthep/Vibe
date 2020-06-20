@@ -7,6 +7,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import Pagination from "@material-ui/lab/Pagination";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import { useTheme } from "@material-ui/core/styles";
+import { VariableSizeList } from "react-window";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,18 +33,116 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
   },
+  listbox: {
+    boxSizing: "border-box",
+    "& ul": {
+      padding: 0,
+      margin: 0,
+    },
+  },
 }));
 
+const LISTBOX_PADDING = 8; // px
+
+function renderRow(props) {
+  const { data, index, style } = props;
+  return React.cloneElement(data[index], {
+    style: {
+      ...style,
+      top: style.top + LISTBOX_PADDING,
+    },
+  });
+}
+
+const OuterElementContext = React.createContext({});
+
+const OuterElementType = React.forwardRef((props, ref) => {
+  const outerProps = React.useContext(OuterElementContext);
+  return <div ref={ref} {...props} {...outerProps} />;
+});
+
+function useResetCache(data) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (ref.current != null) {
+      ref.current.resetAfterIndex(0, true);
+    }
+  }, [data]);
+  return ref;
+}
 const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
+//const options = stringData.map((opt) => opt.name);
+
+// Adapter for react-window
+const ListboxComponent = React.forwardRef(function ListboxComponent(
+  props,
+  ref
+) {
+  const { children, ...other } = props;
+  console.log(props);
+  const itemData = React.Children.toArray(children);
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up("sm"), { noSsr: true });
+  const itemCount = itemData.length;
+  const itemSize = smUp ? 36 : 48;
+
+  const getChildSize = (child) => {
+    if (React.isValidElement(child) && child.type === ListSubheader) {
+      return 48;
+    }
+
+    return itemSize;
+  };
+
+  const getHeight = () => {
+    if (itemCount > 8) {
+      return 8 * itemSize;
+    }
+    return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
+  };
+
+  const gridRef = useResetCache(itemCount);
+
+  return (
+    <div ref={ref}>
+      <OuterElementContext.Provider value={other}>
+        <VariableSizeList
+          itemData={itemData}
+          height={getHeight() + 2 * LISTBOX_PADDING}
+          width="100%"
+          ref={gridRef}
+          outerElementType={OuterElementType}
+          innerElementType="ul"
+          itemSize={(index) => getChildSize(itemData[index])}
+          overscanCount={5}
+          itemCount={itemCount}
+        >
+          {renderRow}
+        </VariableSizeList>
+      </OuterElementContext.Provider>
+    </div>
+  );
+});
+
+ListboxComponent.propTypes = {
+  children: PropTypes.node,
+};
+
+const renderGroup = (params) => [
+  <ListSubheader key={params.key} component="div">
+    {params.group}
+  </ListSubheader>,
+  params.children,
+];
+
 const store = window.store ? new window.store() : false;
 
 export default function Home() {
-  const [anime, setAnime] = useState(stringData);
+  const [anime, setAnime] = useState(stringData.slice(0, 100));
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
   const itemCount = 6;
-  //store.set('barColor', '#000000000')
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);
@@ -65,9 +168,10 @@ export default function Home() {
   return (
     <>
       <Autocomplete
-        id="highlights-demo"
+        id="virtualize-demo"
         style={{ width: "50%", margin: "0 auto" }}
-        size="small"
+        disableListWrap
+        ListboxComponent={ListboxComponent}
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
@@ -75,17 +179,11 @@ export default function Home() {
         options={options}
         getOptionLabel={(option) => option.name}
         renderInput={(params) => (
-          <TextField
-            {...params}
-            label="🔎 Search"
-            variant="standard"
-            margin="normal"
-          />
+          <TextField {...params} variant="standard" label="🔎 Search" />
         )}
         renderOption={(option, { inputValue }) => {
           const matches = match(option.name, inputValue);
           const parts = parse(option.name, matches);
-
           return (
             <div>
               {parts.map((part, index) => (

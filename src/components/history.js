@@ -46,7 +46,7 @@ export default function History() {
   useEffect(() => {
     setTimeout(() => {
       setState({ history: store.get("history"), loading: false });
-    }, 1000);
+    }, 500);
   }, []);
 
   return (

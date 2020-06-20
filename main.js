@@ -24,7 +24,6 @@ app.commandLine.appendSwitch(
 );
 
 let win;
-require("./server/server.js");
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
@@ -40,8 +39,12 @@ function createWindow() {
     icon: path.join(__dirname, "assets/icon.ico"),
   });
 
-  if (process.env.DEV) win.loadURL("http://localhost:3000");
+  if (process.env.DEV) {
+    require("./server/server.js");
+    win.loadURL("http://localhost:3000")
+  }
   else {
+    require("./server/server.bundle.js");
     win.loadURL(
       url.format({
         pathname: path.join(__dirname, "/build/index.html"),

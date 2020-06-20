@@ -1,16 +1,16 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import MaterialTable from "material-table";
+import Grow from "@material-ui/core/Grow";
 
 export default function Drive() {
   const columns = [
-    // { title: "ID", field: "id" },
     { title: "Name", field: "name" },
     { title: "Size", field: "size" },
     {
       title: "Thumbnail",
       field: "thumbnail",
-      render: (rowData) => <img src={rowData.thumbnail} alt={rowData.name} style={{maxHeight: 50}}/>,
+      render: (rowData) => <img src={"http://127.0.0.1:9001/img/?url="+rowData.thumbnail} alt={rowData.name} style={{maxHeight: 50}}/>,
     },
   ];
   const [data, setState] = useState([]);
@@ -27,7 +27,8 @@ export default function Drive() {
 
   return (
     <>
-      <h1>Drive</h1>
+      <h1>Google Drive</h1>
+      <Grow in={true} timeout={300}>
       <MaterialTable
         title=""
         columns={columns}
@@ -55,6 +56,7 @@ export default function Drive() {
             }),
         }}
       />
+      </Grow>
     </>
   );
 }

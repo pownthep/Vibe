@@ -17,8 +17,8 @@ import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
-import OfflinePinIcon from "@material-ui/icons/OfflinePin";
-import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+// import OfflinePinIcon from "@material-ui/icons/OfflinePin";
+// import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloudIcon from "@material-ui/icons/Cloud";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
@@ -29,6 +29,8 @@ import HistoryPage from "./components/history";
 import SettingsPage from "./components/settings";
 import Titlebar from "./components/titlebar";
 import DrivePage from "./components/drive";
+// import DownloadPage from "./components/download";
+// import OfflinePage from "./components/offline";
 
 const store = window.store ? new window.store() : false;
 
@@ -106,20 +108,20 @@ export default function PermanentDrawerLeft() {
       label: "Favourites",
       icon: <FavoriteIcon />,
     },
-    {
-      path: "/downloader",
-      exact: true,
-      component: FavouritePage,
-      label: "Downloader",
-      icon: <CloudDownloadIcon />,
-    },
-    {
-      path: "/offline",
-      exact: true,
-      component: FavouritePage,
-      label: "Offline",
-      icon: <OfflinePinIcon />,
-    },
+    // {
+    //   path: "/downloader",
+    //   exact: true,
+    //   component: DownloadPage,
+    //   label: "Downloader",
+    //   icon: <CloudDownloadIcon />,
+    // },
+    // {
+    //   path: "/offline",
+    //   exact: true,
+    //   component: OfflinePage,
+    //   label: "Offline",
+    //   icon: <OfflinePinIcon />,
+    // },
     {
       path: "/drive",
       exact: true,

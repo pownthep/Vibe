@@ -12,6 +12,9 @@ const prettyBytes = require("pretty-bytes");
 const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
+var FlexSearch = require("flexsearch");
+const searchData = require("./completed-series.json");
+//console.log(searchData);
 
 // Express setup
 app.use(cors());
@@ -31,6 +34,26 @@ var data = {};
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 let authStatus;
+let isLatest = false;
+var index = new FlexSearch("speed");
+
+console.time("creating index");
+searchData.map((item) => {
+  index.add(item.id, item.name);
+});
+console.timeEnd("creating index");
+
+console.time("searching index");
+index.search("hero", function (result) {
+  //result.map((id) => console.log(searchData[id]));
+  console.log(result.length);
+});
+console.timeEnd("searching index");
+
+console.time("searching json");
+const result = searchData.filter((item) => item.name.toLowerCase().includes("hero"));
+console.log(result.length);
+console.timeEnd("searching json");
 
 // Check for img dir or create one
 fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
@@ -240,6 +263,11 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/drive", (req, res) => {
+    if (store.get("files") && isLatest) {
+      res.json(store.get("files"));
+      return;
+    }
+    // else res.json([]);
     refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       var options = {
@@ -262,7 +290,10 @@ function startLocalServer(oauth2Client) {
           if (!info.error) {
             var files = info.files
               .filter(
-                (file) => file.size > 0 && file.ownedByMe && file.ownedByMe
+                (file) =>
+                  file.size > 0 &&
+                  file.ownedByMe &&
+                  file.mimeType.includes("video")
               )
               .sort((a, b) => (a.size < b.size ? 1 : -1))
               .map((file) => {
@@ -275,6 +306,8 @@ function startLocalServer(oauth2Client) {
                     : file.iconLink,
                 };
               });
+            store.set("files", files);
+            isLatest = true;
             res.json(files);
           } else console.log(info.error);
         });
@@ -323,8 +356,8 @@ function startLocalServer(oauth2Client) {
     refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       var fileId = req.params.id;
-      if (store.get(fileId)) {
-        var item = store.get(fileId);
+      if (store.get(`drive.${fileId}`)) {
+        var item = store.get(`drive.${fileId}`);
         var fileInfo = getInfoFromId(item.id);
         var action = null;
         if (fileInfo) {
@@ -370,8 +403,9 @@ function startLocalServer(oauth2Client) {
         });
         response.on("end", function () {
           var item = JSON.parse(body);
-          store.set(req.params.id, item);
-          store.set(item.id,req.params.id);
+          store.set(`drive.${req.params.id}`, item);
+          store.set(`drive.${item.id}`, req.params.id);
+          isLatest = false;
           var fileInfo = getInfoFromId(item.id);
           var action = null;
           if (fileInfo) {
@@ -758,10 +792,11 @@ function httpDeleteFile(fileId, access_token, response) {
     });
     res.on("end", function () {
       if (body.length === 0) {
-        var pairId = store.get(fileId);
-        store.del(pairId);
-        store.del(fileId);
+        var pairId = store.get(`drive.${fileId}`);
+        store.del(`drive.${pairId}`);
+        store.del(`drive.${fileId}`);
         response.json({ deleted: true });
+        isLatest = false;
       } else response.json({ deleted: false });
     });
   });
