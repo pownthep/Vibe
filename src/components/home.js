@@ -8,8 +8,8 @@ import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import ListboxComponent from "./listbox";
 import Pagination from "@material-ui/lab/Pagination";
-import InputAdornment from '@material-ui/core/InputAdornment';
-import SearchIcon from '@material-ui/icons/Search';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "center",
-    alignContent: "flex-start",
+    alignContent: "center",
   },
   pagination: {
     margin: theme.spacing(1),
@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const store = window.store ? new window.store() : false;
   const options = stringData.map((opt) => ({ id: opt.id, name: opt.name }));
-  const [anime, setAnime] = useState(stringData.slice(0, 100));
+  const [anime, setAnime] = useState(stringData);
   const [value, setValue] = useState(null);
   const classes = useStyles();
   const [page, setPage] = React.useState(1);
-  const itemCount = 12;
+  const itemCount = 9;
 
   useEffect(() => {
     if (value) setAnime([stringData[value.id]]);
@@ -74,7 +74,7 @@ export default function Home() {
     <>
       <Autocomplete
         id="virtualize-demo"
-        style={{ width: "50%", margin: "0 auto" }}
+        style={{ width: "32%", margin: "0 auto", marginBottom: 50, marginTop: 20 }}
         disableListWrap
         ListboxComponent={ListboxComponent}
         value={value}
@@ -144,7 +144,6 @@ export default function Home() {
         <Pagination
           count={Math.ceil(stringData.length / itemCount)}
           page={page}
-          color="primary"
           onChange={handleChangePage}
         />
       </div>

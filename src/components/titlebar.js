@@ -203,7 +203,7 @@ class Titlebar extends PureComponent {
     }
 
     return (
-      <Container isWin={this.isWindows} backgroundColor={this.state.color}>
+      <Container isWin={this.isWindows} backgroundColor={backgroundColor}>
         {elements}
       </Container>
     );

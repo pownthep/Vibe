@@ -64,9 +64,10 @@ button {
 }
 
 .player {
-  height: 40vh;
+  height: 540px;
   margin: 0 auto; 
-  width: 60%;
+  width: 960px;
+  border-radius: 10px;
 }
 
 .banner {

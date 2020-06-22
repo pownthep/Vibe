@@ -32,6 +32,12 @@ import AuthenticateUser from "../utils/utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuIcon from "@material-ui/icons/Menu";
+import GetAppIcon from "@material-ui/icons/GetApp";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import Fab from "@material-ui/core/Fab";
 
 const styles = (theme) => ({
   root: {
@@ -94,6 +100,9 @@ const styles = (theme) => ({
     left: "50%",
     transform: "translate(-50%, -50%)",
   },
+  actionIcons: {
+    padding: "5px",
+  },
 });
 
 const store = window.store ? new window.store({ watch: true }) : false;
@@ -123,6 +132,8 @@ class Player extends React.Component {
       showProgress: true,
       palette1: "0, 0, 0, 0",
       palette2: "0, 0, 0, 0",
+      anchorEl: null,
+      favourited: true
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -146,7 +157,24 @@ class Player extends React.Component {
     this.fmtName = this.fmtName.bind(this);
     this.valueLabelFormat = this.valueLabelFormat.bind(this);
     this.bannerRef = React.createRef();
+    this.handleMenu = this.handleMenu.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.addToDownload = this.addToDownload.bind(this);
   }
+
+  addToDownload(id, name) {
+    let downloadItem = {
+      id: id,
+      name: name,
+    };
+    store.set(`downloads.${this.state.data.id}.${id}`, downloadItem);
+    console.log(store.get(`downloads`));
+  }
+
+  handleMenu(e) {
+    this.setState({ anchorEl: e.currentTarget });
+  }
+
   async componentDidMount() {
     // Setup
     this._isMounted = true;
@@ -176,6 +204,7 @@ class Player extends React.Component {
         epList: tmp,
         auth: user,
         showProgress: false,
+        favourited: store.get(`favourites.${id}`)
       });
     }
     // Setting current episode
@@ -274,6 +303,10 @@ class Player extends React.Component {
     return date.toISOString().substr(11, 8);
   }
 
+  handleClose() {
+    this.setState({ anchorEl: null });
+  }
+
   handlePlay(e) {
     var id = e.currentTarget.id;
     this.mpv.command("loadfile", "http://localhost:9001/" + id);
@@ -307,6 +340,7 @@ class Player extends React.Component {
       this.addToHistory(prev);
       this.setState({ currentEpisode: episode });
     }
+    this.setState({ anchorEl: null });
   }
 
   handleSearch(e, nv) {
@@ -600,26 +634,93 @@ class Player extends React.Component {
                         title={this.state.data.name}
                         subtitle={<span>{this.fmtName(tile.name)}</span>}
                         actionIcon={
-                          <IconButton
-                            aria-label={`Play ${tile.name}`}
-                            className={classes.icon}
-                            onClick={(e) =>
-                              this.handleEpisodeChange(tile.id, tile.name)
-                            }
-                          >
-                            <PlayCircleFilledIcon />
-                          </IconButton>
+                          <>
+                            <IconButton
+                              aria-label={`Play ${tile.name}`}
+                              className={classes.icon}
+                              onClick={(e) =>
+                                this.handleEpisodeChange(tile.id, tile.name)
+                              }
+                              classes={{
+                                root: classes.actionIcons,
+                              }}
+                            >
+                              <PlayCircleFilledIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label={`Play ${tile.name}`}
+                              className={classes.icon}
+                              onClick={(e) =>
+                                this.addToDownload(tile.id, tile.name)
+                              }
+                              classes={{
+                                root: classes.actionIcons,
+                              }}
+                            >
+                              <GetAppIcon />
+                            </IconButton>
+                          </>
+                          // <>
+                          //   <IconButton
+                          //     aria-controls="simple-menu"
+                          //     aria-haspopup="true"
+                          //     onClick={this.handleMenu}
+                          //   >
+                          //     <MenuIcon />
+                          //   </IconButton>
+                          //   <Menu
+                          //     id="simple-menu"
+                          //     anchorEl={this.state.anchorEl}
+                          //     keepMounted
+                          //     open={Boolean(this.state.anchorEl)}
+                          //     onClose={this.handleClose}
+                          //   >
+                          //     <MenuItem
+                          //       id={tile.id}
+                          //       name={tile.name}
+                          //       onClick={(e) => {
+                          //         console.log(e.currentTarget.id);
+                          //         console.log(
+                          //           e.currentTarget.getAttribute("name")
+                          //         );
+                          //         //this.handleEpisodeChange(e.currentTarget.id, e.target.name)
+                          //       }}
+                          //     >
+                          //       <PlayCircleFilledIcon /> Watch
+                          //     </MenuItem>
+                          //     <MenuItem onClick={this.handleClose}>
+                          //       <GetAppIcon /> Download
+                          //     </MenuItem>
+                          //   </Menu>
+                          // </>
                         }
                       />
                     </GridListTile>
                   </Grow>
                 ))}
               </GridList>
+              <div
+                style={{
+                  position: "fixed",
+                  bottom: 10,
+                  right: 10,
+                }}
+              >
+                <Fab
+                  aria-label="like"
+                  disabled={this.state.favourited}
+                  color="secondary"
+                  onClick={() => {
+                    store.set(`favourites.${this.state.data.id}`, true);
+                    this.setState({favourited: true})
+                  }}
+                >
+                  <FavoriteIcon />
+                </Fab>
+              </div>
               <Pagination
                 count={Math.ceil(this.state.episodes.length / 5)}
                 page={this.state.page}
-                variant="outlined"
-                color="primary"
                 onChange={(e, nv) => {
                   var end = 5 * nv;
                   var start = end - 5;

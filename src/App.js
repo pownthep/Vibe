@@ -17,8 +17,6 @@ import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import HistoryIcon from "@material-ui/icons/History";
-// import OfflinePinIcon from "@material-ui/icons/OfflinePin";
-// import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import CloudIcon from "@material-ui/icons/Cloud";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
@@ -30,7 +28,6 @@ import SettingsPage from "./components/settings";
 import Titlebar from "./components/titlebar";
 import DrivePage from "./components/drive";
 import DownloadPage from "./components/download";
-// import OfflinePage from "./components/offline";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 const store = window.store ? new window.store() : false;
@@ -46,7 +43,7 @@ const theme = createMuiTheme({
     },
     secondary: {
       // This is green.A700 as hex.
-      main: "#f50057",
+      main: "#e91e63",
     },
   },
 });
@@ -160,7 +157,7 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {store ? <Titlebar title="" /> : <></>}
+          {store ? <Titlebar title="" backgroundColor="inherit"/> : <></>}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />

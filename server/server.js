@@ -193,7 +193,7 @@ function startLocalServer(oauth2Client) {
 
   app.get("/cachesize", (req, res) => {
     fs.readdir(TEMP_DIR, (err, files) => {
-      let bytes = files ? files.length * 20 * 1000000:0;
+      let bytes = files ? files.length * 20 * 1000000 : 0;
       res.json({ size: prettyBytes(bytes) });
     });
   });
@@ -280,12 +280,36 @@ function startLocalServer(oauth2Client) {
     }
   });
 
+  app.get("/quota", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var auth = "Bearer ".concat(access_token);
+      var url = "https://www.googleapis.com/drive/v2/about";
+      axios
+        .get(url, {
+          headers: { Authorization: auth, Accept: "application/json" },
+        })
+        .then((json) => {
+          res.json({
+            ...json.data,
+            usedNumber: Number(json.data.quotaBytesUsed),
+            totalNumber: Number(json.data.quotaBytesTotal),
+            usedString: prettyBytes(Number(json.data.quotaBytesUsed)),
+            totalString: prettyBytes(Number(json.data.quotaBytesTotal)),
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send({ error: true, message: err });
+        });
+    });
+  });
+
   app.get("/drive", (req, res) => {
     if (store.get("files") && isLatest) {
       res.json(store.get("files"));
       return;
     }
-    // else res.json([]);
     refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       var options = {
@@ -351,6 +375,56 @@ function startLocalServer(oauth2Client) {
     });
   });
 
+  app.get("/downloading", async (req, res) => {
+    res.set({
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+
+      // enabling CORS
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers":
+        "Origin, X-Requested-With, Content-Type, Accept",
+    });
+
+    const oAuth2Client2 = new google.auth.OAuth2(
+      "519553454727-mshgdg5g4qefcsds2motl4vr41p6cs5i.apps.googleusercontent.com",
+      "Ft3zpfO6dFdM9TfO0bmT4_8e",
+      "urn:ietf:wg:oauth:2.0:oob"
+    );
+
+    try {
+      fs.readFile(TOKEN_PATH, (err, tokenJson) => {
+        var token = JSON.parse(tokenJson);
+        oAuth2Client2.setCredentials(token);
+        var fileId = "1QIR8HYdDXjnGAisLCUi1SQuz7jzplfaW";
+        const drive = google.drive({ version: "v3", oAuth2Client2 });
+        drive.files
+          .get({ fileId, alt: "media" }, { responseType: "stream" })
+          .then((res) => {
+            return new Promise(async (resolve, reject) => {
+              let progress = 0;
+              res.data
+                .on("end", () => {
+                  console.log("Done downloading file.");
+                  resolve("Done");
+                })
+                .on("error", (err) => {
+                  console.log(err);
+                })
+                .on("data", (d) => {
+                  progress += d.length;
+                  res.write(`data: ${progress}\n\n`);
+                });
+            });
+          })
+          .catch((err) => console.log(err));
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
   app.get(/\/code/, function (req, res) {
     if (req.query.code) {
       oauth2Client.getToken(req.query.code, function (err, token) {
@@ -382,7 +456,7 @@ function startLocalServer(oauth2Client) {
           performRequest(fileInfo);
         } else {
           getFileInfo(item.id, access_token, (info) => {
-            addInfo(item.id, info);
+            addInfo(item.id, info, oauth2Client);
             var fileInfo = getInfoFromId(item.id);
             performRequest(fileInfo);
           });
@@ -430,7 +504,7 @@ function startLocalServer(oauth2Client) {
             performRequest(fileInfo);
           } else {
             getFileInfo(item.id, access_token, (info) => {
-              addInfo(item.id, info);
+              addInfo(item.id, info, oauth2Client);
               var fileInfo = getInfoFromId(item.id);
               performRequest(fileInfo);
             });
@@ -472,7 +546,7 @@ function startLocalServer(oauth2Client) {
         performRequest(fileInfo);
       } else {
         getFileInfo(fileId, access_token, (info) => {
-          addInfo(fileId, info);
+          addInfo(fileId, info, oauth2Client);
           var fileInfo = getInfoFromId(fileId);
           performRequest(fileInfo);
         });
@@ -892,24 +966,45 @@ function getInfoFromId(fileId) {
   return result;
 }
 
-function addInfo(fileId, fileInfo) {
+function addInfo(fileId, fileInfo, oauth2Client) {
   var info = { id: fileId, info: fileInfo };
-  // info.getVideoLength = new Promise((resolve, reject) => {
-  //   if (!info.videoLength) {
-  //     getVideoDurationInSeconds("http://127.0.0.1:" + PORT + "/" + fileId)
-  //       .then((duration) => {
-  //         info.videoLength = duration;
-  //         console.log(duration);
-  //         resolve(duration);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //         reject(error);
-  //       });
-  //   } else {
-  //     resolve(info.videoLength);
-  //   }
-  // });
+  info.getVideoLength = new Promise((resolve, reject) => {
+    if (!info.videoLength) {
+      refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+        var access_token = oauth2Client.credentials.access_token;
+        var auth = "Bearer ".concat(access_token);
+        var url =
+          "https://www.googleapis.com/drive/v3/files/" +
+          fileId +
+          "?fields=videoMediaMetadata";
+        axios
+          .get(url, {
+            headers: { Authorization: auth, Accept: "application/json" },
+          })
+          .then((metadata) => {
+            var duration = Number(metadata.durationMillis) / 1000;
+            info.videoLength = duration;
+            resolve(duration);
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(err);
+          });
+      });
+      // getVideoDurationInSeconds("http://127.0.0.1:" + PORT + "/" + fileId)
+      //   .then((duration) => {
+      //     info.videoLength = duration;
+      //     console.log(duration);
+      //     resolve(duration);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     reject(error);
+      //   });
+    } else {
+      resolve(info.videoLength);
+    }
+  });
 
   filesInfo.push(info);
 }
