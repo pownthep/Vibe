@@ -1,5 +1,5 @@
 var fs = require("fs");
-var google = require("googleapis");
+var { google } = require("googleapis");
 var googleAuth = require("google-auth-library");
 var express = require("express");
 var https = require("https");
@@ -223,8 +223,8 @@ function startLocalServer(oauth2Client) {
 
   app.get("/list/:id", async (req, res) => {
     try {
-      if (store.get(req.params.id)) {
-        res.json(store.get(req.params.id));
+      if (store.get(`series.${req.params.id}`)) {
+        res.json(store.get(`series.${req.params.id}`));
         return;
       }
       let resp = await axios.get(
@@ -245,7 +245,7 @@ function startLocalServer(oauth2Client) {
         };
       });
       res.json(final);
-      store.set(req.params.id, final);
+      store.set(`series.${req.params.id}`, final);
     } catch (error) {
       console.log(error);
       console.log("https://drive.google.com/drive/folders/" + req.params.id);
@@ -375,7 +375,83 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/downloading", async (req, res) => {
+  app.get("/add_to_download_queue/:id", async (req, res) => {
+    try {
+      if (store.get(`downloads.${req.params.id}`)) {
+        res.json({ downloaded: true });
+        return;
+      }
+      let file = store.get(`drive.${req.params.id}`);
+      if (!file) {
+        console.log("File not in drive");
+        const copy = await axios.get(
+          "http://localhost:9001/copy/" + req.params.id
+        );
+        file = copy.data;
+        isLatest = false;
+      }
+      if (file.error) {
+        res.json(file);
+        return;
+      }
+      store.set("downloads." + req.params.id, {
+        id: file.id,
+        name: file.name,
+        size: file.size,
+        progress: 0,
+      });
+      downloadingInfo = store.get("downloads");
+      fileDownloader();
+      res.json(file);
+    } catch (error) {
+      console.log(error);
+      res.json({ error: JSON.stringify(error) });
+    }
+  });
+
+  let downloadingInfo = store.get("downloads");
+
+  async function fileDownloader() {
+    let toDownloadList = Object.entries(downloadingInfo).filter(([key, value]) => value.progress === 0);
+    if (toDownloadList.length === 0) return;
+    let firstItemKey = toDownloadList[0][0];
+    let firstItemValue = toDownloadList[0][1];
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      try {
+        var auth = "Bearer ".concat(access_token);
+        var folder = __dirname + "/downloaded";
+        var dest = fs.createWriteStream(
+          folder + `/${firstItemValue.name}`
+        );
+        var options = {
+          host: "www.googleapis.com",
+          path: "/drive/v3/files/" + firstItemValue.id + "?alt=media",
+          method: "GET",
+          headers: {
+            Authorization: auth,
+          },
+        };
+        callback = function (response) {
+          var progress = 0;
+          response.on("data", function (chunk) {
+            progress += chunk.length;
+            downloadingInfo[firstItemKey].progress = progress;
+          });
+          response.on("end", function () {
+            downloadingInfo[firstItemKey].progress = progress;
+            fileDownloader();
+          });
+          response.pipe(dest);
+        };
+        var req = https.request(options, callback).end();
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  app.get("/downloading", (req, res) => {
     res.set({
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
@@ -386,43 +462,9 @@ function startLocalServer(oauth2Client) {
       "Access-Control-Allow-Headers":
         "Origin, X-Requested-With, Content-Type, Accept",
     });
-
-    const oAuth2Client2 = new google.auth.OAuth2(
-      "519553454727-mshgdg5g4qefcsds2motl4vr41p6cs5i.apps.googleusercontent.com",
-      "Ft3zpfO6dFdM9TfO0bmT4_8e",
-      "urn:ietf:wg:oauth:2.0:oob"
-    );
-
-    try {
-      fs.readFile(TOKEN_PATH, (err, tokenJson) => {
-        var token = JSON.parse(tokenJson);
-        oAuth2Client2.setCredentials(token);
-        var fileId = "1QIR8HYdDXjnGAisLCUi1SQuz7jzplfaW";
-        const drive = google.drive({ version: "v3", oAuth2Client2 });
-        drive.files
-          .get({ fileId, alt: "media" }, { responseType: "stream" })
-          .then((res) => {
-            return new Promise(async (resolve, reject) => {
-              let progress = 0;
-              res.data
-                .on("end", () => {
-                  console.log("Done downloading file.");
-                  resolve("Done");
-                })
-                .on("error", (err) => {
-                  console.log(err);
-                })
-                .on("data", (d) => {
-                  progress += d.length;
-                  res.write(`data: ${progress}\n\n`);
-                });
-            });
-          })
-          .catch((err) => console.log(err));
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    setInterval(() => {
+      res.write(`data: ${JSON.stringify(downloadingInfo)}\n\n`);
+    }, 1000);
   });
 
   app.get(/\/code/, function (req, res) {
@@ -480,7 +522,7 @@ function startLocalServer(oauth2Client) {
       }
       var options = {
         host: "www.googleapis.com",
-        path: "/drive/v3/files/" + fileId + "/copy",
+        path: "/drive/v3/files/" + fileId + "/copy?fields=*",
         method: "POST",
         headers: {
           Authorization: "Bearer " + access_token,
@@ -841,7 +883,7 @@ function httpDownloadFile(
 function httpCopyFile(fileId, access_token, response) {
   var options = {
     host: "www.googleapis.com",
-    path: "/drive/v3/files/" + fileId + "/copy",
+    path: "/drive/v3/files/" + fileId + "/copy?fields=*",
     method: "POST",
     headers: {
       Authorization: "Bearer " + access_token,
@@ -856,13 +898,14 @@ function httpCopyFile(fileId, access_token, response) {
     });
     res.on("end", function () {
       let json = JSON.parse(body);
-      store.set(fileId, json);
-      store.set(json.id, fileId);
+      store.set(`drive.${fileId}`, json);
+      store.set(`drive.${json.id}`, fileId);
       response.json(JSON.parse(body));
     });
   });
   req.on("error", function (err) {
     console.log(err);
+    res.json(err);
   });
   req.end();
 }

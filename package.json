@@ -55,7 +55,7 @@
     "express-end": "0.0.8",
     "flexsearch": "^0.6.32",
     "google-auth-library": "^0.12.0",
-    "googleapis": "^23.0.0",
+    "googleapis": "^52.1.0",
     "image-downloader": "^4.0.1",
     "image-palette-core": "^0.2.2",
     "material-table": "^1.61.0",

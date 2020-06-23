@@ -1,5 +1,4 @@
 import React from "react";
-import stringData from "./completed-series.json";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -11,10 +10,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { IconButton, Tooltip } from "@material-ui/core";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import PauseCircleFilledIcon from "@material-ui/icons/PauseCircleFilled";
-import RefreshIcon from "@material-ui/icons/Refresh";
 import Box from "@material-ui/core/Box";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import PropTypes from "prop-types";
+import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import Loader from "./loader";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   },
   inline: {
     display: "inline",
+  },
+  thumbnail: {
+    borderRadius: 5,
+    margin: 5,
   },
 }));
 
@@ -51,74 +55,80 @@ LinearProgressWithLabel.propTypes = {
 
 export default function Download() {
   const store = new window.store();
-  const downloads = store.get("downloads");
   const classes = useStyles();
-  const [progress, setProgress] = React.useState(0);
+  const [progress, setProgress] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     let eventSource = new EventSource("http://localhost:9001/downloading");
     eventSource.onmessage = (e) => {
-      setProgress(Number(e.data))
+      let json = JSON.parse(e.data);
+      // let data = Object.values(json).filter(
+      //   (value) => value.progress !== Number(value.size)
+      // );
+      setLoading(false);
+      setProgress(json);
+      // if (data.length === 0) {
+      // }
     };
-    // const timer = setInterval(() => {
-    //   setProgress((prevProgress) =>
-    //     prevProgress >= 100 ? 0 : prevProgress + 1
-    //   );
-    // }, 800);
-    // return () => {
-    //   clearInterval(timer);
-    // };
     return () => {
       eventSource.close();
-    }
+    };
   }, []);
   return (
     <>
+      {loading ? <Loader /> : <></>}
       <h1>Download</h1>
       <List className={classes.root}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  Sandra Adams
-                </Typography>
-                {" — Do you have Paris recommendations? Have you ever…"}
-              </React.Fragment>
-            }
-          />
-          <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="pause button">
-              <Tooltip title="Pause download">
-                <PauseCircleFilledIcon />
-              </Tooltip>
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-        <div className={classes.root}>
-          <LinearProgressWithLabel value={progress} />
-        </div>
-      </List>
-      {/* {Object.entries(downloads).map(([key, value]) => (
-        <div key={stringData[key].name}>
-          <h2>{stringData[key].name}</h2>
-          {Object.entries(value).map(([key,value]) => (
-              <div key={key}>
-                  <img width="100" height="60" src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${value.id}=w200-h190-p-k-nu-iv1`} alt=""/>
-                  <p>{value.name}</p>
-              </div>
+        {Object.entries(progress)
+          .reverse()
+          .map(([key, value]) => (
+            <div key={value.id}>
+              <ListItem alignItems="flex-start">
+                <ListItemAvatar>
+                  <Avatar
+                    src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${key}=w200-h190-p-k-nu-iv1`}
+                    alt="thumbnail"
+                  />
+                </ListItemAvatar>
+                <ListItemText primary={value.name} />
+                {(value.progress / Number(value.size)) * 100 !== 100 ? (
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="pause button">
+                      <Tooltip title="Pause download">
+                        <PauseCircleFilledIcon />
+                      </Tooltip>
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                ) : (
+                  <Tooltip title="Play download">
+                    <IconButton
+                      edge="end"
+                      aria-label="play button"
+                      onClick={(e) => {
+                        window.shell.openPath(
+                          window.directory + "/server/downloaded/" + value.name
+                        );
+                      }}
+                    >
+                      <PlayCircleFilledIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </ListItem>
+              {(value.progress / Number(value.size)) * 100 === 100 ? (
+                <></>
+              ) : (
+                <div className={classes.root}>
+                  <LinearProgressWithLabel
+                    value={(value.progress / Number(value.size)) * 100}
+                  />
+                </div>
+              )}
+              <Divider />
+            </div>
           ))}
-        </div>
-      ))} */}
+      </List>
     </>
   );
 }

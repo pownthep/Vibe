@@ -1,25 +1,18 @@
 import React, { useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import Tooltip from "@material-ui/core/Tooltip";
-import Fade from "@material-ui/core/Fade";
 import Chip from "@material-ui/core/Chip";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
 import SentimentSatisfiedAltIcon from "@material-ui/icons/SentimentSatisfiedAltOutlined";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
-import Rating from "@material-ui/lab/Rating";
 
 const useStyles = makeStyles({
   root: {
@@ -38,30 +31,9 @@ const useStyles = makeStyles({
   },
 });
 
-const LightTooltip = withStyles((theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.common.white,
-    color: "rgba(0, 0, 0, 0.87)",
-    boxShadow: theme.shadows[1],
-    fontSize: 11,
-  },
-}))(Tooltip);
-
 export default function MediaCard(props) {
   const classes = useStyles();
   const [checked] = useState(true);
-  const [fav, setFav] = useState(props.favourited);
-  const [expanded, setExpanded] = React.useState("");
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
-
-  const handleFavClick = () => {
-    var key = "favourites." + props.path;
-    props.onChildClick(key);
-    setFav(true);
-  };
 
   return (
     <Grow in={checked} timeout={props.timeout} className={classes.root} unmountOnExit>
@@ -137,15 +109,6 @@ function TooltipContent(props) {
     </div>
   );
 }
-
-const StyledRating = withStyles({
-  iconFilled: {
-    color: "#ff6d75",
-  },
-  iconHover: {
-    color: "#ff3d47",
-  },
-})(Rating);
 
 const customIcons = [
   <SentimentVeryDissatisfiedIcon color="error" />,

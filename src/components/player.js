@@ -32,12 +32,12 @@ import AuthenticateUser from "../utils/utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuIcon from "@material-ui/icons/Menu";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Fab from "@material-ui/core/Fab";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
 
 const styles = (theme) => ({
   root: {
@@ -133,7 +133,9 @@ class Player extends React.Component {
       palette1: "0, 0, 0, 0",
       palette2: "0, 0, 0, 0",
       anchorEl: null,
-      favourited: true
+      favourited: true,
+      snackOpen: false,
+      snackMessage: "Test message"
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -160,15 +162,19 @@ class Player extends React.Component {
     this.handleMenu = this.handleMenu.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.addToDownload = this.addToDownload.bind(this);
+    this.handlesSnackClose = this.handlesSnackClose.bind(this);
   }
 
-  addToDownload(id, name) {
-    let downloadItem = {
-      id: id,
-      name: name,
-    };
-    store.set(`downloads.${this.state.data.id}.${id}`, downloadItem);
-    console.log(store.get(`downloads`));
+  async addToDownload(id, name) {
+    const res = await fetch(
+      "http://localhost:9001/add_to_download_queue/" + id
+    );
+    const data = await res.json();
+    if(data.error) {
+      this.setState({snackOpen: true, snackMessage: "Sorry, there was an error"});
+    }
+    else if(data.downloaded) this.setState({snackOpen: true, snackMessage: "You've already downloaded this"});
+    else this.setState({snackOpen: true, snackMessage: "Added to download"});
   }
 
   handleMenu(e) {
@@ -204,7 +210,7 @@ class Player extends React.Component {
         epList: tmp,
         auth: user,
         showProgress: false,
-        favourited: store.get(`favourites.${id}`)
+        favourited: store.get(`favourites.${id}`),
       });
     }
     // Setting current episode
@@ -391,6 +397,14 @@ class Player extends React.Component {
 
   valueLabelFormat(value) {
     return this.toHHMMSS(value);
+  }
+
+  handlesSnackClose(event, reason) {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ snackOpen: false });
   }
 
   render() {
@@ -660,39 +674,6 @@ class Player extends React.Component {
                               <GetAppIcon />
                             </IconButton>
                           </>
-                          // <>
-                          //   <IconButton
-                          //     aria-controls="simple-menu"
-                          //     aria-haspopup="true"
-                          //     onClick={this.handleMenu}
-                          //   >
-                          //     <MenuIcon />
-                          //   </IconButton>
-                          //   <Menu
-                          //     id="simple-menu"
-                          //     anchorEl={this.state.anchorEl}
-                          //     keepMounted
-                          //     open={Boolean(this.state.anchorEl)}
-                          //     onClose={this.handleClose}
-                          //   >
-                          //     <MenuItem
-                          //       id={tile.id}
-                          //       name={tile.name}
-                          //       onClick={(e) => {
-                          //         console.log(e.currentTarget.id);
-                          //         console.log(
-                          //           e.currentTarget.getAttribute("name")
-                          //         );
-                          //         //this.handleEpisodeChange(e.currentTarget.id, e.target.name)
-                          //       }}
-                          //     >
-                          //       <PlayCircleFilledIcon /> Watch
-                          //     </MenuItem>
-                          //     <MenuItem onClick={this.handleClose}>
-                          //       <GetAppIcon /> Download
-                          //     </MenuItem>
-                          //   </Menu>
-                          // </>
                         }
                       />
                     </GridListTile>
@@ -712,7 +693,7 @@ class Player extends React.Component {
                   color="secondary"
                   onClick={() => {
                     store.set(`favourites.${this.state.data.id}`, true);
-                    this.setState({favourited: true})
+                    this.setState({ favourited: true });
                   }}
                 >
                   <FavoriteIcon />
@@ -733,6 +714,28 @@ class Player extends React.Component {
             </div>
           </div>
         </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          open={this.state.snackOpen}
+          autoHideDuration={6000}
+          onClose={this.handlesSnackClose}
+          message={this.state.snackMessage}
+          action={
+            <React.Fragment>
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={this.handlesSnackClose}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
       </>
     );
   }

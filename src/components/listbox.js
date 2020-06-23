@@ -40,7 +40,6 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   ref
 ) {
   const { children, ...other } = props;
-  console.log(props);
   const itemData = React.Children.toArray(children);
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up("sm"), { noSsr: true });

@@ -30,7 +30,12 @@ export default function Drive() {
   ];
   const [state, setState] = useState({
     data: [],
-    info: {},
+    info: {
+      usedNumber: 0,
+      totalNumber: 0,
+      usedString: "0 B",
+      totalString: "15 GB"
+    },
     loading: true,
   });
   useEffect(() => {

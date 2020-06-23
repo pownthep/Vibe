@@ -4,3 +4,4 @@ const Store = require("electron-store");
 window.remote = remote;
 window.store = Store;
 window.shell = shell;
+window.directory = __dirname;

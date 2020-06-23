@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
@@ -104,7 +104,7 @@ export default function History() {
                       <Link to={`/watch/${section.index}/${section.id}`}>
                         <IconButton edge="end" aria-label="comments">
                           <Tooltip title="Continue watching">
-                            <PlayArrowIcon />
+                            <PlayCircleFilledIcon />
                           </Tooltip>
                         </IconButton>
                       </Link>

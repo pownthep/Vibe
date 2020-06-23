@@ -8,8 +8,7 @@ import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import ListboxComponent from "./listbox";
 import Pagination from "@material-ui/lab/Pagination";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import SearchIcon from "@material-ui/icons/Search";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,13 +88,6 @@ export default function Home() {
             variant="outlined"
             size="small"
             label="Search"
-            // // InputProps={{
-            // //   startAdornment: (
-            // //     <InputAdornment position="start">
-            // //       <SearchIcon />
-            // //     </InputAdornment>
-            // //   ),
-            // }}
           />
         )}
         renderOption={(option, { inputValue }) => {
