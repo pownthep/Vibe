@@ -37,7 +37,7 @@ function useResetCache(data) {
   }, [data]);
   return ref;
 }
-const options = stringData.map((opt) => opt.name );
+const options = window.data.map((opt) => opt.name );
 
 // Adapter for react-window
 const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {

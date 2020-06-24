@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import stringData from "./completed-series.json";
 import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
@@ -36,43 +35,20 @@ const useStyles = makeStyles((theme) => ({
   banner: {
     width: "100%",
     height: 230,
+    objectFit: "cover"
   },
 }));
 
 export default function Favourites() {
   const store = window.store ? new window.store() : false;
   const classes = useStyles();
-  const [favourites, setFavourites] = useState(
-    store
-      ? store.get("favourites")
-      : {
-          "0": true,
-          "1": true,
-          "2": true,
-          "3": true,
-          "4": true,
-          "5": true,
-          "6": true,
-          "7": true,
-          "8": true,
-          "9": true,
-          "10": true,
-          "11": true,
-          "18": true,
-          "19": true,
-          "20": true,
-          "21": true,
-          "22": true,
-          "23": true,
-        }
-  );
+  const [favourites, setFavourites] = useState(store.get("favourites"));
   const [checked] = React.useState(true);
 
   const deleteFav = (e) => {
-    if(!store) return;
     store.delete(`favourites.${e.currentTarget.id}`);
     setFavourites(store.get("favourites"));
-  }
+  };
 
   return (
     <>
@@ -92,21 +68,19 @@ export default function Favourites() {
                     <Link to={"/watch/" + key}>
                       <img
                         src={
-                          store
-                            ? "http://localhost:9001/img/?url=" +
-                              stringData[parseInt(key)].banner
-                            : stringData[parseInt(key)].banner
+                          "http://localhost:9001/img/?url=" +
+                          window.data[parseInt(key)].banner
                         }
-                        alt={stringData[parseInt(key)].name}
+                        alt={window.data[parseInt(key)].name}
                         className={classes.banner}
                       />
                     </Link>
                     <GridListTileBar
-                      title={stringData[parseInt(key)].name}
+                      title={window.data[parseInt(key)].name}
                       titlePosition="top"
                       actionIcon={
                         <IconButton
-                          aria-label={`star ${stringData[parseInt(key)].name}`}
+                          aria-label={`star ${window.data[parseInt(key)].name}`}
                           className="favourite-icon"
                           id={key}
                           onClick={deleteFav}

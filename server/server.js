@@ -367,6 +367,18 @@ function startLocalServer(oauth2Client) {
     });
   });
 
+  app.get("/series", async (req, res) => {
+    try {
+      const resp = await axios(
+        "https://boring-northcutt-5fd361.netlify.app/completed-series.json"
+      );
+      //const data = resp.data.filter((item) => item.episodes.length > 0);
+      res.json(resp.data);
+    } catch (error) {
+      res.json([])
+    }
+  });
+
   app.get("/delete/:id", (req, res) => {
     refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
@@ -409,10 +421,12 @@ function startLocalServer(oauth2Client) {
     }
   });
 
-  let downloadingInfo = store.get("downloads");
+  let downloadingInfo = store.get("downloads") ? store.get("downloads") : {};
 
   async function fileDownloader() {
-    let toDownloadList = Object.entries(downloadingInfo).filter(([key, value]) => value.progress === 0);
+    let toDownloadList = Object.entries(downloadingInfo).filter(
+      ([key, value]) => value.progress === 0
+    );
     if (toDownloadList.length === 0) return;
     let firstItemKey = toDownloadList[0][0];
     let firstItemValue = toDownloadList[0][1];
@@ -421,9 +435,7 @@ function startLocalServer(oauth2Client) {
       try {
         var auth = "Bearer ".concat(access_token);
         var folder = __dirname + "/downloaded";
-        var dest = fs.createWriteStream(
-          folder + `/${firstItemValue.name}`
-        );
+        var dest = fs.createWriteStream(folder + `/${firstItemValue.name}`);
         var options = {
           host: "www.googleapis.com",
           path: "/drive/v3/files/" + firstItemValue.id + "?alt=media",

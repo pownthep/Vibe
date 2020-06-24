@@ -25,10 +25,10 @@ import Home from "./components/home";
 import FavouritePage from "./components/favourites";
 import HistoryPage from "./components/history";
 import SettingsPage from "./components/settings";
-import Titlebar from "./components/titlebar";
+//import Titlebar from "./components/titlebar";
 import DrivePage from "./components/drive";
 import DownloadPage from "./components/download";
-import GetAppIcon from '@material-ui/icons/GetApp';
+import GetAppIcon from "@material-ui/icons/GetApp";
 
 const store = window.store ? new window.store() : false;
 
@@ -51,8 +51,6 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    height: "100vh",
-    overflow: "auto",
   },
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -153,11 +151,13 @@ export default function PermanentDrawerLeft() {
     authenticate();
   }, []);
 
+  const Titlebar = React.lazy(() => import("./components/titlebar"));
+
   return (
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {store ? <Titlebar title="" backgroundColor="inherit"/> : <></>}
+          {store ? <Titlebar title="" backgroundColor="inherit" /> : <></>}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />

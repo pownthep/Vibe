@@ -1,12 +1,10 @@
 import React from "react";
 import { ReactMPV } from "mpv.js";
-//import { remote } from "electron";
 import Slider from "@material-ui/core/Slider";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { default as stringData } from "./completed-series.json";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
@@ -185,15 +183,16 @@ class Player extends React.Component {
     // Setup
     this._isMounted = true;
     const id = this.props.match.params.id;
+    console.log(window.location);
     const user = await AuthenticateUser();
-    let arrLength = stringData[id].episodes.length;
+    let arrLength = window.data[id].episodes.length;
     let tmp = [];
 
     // Get episodes
     if (arrLength > 0 && this._isMounted) {
       for (let i = 0; i < arrLength; i++) {
         if (this._isMounted) {
-          const url = stringData[id].episodes[i];
+          const url = window.data[id].episodes[i];
           const res = await fetch("http://127.0.0.1:9001/list/" + url);
           const json = await res.json();
           tmp = tmp.concat(json);
@@ -205,7 +204,7 @@ class Player extends React.Component {
     // Set state if the component is mounted
     if (this._isMounted) {
       this.setState({
-        data: stringData[id],
+        data: window.data[id],
         episodes: tmp,
         epList: tmp,
         auth: user,
@@ -444,7 +443,7 @@ class Player extends React.Component {
               src={
                 store
                   ? "http://localhost:9001/img/?url=" +
-                    stringData[this.props.match.params.id].banner
+                  window.data[this.props.match.params.id].banner
                   : this.state.data.banner
               }
               alt={this.state.data.title + "-banner"}

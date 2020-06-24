@@ -1,5 +1,5 @@
 :root {
-  --scroll-thumb-color: #11cb5f;
+  --scroll-thumb-color: #11111133;
 }
 body {
   margin: 0;
@@ -67,7 +67,7 @@ button {
   height: 540px;
   margin: 0 auto; 
   width: 960px;
-  border-radius: 10px;
+  background-color: transparent;
 }
 
 .banner {

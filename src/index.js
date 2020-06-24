@@ -1,14 +1,11 @@
 import React from "react";
-import { hydrate, render } from "react-dom";
+import { render } from "react-dom";
 import "./index.css";
 import App from "./App";
+import Landing from "./components/landing";
 
-const rootElement = document.getElementById("root");
-if (rootElement.hasChildNodes()) {
-  hydrate(<App />, rootElement);
-} else {
-  render(<App />, rootElement);
-}
+if (window.store) render(<App />, document.getElementById("root"));
+else render(<Landing />, document.getElementById("root"));
 
 //import * as serviceWorker from "./serviceWorker";
 

@@ -19,7 +19,10 @@ import Loader from "./loader";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    maxHeight: "75vh",
     backgroundColor: theme.palette.background.paper,
+    overflow: "auto",
+    position: "relative",
   },
   inline: {
     display: "inline",
@@ -63,13 +66,8 @@ export default function Download() {
     let eventSource = new EventSource("http://localhost:9001/downloading");
     eventSource.onmessage = (e) => {
       let json = JSON.parse(e.data);
-      // let data = Object.values(json).filter(
-      //   (value) => value.progress !== Number(value.size)
-      // );
       setLoading(false);
       setProgress(json);
-      // if (data.length === 0) {
-      // }
     };
     return () => {
       eventSource.close();
