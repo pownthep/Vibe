@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import MediaCard from "./mediacard";
-import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import ListboxComponent from "./listbox";
-import Pagination from "@material-ui/lab/Pagination";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import ViewModuleIcon from "@material-ui/icons/ViewModule";
 import ViewComfyIcon from "@material-ui/icons/ViewComfy";
@@ -15,43 +12,11 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
-import Loader from "./loader";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "100%",
-    },
-  },
-  gridList: {
-    width: "100%",
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  pagination: {
-    margin: theme.spacing(1),
-    display: "flex",
-    justifyContent: "center",
-  },
-  listbox: {
-    boxSizing: "border-box",
-    "& ul": {
-      padding: 0,
-      margin: 0,
-    },
-  },
-}));
 
 export default function Home() {
   const [anime, setAnime] = useState([]);
   const [value, setValue] = useState(null);
-  const [loading, setLoading] = useState(window.data ? false : true);
   const [mounted, setMounted] = useState(true);
-  var filteredData = [];
   var containerWidth = 480;
   var itemPerRow = 1;
 
@@ -90,41 +55,15 @@ export default function Home() {
       const result = anime.filter((item) => item.id === value.id);
       if (mounted) setAnime(result);
     } else {
-      if (mounted) setAnime(filteredData);
+      if (mounted) setAnime(window.data);
     }
     return () => {
       setMounted(false);
     };
   }, [value]);
 
-  useEffect(() => {
-    if (window.data) {
-      filteredData = window.data.filter((item) => item.episodes.length > 0);
-      if (mounted) setAnime(filteredData);
-      return;
-    }
-    (async () => {
-      try {
-        const res = await fetch("http://localhost:9001/series");
-        const json = await res.json();
-        window.data = json;
-        filteredData = json.filter((item) => item.episodes.length > 0);
-        if (mounted) {
-          setAnime(filteredData);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-    return () => {
-      setMounted(false);
-    };
-  }, []);
-
   return (
     <>
-      {loading ? <Loader /> : <></>}
       <Autocomplete
         id="virtualize-demo"
         style={{
@@ -144,7 +83,6 @@ export default function Home() {
         renderInput={(params) => (
           <TextField
             {...params}
-            //variant="filled"
             size="small"
             label="Search"
           />
@@ -199,8 +137,6 @@ export default function Home() {
               containerWidth = width;
               itemPerRow = Math.floor(containerWidth / 480);
               var rowCount = Math.ceil(anime.length / itemPerRow);
-              console.log("itemPerRow:", itemPerRow);
-              console.log("itemCount:", rowCount);
               return (
                 <List
                   className="List"
@@ -218,13 +154,6 @@ export default function Home() {
       ) : (
         <></>
       )}
-      {/* <div className={classes.pagination}>
-        <Pagination
-          count={Math.ceil(orderedList.length / itemCount)}
-          page={page}
-          onChange={handleChangePage}
-        />
-      </div> */}
     </>
   );
 }

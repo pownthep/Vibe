@@ -25,7 +25,6 @@ import Home from "./components/home";
 import FavouritePage from "./components/favourites";
 import HistoryPage from "./components/history";
 import SettingsPage from "./components/settings";
-//import Titlebar from "./components/titlebar";
 import DrivePage from "./components/drive";
 import DownloadPage from "./components/download";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -111,13 +110,6 @@ export default function PermanentDrawerLeft() {
       label: "Downloader",
       icon: <GetAppIcon />,
     },
-    // {
-    //   path: "/offline",
-    //   exact: true,
-    //   component: OfflinePage,
-    //   label: "Offline",
-    //   icon: <OfflinePinIcon />,
-    // },
     {
       path: "/drive",
       exact: true,
@@ -142,13 +134,15 @@ export default function PermanentDrawerLeft() {
   ];
 
   useEffect(() => {
-    if (!store) return;
-    const authenticate = async () => {
-      const res = await fetch("http://localhost:9001/authenticate");
-      const auth = await res.json();
-      store.set("auth", auth);
-    };
-    authenticate();
+    (async () => {
+      try {
+        const authRes = await fetch("http://localhost:9001/authenticate");
+        const auth = await authRes.json();
+        store.set("auth", auth);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
   }, []);
 
   const Titlebar = React.lazy(() => import("./components/titlebar"));
@@ -180,7 +174,6 @@ export default function PermanentDrawerLeft() {
                         <ListItemIcon classes={{ root: classes.navIcon }}>
                           {route.icon}
                         </ListItemIcon>
-                        {/* <ListItemText primary={route.label} /> */}
                       </ListItem>
                     </Link>
                   ))}

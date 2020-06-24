@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   banner: {
     width: "100%",
     height: 230,
-    objectFit: "cover"
+    objectFit: "cover",
   },
 }));
 
@@ -69,9 +69,9 @@ export default function Favourites() {
                       <img
                         src={
                           "http://localhost:9001/img/?url=" +
-                          window.data[parseInt(key)].banner
+                          window.data[parseInt(key)] ? window.data[parseInt(key)].banner:""
                         }
-                        alt={window.data[parseInt(key)].name}
+                        alt="cover"
                         className={classes.banner}
                       />
                     </Link>

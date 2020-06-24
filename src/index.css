@@ -35,7 +35,7 @@ a {
   opacity: 0;
   transition: opacity 300ms ease-in-out;
   color: white;
-  /* background-color: rgba(0, 0, 0, 0.705); */
+  background-color: rgba(0, 0, 0, 0.705);
 }
 
 .controls:hover {

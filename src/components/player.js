@@ -33,7 +33,6 @@ import ListboxComponent from "./listbox";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Fab from "@material-ui/core/Fab";
-import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -133,7 +132,7 @@ class Player extends React.Component {
       anchorEl: null,
       favourited: true,
       snackOpen: false,
-      snackMessage: "Test message"
+      snackMessage: "Test message",
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -168,11 +167,17 @@ class Player extends React.Component {
       "http://localhost:9001/add_to_download_queue/" + id
     );
     const data = await res.json();
-    if(data.error) {
-      this.setState({snackOpen: true, snackMessage: "Sorry, there was an error"});
-    }
-    else if(data.downloaded) this.setState({snackOpen: true, snackMessage: "You've already downloaded this"});
-    else this.setState({snackOpen: true, snackMessage: "Added to download"});
+    if (data.error) {
+      this.setState({
+        snackOpen: true,
+        snackMessage: "Sorry, there was an error",
+      });
+    } else if (data.downloaded)
+      this.setState({
+        snackOpen: true,
+        snackMessage: "You've already downloaded this",
+      });
+    else this.setState({ snackOpen: true, snackMessage: "Added to download" });
   }
 
   handleMenu(e) {
@@ -183,7 +188,6 @@ class Player extends React.Component {
     // Setup
     this._isMounted = true;
     const id = this.props.match.params.id;
-    console.log(window.location);
     const user = await AuthenticateUser();
     let arrLength = window.data[id].episodes.length;
     let tmp = [];
@@ -410,15 +414,6 @@ class Player extends React.Component {
     const { classes } = this.props;
     return (
       <>
-        {this.state.auth ? (
-          <AuthenticationDialog
-            open={!this.state.auth.authenticated}
-            url={this.state.auth.url}
-          />
-        ) : (
-          <></>
-        )}
-
         <div className="title-container">
           <h1 className="anime-title">{this.state.data.name}</h1>
           <h2 className="anime-episode">
@@ -441,10 +436,8 @@ class Player extends React.Component {
               crossOrigin={"anonymous"}
               ref={this.bannerRef}
               src={
-                store
-                  ? "http://localhost:9001/img/?url=" +
-                  window.data[this.props.match.params.id].banner
-                  : this.state.data.banner
+                "http://localhost:9001/img/?url=" +
+                window.data[this.props.match.params.id].banner
               }
               alt={this.state.data.title + "-banner"}
               className="banner"
@@ -735,6 +728,14 @@ class Player extends React.Component {
             </React.Fragment>
           }
         />
+        {this.state.auth ? (
+          <AuthenticationDialog
+            open={!this.state.auth.authenticated}
+            url={this.state.auth.url}
+          />
+        ) : (
+          <></>
+        )}
       </>
     );
   }

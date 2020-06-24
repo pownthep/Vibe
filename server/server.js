@@ -367,10 +367,34 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/series", async (req, res) => {
+  app.get("/all_series", async (req, res) => {
     try {
       const resp = await axios(
         "https://boring-northcutt-5fd361.netlify.app/completed-series.json"
+      );
+      //const data = resp.data.filter((item) => item.episodes.length > 0);
+      res.json(resp.data);
+    } catch (error) {
+      res.json([])
+    }
+  });
+
+  app.get("/filtered_series", async (req, res) => {
+    try {
+      const resp = await axios(
+        "https://boring-northcutt-5fd361.netlify.app/filtered.json"
+      );
+      //const data = resp.data.filter((item) => item.episodes.length > 0);
+      res.json(resp.data);
+    } catch (error) {
+      res.json([])
+    }
+  });
+
+  app.get("/reduced_series", async (req, res) => {
+    try {
+      const resp = await axios(
+        "https://boring-northcutt-5fd361.netlify.app/reduced.json"
       );
       //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);

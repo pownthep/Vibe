@@ -35,6 +35,7 @@ function createWindow() {
     webPreferences: {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
+      enableRemoteModule: true
     },
     icon: path.join(__dirname, "assets/icon.ico"),
   });

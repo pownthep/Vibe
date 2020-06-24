@@ -57,7 +57,6 @@ LinearProgressWithLabel.propTypes = {
 };
 
 export default function Download() {
-  const store = new window.store();
   const classes = useStyles();
   const [progress, setProgress] = React.useState({});
   const [loading, setLoading] = React.useState(true);
