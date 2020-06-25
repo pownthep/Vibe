@@ -12,9 +12,6 @@ const prettyBytes = require("pretty-bytes");
 const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
-//var FlexSearch = require("flexsearch");
-//const searchData = require("./completed-series.json");
-//console.log(searchData);
 
 // Express setup
 app.use(cors());
@@ -33,32 +30,21 @@ var PORT = 9001;
 var data = {};
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
+const DL_DIR = __dirname + "/downloaded/";
 let authStatus;
 let isLatest = false;
-// var index = new FlexSearch("speed");
-
-// console.time("creating index");
-// searchData.map((item) => {
-//   index.add(item.id, item.name);
-// });
-// console.timeEnd("creating index");
-
-// console.time("searching index");
-// index.search("hero", function (result) {
-//   //result.map((id) => console.log(searchData[id]));
-//   console.log(result.length);
-// });
-// console.timeEnd("searching index");
-
-// console.time("searching json");
-// const result = searchData.filter((item) => item.name.toLowerCase().includes("hero"));
-// console.log(result.length);
-// console.timeEnd("searching json");
 
 // Check for img dir or create one
 fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
   if (err)
     fs.mkdir(IMG_DIR, (err) => {
+      if (err) console.error(err);
+    });
+});
+
+fs.access(DL_DIR, fs.constants.F_OK, (err) => {
+  if (err)
+    fs.mkdir(DL_DIR, (err) => {
       if (err) console.error(err);
     });
 });
@@ -375,7 +361,7 @@ function startLocalServer(oauth2Client) {
       //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);
     } catch (error) {
-      res.json([])
+      res.json([]);
     }
   });
 
@@ -387,7 +373,7 @@ function startLocalServer(oauth2Client) {
       //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);
     } catch (error) {
-      res.json([])
+      res.json([]);
     }
   });
 
@@ -399,7 +385,7 @@ function startLocalServer(oauth2Client) {
       //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);
     } catch (error) {
-      res.json([])
+      res.json([]);
     }
   });
 
