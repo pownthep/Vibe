@@ -31,3 +31,4 @@ Vibe-win32-x64
 vibe-view
 /server/cached.json
 /server/server.bundle.js
+/dist
