@@ -1,5 +1,48 @@
 {
-  "files": [],
+  "files": [
+    {
+      "id": "19QfYB13DIlScZU9LNmaJ5IrIiNkWoB93",
+      "name": "12. All Might.mkv",
+      "size": "341 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/Zk5iA9RIFlORAlyaYPv-Za_AsaQiqRwf9nd5V4vZKwtqtysorCQML0xlxKFJWlJK6A0-Qy9RRck=s220"
+    },
+    {
+      "id": "1twZVV1CXGsg7pg2Fxv6VEjotiiUwIgJ6",
+      "name": "88. His Start.mkv",
+      "size": "341 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/iqlpIZOPO9MGR5I1D3gmXswvChY74uMWEr5yJ8ikIsxPUTxUObFmJHMXGx5bD1RjgLeyYMdJu90=s220"
+    },
+    {
+      "id": "1UOPbyCl7ydoVjgnC8ckSLvJj3ha349Q3",
+      "name": "07. The Investigation of the 1st Commences.mkv",
+      "size": "240 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/DnQLkzbGUq7O1P05HSOqA5AVebk1W8NFqCrDJaQSST4flcJ8ExLb0LFPXExsvpRp3dx8XvOABpk=s220"
+    },
+    {
+      "id": "1AS--YJHolmSEDkf6E2Tjk-Gv-2iy4Uz7",
+      "name": "119 - Realm of the Abyss.mkv",
+      "size": "231 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/WYDfBDKY1SAsRWG0wG3Yg34dSmeNvH06IENtYV2JC-xZz0-YDDw84igZTkGzbfJQZnzhfjbaMGY=s220"
+    },
+    {
+      "id": "10yVbdIiphH9RMovKI_A7wEix4Y5y0Vy1",
+      "name": "118 - The Man Without an Emblem.mkv",
+      "size": "227 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/nqWtKtKa3IP0xKo-45jlMHn4aURJN-oxvSrzPa3Wovt2KFQi_LWWkY2xEeZv9_Gs_B3AFNsIiPM=s220"
+    },
+    {
+      "id": "1H3lNyhCHxfyYjF4L23TpH3GZcOq-mBRY",
+      "name": "120 - Daybreak on Tenrou Island.mkv",
+      "size": "187 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/rJrTPy1K5GJ0-FXrV9pkEJGCSs02KgW9MsG_Fntrtac6dROLF6duKedhyvHsj8eSbudHweA_CPE=s220"
+    },
+    {
+      "id": "14MluRn8KZWsZVObwT7z5v_17dGEXDZyp",
+      "name": "A Silent Voice.mkv",
+      "size": "1.8 GB",
+      "thumbnail": "https://lh3.googleusercontent.com/JU0VNvbeNh8i14Ks0tsMnrCdY8RprX0GpoubGfOXsGYnWV_JvqElw5-j9e5G758J3UwbVMX3V3U=s220"
+    }
+  ],
   "series": {
     "1d4LLdscwge9oRhUJZt68YvHFo2EhJ3vX": [
       {
@@ -9225,6 +9268,472 @@
       {
         "id": "1RArWyBJCeu7D1krQDMzgyuvM-S1HtRNU",
         "name": "12. How to Use a Victory.mkv"
+      }
+    ],
+    "19OfurQD0LFXQ0Nbg1yL9GDpQ713qc3nr": [
+      {
+        "id": "1yEogjIG0Jge1d-RWLdBDqJKd3slOK-bq",
+        "name": "Your Name..mkv"
+      }
+    ],
+    "1iHmV4Y0JmfNa_NLpZU0uNNiTMHJYkvB1": [
+      {
+        "id": "1z9f1SRZf_Z1BUs247xksQRyHDXXoPwP0",
+        "name": "A Silent Voice.mkv"
+      }
+    ],
+    "1aJiyweksNeuahshlJkBqr9e5OgNbFIGN": [
+      {
+        "id": "1NiVKHv1ikM4Zhsvjq5_br4VWOpI8STlN",
+        "name": "01. Somewhere not here.mkv"
+      },
+      {
+        "id": "1hcZ2UZ68b6eOgD7rvO_NCiMZqw0Hy7L_",
+        "name": "02. Sword.mkv"
+      },
+      {
+        "id": "10684Aah7d7NdKncvUF8yf1Wav7VI0NBj",
+        "name": "03. Troll.mkv"
+      },
+      {
+        "id": "1MhZezgSihZ_hsp-jmLDM9YUCLM3IAodp",
+        "name": "04. A True Warrior.mkv"
+      },
+      {
+        "id": "1SVAQOK-S1xrsfc1-MRdRk4CfSWl1zVUp",
+        "name": "05. The Troll's Son.mkv"
+      },
+      {
+        "id": "1OYVdIMyWnzBkwCAJKq7fpnyvUuhmGDp4",
+        "name": "06. The Journey Begins.mkv"
+      },
+      {
+        "id": "11RTxl-578xQvCF9_7hCPXSwn1JgCKuhD",
+        "name": "07. Normanni.mkv"
+      },
+      {
+        "id": "1byj-amXTQ4v_QhlZ7E5Ugsvu1GNsM4pH",
+        "name": "08. Beyond the Edge of the Sea.mkv"
+      },
+      {
+        "id": "1Wa-3MVUs3DTvN2ilUmfzQTPcKv-VyZtT",
+        "name": "09. The Battle of London Bridge.mkv"
+      },
+      {
+        "id": "1UWjjG6720q7hJsnjUHuSgVcUI0L210hQ",
+        "name": "10. Ragnarok.mkv"
+      },
+      {
+        "id": "1yG5iFAalKbp0iP7ezne0x2ZlOW5xX3rd",
+        "name": "11. A Gamble.mkv"
+      },
+      {
+        "id": "1t7IR7hs8U5g7Rj7UcI8QJAtXtxa7XHJp",
+        "name": "12. The Land on the Far Bank.mkv"
+      },
+      {
+        "id": "19M63ydnZ15l_2dFRs-Att9khoDbkySd7",
+        "name": "13. Child of a Hero.mkv"
+      },
+      {
+        "id": "1Gi98AWpcPE-7YFoNXYMTp2JPGokkdBrp",
+        "name": "14. The Light of Dawn.mkv"
+      },
+      {
+        "id": "1RndjBpFg_L1b39V3I2cs-VGUAgP87BaX",
+        "name": "15. After Yule.mkv"
+      },
+      {
+        "id": "1aDW840g12KvyoKZVcFG08l8bnuQ75Hsb",
+        "name": "16. History of Beasts.mkv"
+      },
+      {
+        "id": "1rNobkP78k4USEPgpnVZN1vudbY6Yfywf",
+        "name": "17. Servant.mkv"
+      },
+      {
+        "id": "1jL0xSYzmgxCYrbjeOn8AZRddNlQ4a_th",
+        "name": "18. Out of the Cradle.mkv"
+      },
+      {
+        "id": "1EbAgspaiFw1hr-0hSBhwQ7808hqPF97-",
+        "name": "19. United Front.mkv"
+      },
+      {
+        "id": "18o_zfyoEyxo9Kektae3CyD_ON3CcrpKb",
+        "name": "20. Crown.mkv"
+      },
+      {
+        "id": "1YisjMbrBtzifF4aTxlIyZ1CUhzyQGIeh",
+        "name": "21. Reunion.mkv"
+      },
+      {
+        "id": "1cDo3jctWZoRp8uEJEzO7wXxYrkRo0k9k",
+        "name": "22. Lone Wolf.mkv"
+      },
+      {
+        "id": "1QVU7dzWnT3Z3yMtteqPWBm8y1Xta0ACN",
+        "name": "23. Miscalculation.mkv"
+      },
+      {
+        "id": "1fgAgEbzOf6pgTzqrngreRmKxZqzbF_eP",
+        "name": "24. End of the Prologue.mkv"
+      }
+    ],
+    "1aYPbtWMWPA8aog5VYRVYAUlAdiudQ_9j": [
+      {
+        "id": "18WX4rxGYWqBW0q8jfMFOf1jkHdgwUkrt",
+        "name": "Nichijou - 01.mkv"
+      },
+      {
+        "id": "1VZf6SQxzCYJh-mCaDGGrq7CSDlMWoPtY",
+        "name": "Nichijou - 02.mkv"
+      },
+      {
+        "id": "1jiTjoHlxQka7YXLWyNgu3w5lsSIRTz_q",
+        "name": "Nichijou - 03.mkv"
+      },
+      {
+        "id": "1hjvjF7Zcm3ZgyMefIClDcKN2XZm3KMmN",
+        "name": "Nichijou - 04.mkv"
+      },
+      {
+        "id": "1AsmXgWHXt7QPLtcWWhOoLpLe2TYINDCD",
+        "name": "Nichijou - 05.mkv"
+      },
+      {
+        "id": "1W5PMJIZWAVsod9TeLej1Mfk8x4N4vYx5",
+        "name": "Nichijou - 06.mkv"
+      },
+      {
+        "id": "10EeYFdIubNgOfGYb2MsbAMbEL27Ad_Yu",
+        "name": "Nichijou - 07.mkv"
+      },
+      {
+        "id": "1eGS9hOzNhDMg3vc-KkySzO7UFQoWidR5",
+        "name": "Nichijou - 08.mkv"
+      },
+      {
+        "id": "1u8YQG26dMRHa3HHCPq7GI1j_8XBn0V8d",
+        "name": "Nichijou - 09.mkv"
+      },
+      {
+        "id": "1u10O024lhZan4Rj7tYdhB9CoiYAN0hIw",
+        "name": "Nichijou - 10.mkv"
+      },
+      {
+        "id": "1Pg9TUWxwEr5PXhedSlY9QM3rC_Up1v8L",
+        "name": "Nichijou - 11.mkv"
+      },
+      {
+        "id": "1O14gQdRRpO4pxKC-bwanwFsmKSFKoqnC",
+        "name": "Nichijou - 12.mkv"
+      },
+      {
+        "id": "1jAUGVuEPR9L7BsLBVCnemXC6tsf-LytQ",
+        "name": "Nichijou - 13.mkv"
+      },
+      {
+        "id": "1999-v-huu4fEXroiwSR9C5MlTmB07txl",
+        "name": "Nichijou - 14.mkv"
+      },
+      {
+        "id": "1jvvqliJpp3E4rGzYXTbj92ZSQrHvHeCl",
+        "name": "Nichijou - 15.mkv"
+      },
+      {
+        "id": "1Y6Dlg22J2C2yGrfLxtSLl7J61QKhHdtn",
+        "name": "Nichijou - 16.mkv"
+      },
+      {
+        "id": "1dcnCEHSEeoMihaLHdI9QWkBOb2rZlYgy",
+        "name": "Nichijou - 17.mkv"
+      },
+      {
+        "id": "1ezFKa3aUDNJ1FJ0lOeGL5Tej4eKIw5Ov",
+        "name": "Nichijou - 18.mkv"
+      },
+      {
+        "id": "1Jm1RfMrTqCctpF3oFoEmcMQJbyqKz1VJ",
+        "name": "Nichijou - 19.mkv"
+      },
+      {
+        "id": "1qcFkjS49JLMZ6Ckgq4RlBVGbvQdfLXPQ",
+        "name": "Nichijou - 20.mkv"
+      },
+      {
+        "id": "1yajlbj_SDOSCuB55NyciZxDCJ3ZBrv-_",
+        "name": "Nichijou - 21.mkv"
+      },
+      {
+        "id": "1cvkOZILfugH2pi_EgAYpCbGLpY4Tmszy",
+        "name": "Nichijou - 22.mkv"
+      },
+      {
+        "id": "18Fuh_stCMOP-pRtCQzxtSJJ38Qjm31vG",
+        "name": "Nichijou - 23.mkv"
+      },
+      {
+        "id": "1a1Kzpea7NqafMzBDZtaW2TjdPLP4LMU2",
+        "name": "Nichijou - 24.mkv"
+      },
+      {
+        "id": "1rJpBEIM4kZ7rZTt74B35h15DJcbyjnXg",
+        "name": "Nichijou - 25.mkv"
+      },
+      {
+        "id": "17-gl1lhp8fjhG3JrKx6nax7mEwrhd0Fi",
+        "name": "Nichijou - 26.mkv"
+      }
+    ],
+    "1By6gntR-NFndgC5V_EDjPu20PaFJFoB2": [
+      {
+        "id": "1mKj8QG92d8FawRcAoK-czCx5HrryBfEi",
+        "name": "01. Stone World.mkv"
+      },
+      {
+        "id": "1UKbR1cmyKhRDcrK5_2aFBPGEP_m7K0qd",
+        "name": "02. King of the Stone World.mkv"
+      },
+      {
+        "id": "1xGmVZx1zE8zawvTH9Br3krdTy4q9dv6r",
+        "name": "03. Weapons of Science.mkv"
+      },
+      {
+        "id": "19gA_nUDk972CHoAldTSpXa3AiGeUli0J",
+        "name": "04. Fire the Smoke Signal.mkv"
+      },
+      {
+        "id": "1Kb_BnOZGS24mJEjeBAKI4CGZDrN9yt6F",
+        "name": "05. Stone World the Beginning.mkv"
+      },
+      {
+        "id": "1f9JTueM3d8A1RkmVo4_dRkTGFG8BDNqy",
+        "name": "06. Two Nations of the Stone World.mkv"
+      },
+      {
+        "id": "1a01Ke3kd-GUwMLzKspueaNEjdScoOb4C",
+        "name": "07. Where Two Million Years Have Gone.mkv"
+      },
+      {
+        "id": "1odbqrsxt1ac76S_oenX6xO4wibK1ZEme",
+        "name": "08. Stone Road.mkv"
+      },
+      {
+        "id": "1JUnNtnMZ65kOBQ64P_ASlE-xAkk57B1r",
+        "name": "09. Let There Be the Light of Science.mkv"
+      },
+      {
+        "id": "1_NH1kfTQAOCN1j8sAufJhd3kEqc9Sqqx",
+        "name": "10. A Flimsy Alliance.mkv"
+      },
+      {
+        "id": "1NF02teyvYFqSKlmq-5lBG0bcZoYXBmDS",
+        "name": "11. Clear World.mkv"
+      },
+      {
+        "id": "1ocxW-8saAG-iWIyjYLKQF-BdH5L-HDY2",
+        "name": "12. Buddies Back to Back.mkv"
+      },
+      {
+        "id": "1xazQCg9b8Gi9DaMdrNAvLrlxFdid-h2X",
+        "name": "13. Masked Warrior.mkv"
+      },
+      {
+        "id": "1hxUO4h31d7OSnlTj1-m2684dAf0q5p62",
+        "name": "14. Master of Flame.mkv"
+      },
+      {
+        "id": "1-8Kjvgoezj91wW2qYz3KRCpx8mv3fTi4",
+        "name": "15. The Culmination of Two Million Years.mkv"
+      },
+      {
+        "id": "1e7voPVCAr-ZSi0ZuuZf2jl6oO7Sl-4Fp",
+        "name": "16. A Tale for the Ages.mkv"
+      },
+      {
+        "id": "1dZe1-io88sDFaZ6YbCLowz2OFERD9JOg",
+        "name": "17. A Hundred Nights and a Thousand Skies.mkv"
+      },
+      {
+        "id": "1zhSOH9s-ssyPqzDp0yqR9lbnHoqEp-Vr",
+        "name": "18. Stone Wars.mkv"
+      },
+      {
+        "id": "1mcMaDHzFmROkifzDaqt2ihuj2AHyS617",
+        "name": "19. To Modernity.mkv"
+      },
+      {
+        "id": "1OslhMYHqkiReH-wFDzfGYQhKStivfvxI",
+        "name": "20. The Age of Energy.mkv"
+      },
+      {
+        "id": "1HZfkSIub0_QSF2I7tvnwb6FpDHotRYrh",
+        "name": "21. Spartan Crafts Club.mkv"
+      },
+      {
+        "id": "1OwW93aKJUyyDF1JAhPNsbiZbAhJvAbVZ",
+        "name": "22. The Treasure.mkv"
+      },
+      {
+        "id": "19OuhpTYCp9j3numlLuTQVzQ20MPTtgkp",
+        "name": "23. Wave of Science.mkv"
+      },
+      {
+        "id": "1oNg2hfjfV5C6Ol09G7Ol0LNGz-Mjen88",
+        "name": "24. Voices Over Infinite Distance.mkv"
+      }
+    ],
+    "1m0YN0GoIp97b7rmwyLZfxwcRhlK2b7G7": [
+      {
+        "id": "1RINUSHa0LhU5_8j8Y2XFpeCBtTaDSPPz",
+        "name": "01 - If Only I Had Thorns Like a Thistle.mkv"
+      },
+      {
+        "id": "1lS3mKaY4p6BF1t6jvBA0Xg1bLJv8gMac",
+        "name": "02 - So Sexy She Might Pass Out.mkv"
+      },
+      {
+        "id": "1RdzMBvmY-CouzZqhqNOYh_3NTT_b8RWP",
+        "name": "03 - Junketsu.mkv"
+      },
+      {
+        "id": "12Dc56EyKUhlh8fADqL14cdCMK_ZXldhN",
+        "name": "04 - Dawn of a Miserable Morning.mkv"
+      },
+      {
+        "id": "1Dj7bgnPYfdZV_0fvryOKKVpH39EFmJFY",
+        "name": "05 - Trigger.mkv"
+      },
+      {
+        "id": "112TJil70Vh3Z1JDQo8duR47jmY_OOhQh",
+        "name": "06 - Don't Toy With Me on a Whim.mkv"
+      },
+      {
+        "id": "1MF-imVNtRfPgqgVUewpYPBxbdQ8bOz8w",
+        "name": "07 - A Loser I Can't Hate.mkv"
+      },
+      {
+        "id": "1aA6E7fMbzPVOLkxxTHjIWtZammkxKclO",
+        "name": "08 - I'll Wipe My Own Tears.mkv"
+      },
+      {
+        "id": "1W3V-TxO5oz_LSWrd-yS92lGKB6vanBfV",
+        "name": "09 - A Once in a Lifetime Chance.mkv"
+      },
+      {
+        "id": "1TpVLRxHex1-5HUFfyiXslLYmeFA2gD90",
+        "name": "10 - I Want to Know More About You.mkv"
+      },
+      {
+        "id": "1eRIEq4TL08t-nAqJWUDN-sgwuLm_OLYe",
+        "name": "11 - I'm Not Your Cute Woman.mkv"
+      },
+      {
+        "id": "1udkOTejWdnUXzGt-zIyh33MRgH-l3t9Y",
+        "name": "12 - Spit Your Sadness Away.mkv"
+      },
+      {
+        "id": "1_MjbYDZQBslc82cmXUA-AeQVKT9Z2rX0",
+        "name": "13 - Crazy for You.mkv"
+      },
+      {
+        "id": "1ga3FbHP3vySgimIBlbTn4_WSAT449VtV",
+        "name": "14 - Ride Like the Wind.mkv"
+      },
+      {
+        "id": "1EO-tnPTe8qHIuwxcUgL89_-oc_lgUO06",
+        "name": "15 - Don't Stop Me Now.mkv"
+      },
+      {
+        "id": "1lamd-w8eiTwoWIfSD5JgfUcRlbrI3vyS",
+        "name": "16 - The Girl Can't Help It.mkv"
+      },
+      {
+        "id": "1zYapXoOUug5IEwKRORMg6YBZwziETuS-",
+        "name": "17 - Tell Me Why.mkv"
+      },
+      {
+        "id": "1MzpfidU5EfMwwYK_GrIJQbm4CooSR3q0",
+        "name": "18 - Into the Night.mkv"
+      },
+      {
+        "id": "1m2j1OrQqDYPJE5E0sQ6qnae2vsQ5s0C_",
+        "name": "19 - Raindrops Keep Falling on My Head.mkv"
+      },
+      {
+        "id": "1pBLiBwBlQrPab2M1iARLiceclZOL5mxW",
+        "name": "20 - Far from the Madding Crowd.mkv"
+      },
+      {
+        "id": "1_-dtxOrCZZ70c91tGTRImiGWDOE1O9oQ",
+        "name": "21 - Incomplete.mkv"
+      },
+      {
+        "id": "1q1hG-W146ftCZYXJL_5YXHRWDwnAE_eU",
+        "name": "22 - Tell Me How You Feel.mkv"
+      },
+      {
+        "id": "1tjLD07Jo3cfhME5SAWjAGvsN5HYbPbaK",
+        "name": "23 - Imitation Gold.mkv"
+      },
+      {
+        "id": "1wWieVisp3sif93NWfZGfVzyYk78SVR66",
+        "name": "24 - Past the Infinite Darkness.mkv"
+      },
+      {
+        "id": "1DUwawTVOxeI1kB7cqZOuFa_K6Oh1trg6",
+        "name": "Series Recap - Digest - Naked Memories by Aikuro Mikisugi.mkv"
+      }
+    ],
+    "19fT6S-VMrhyRLyxKeDAe8KyzsFskMrNo": [
+      {
+        "id": "1NgBFcCahxO16umOsfdfVxDby6-aYGgAV",
+        "name": "01. A Housecat, a Stray God, and a Tail.mkv"
+      },
+      {
+        "id": "1F4HmCc47ndaQ9MkvKq_MVicG0ApQi85X",
+        "name": "02. Snowlike.mkv"
+      },
+      {
+        "id": "1NLQahMMUrucIzMQ-_4gNPoMy167k41Yw",
+        "name": "03. Bidden Calamity.mkv"
+      },
+      {
+        "id": "1cVlXwPpkMTkAO-JKcApvwPRPuAS93pFx",
+        "name": "04. Where Happiness Lies.mkv"
+      },
+      {
+        "id": "1QTjBEJG1yEyomWw_bZbICfD6Eegu7X7m",
+        "name": "05. Borderline.mkv"
+      },
+      {
+        "id": "1_IHUeYxBpiWppn2CORxETcLNZOz_SOl7",
+        "name": "06. Scary Person.mkv"
+      },
+      {
+        "id": "1i5V-lV_LE2tzGtaEMFqMmWQfDgIMyfVX",
+        "name": "07. Uncertainty & Destiny.mkv"
+      },
+      {
+        "id": "1AjiJSDwfmK74ci4VKO5c2zlL1bPmmu5g",
+        "name": "08. Over the Line.mkv"
+      },
+      {
+        "id": "119uQb__KcbV4CtzHSKdHHGzzNWlarmnq",
+        "name": "09. Name.mkv"
+      },
+      {
+        "id": "1hJFYE3tgn8mCin0AE8_8qXPAhpcmJFI3",
+        "name": "10. Regarded with Hate.mkv"
+      },
+      {
+        "id": "1XPoZ_U1-60MLNtdJKNIzPmhS9CcsTZY-",
+        "name": "11. Abandoned God.mkv"
+      },
+      {
+        "id": "1pxHRtj9vJd9jE3yUvlJ8ijXDqznRoo5K",
+        "name": "12. Scrap of a Memory.mkv"
       }
     ]
   },

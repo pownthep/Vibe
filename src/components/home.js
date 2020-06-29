@@ -51,11 +51,12 @@ export default function Home() {
   };
 
   useEffect(() => {
+    console.log(value);
     if (value) {
       const result = anime.filter((item) => item.id === value.id);
-      if (mounted) setAnime(result);
+      setAnime(result);
     } else {
-      if (mounted) setAnime(window.data);
+      setAnime(window.data);
     }
     return () => {
       setMounted(false);
@@ -81,11 +82,7 @@ export default function Home() {
         options={anime}
         getOptionLabel={(option) => option.name}
         renderInput={(params) => (
-          <TextField
-            {...params}
-            size="small"
-            label="Search"
-          />
+          <TextField {...params} size="small" label="Search" />
         )}
         renderOption={(option, { inputValue }) => {
           const matches = match(option.name, inputValue);
