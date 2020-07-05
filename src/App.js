@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerBg: {},
   noBorder: {
-    borderRight: "0px",
+    borderRight: "1px",
   },
 }));
 

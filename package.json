@@ -10,8 +10,8 @@
   },
   "description": "Stream and download videos from google drive in an instant. No ads. No bullshit.",
   "author": {
-    "name": "'pownthep'",
-    "email": "'pownthepofficial@gmail.com'"
+    "name": "pownthep",
+    "email": "pownthepofficial@gmail.com"
   },
   "license": "MIT",
   "scripts": {
@@ -21,7 +21,7 @@
     "server": "nodemon ./server/server.js",
     "electron-dev": "SET DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
     "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded)\"",
-    "pack-all": "npm run build && npm run bundle-server && electron-packager . all --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded)\"",
+    "pack-all": "npm run build && npm run bundle-server && electron-packager . --all --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded)\"",
     "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/server.js > ./server/server.bundle.js",
     "build-test": "electron .",
     "setup": "electron-installer-windows --src vibe-win32-x64/ --dest dist/installers/"

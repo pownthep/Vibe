@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
   thumbnail: {
     marginRight: 5,
     position: "relative",
+    width: "100%",
+    height: "inherit",
   },
   playBtn: {
     position: "absolute",
@@ -30,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
     transform: " translate(-50%, -50%)",
   },
   listItemContainer: {
-    height: 190,
+    height: 162,
     display: "grid",
-    gridTemplateColumns: "200px auto",
+    gridTemplateColumns: "300px auto",
   },
   historyInfo: {
     width: "100%",
-    height: 190,
+    height: 162,
     paddingLeft: 10,
   },
   bgIcon: {
@@ -89,7 +91,7 @@ export default function History() {
                 <img
                   alt={rowItem.title}
                   className={classes.thumbnail}
-                  src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}=w200-h190-p-k-nu-iv1`}
+                  src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`}
                 />
                 <div className={classes.playBtn}>
                   <Tooltip title="Continue watching" placement="right-start">
@@ -104,10 +106,14 @@ export default function History() {
                 </div>
               </div>
               <div className={classes.historyInfo}>
-                <h2>{rowItem.title + " - " + toDate(rowItem.currentTime)}</h2>
-                {` Episode: ${fmtName(rowItem.ep)} - ${toHHMMSS(
-                  rowItem.timePos
-                )}`}
+                <h2 style={{ margin: 0 }}>
+                  {rowItem.title +
+                    " - " +
+                    ` Episode: ${fmtName(rowItem.ep)} - ${toHHMMSS(
+                      rowItem.timePos
+                    )}`}
+                </h2>
+                {toDate(rowItem.currentTime)}
               </div>
             </div>
           </Grow>

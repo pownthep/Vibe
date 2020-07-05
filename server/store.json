@@ -1,46 +1,10 @@
 {
   "files": [
     {
-      "id": "19QfYB13DIlScZU9LNmaJ5IrIiNkWoB93",
-      "name": "12. All Might.mkv",
-      "size": "341 MB",
-      "thumbnail": "https://lh3.googleusercontent.com/Zk5iA9RIFlORAlyaYPv-Za_AsaQiqRwf9nd5V4vZKwtqtysorCQML0xlxKFJWlJK6A0-Qy9RRck=s220"
-    },
-    {
-      "id": "1twZVV1CXGsg7pg2Fxv6VEjotiiUwIgJ6",
-      "name": "88. His Start.mkv",
-      "size": "341 MB",
-      "thumbnail": "https://lh3.googleusercontent.com/iqlpIZOPO9MGR5I1D3gmXswvChY74uMWEr5yJ8ikIsxPUTxUObFmJHMXGx5bD1RjgLeyYMdJu90=s220"
-    },
-    {
-      "id": "1UOPbyCl7ydoVjgnC8ckSLvJj3ha349Q3",
-      "name": "07. The Investigation of the 1st Commences.mkv",
-      "size": "240 MB",
-      "thumbnail": "https://lh3.googleusercontent.com/DnQLkzbGUq7O1P05HSOqA5AVebk1W8NFqCrDJaQSST4flcJ8ExLb0LFPXExsvpRp3dx8XvOABpk=s220"
-    },
-    {
-      "id": "1AS--YJHolmSEDkf6E2Tjk-Gv-2iy4Uz7",
-      "name": "119 - Realm of the Abyss.mkv",
-      "size": "231 MB",
-      "thumbnail": "https://lh3.googleusercontent.com/WYDfBDKY1SAsRWG0wG3Yg34dSmeNvH06IENtYV2JC-xZz0-YDDw84igZTkGzbfJQZnzhfjbaMGY=s220"
-    },
-    {
-      "id": "10yVbdIiphH9RMovKI_A7wEix4Y5y0Vy1",
-      "name": "118 - The Man Without an Emblem.mkv",
-      "size": "227 MB",
-      "thumbnail": "https://lh3.googleusercontent.com/nqWtKtKa3IP0xKo-45jlMHn4aURJN-oxvSrzPa3Wovt2KFQi_LWWkY2xEeZv9_Gs_B3AFNsIiPM=s220"
-    },
-    {
-      "id": "1H3lNyhCHxfyYjF4L23TpH3GZcOq-mBRY",
-      "name": "120 - Daybreak on Tenrou Island.mkv",
-      "size": "187 MB",
-      "thumbnail": "https://lh3.googleusercontent.com/rJrTPy1K5GJ0-FXrV9pkEJGCSs02KgW9MsG_Fntrtac6dROLF6duKedhyvHsj8eSbudHweA_CPE=s220"
-    },
-    {
-      "id": "14MluRn8KZWsZVObwT7z5v_17dGEXDZyp",
-      "name": "A Silent Voice.mkv",
-      "size": "1.8 GB",
-      "thumbnail": "https://lh3.googleusercontent.com/JU0VNvbeNh8i14Ks0tsMnrCdY8RprX0GpoubGfOXsGYnWV_JvqElw5-j9e5G758J3UwbVMX3V3U=s220"
+      "id": "1fFswLxgi1lLcLI5FKMYBwmuuBxGcbSQe",
+      "name": "Copy of Demon Slayer - Kimetsu no Yaiba - 01.mkv",
+      "size": "431 MB",
+      "thumbnail": "https://lh3.googleusercontent.com/10bqfml2rsyUAAZB-47WqlmSD41tVCd4B45hb7dllnpLjFEQUE8tq0M2dw_PVVUOt8q07VwU7dc=s220"
     }
   ],
   "series": {
@@ -9834,7 +9798,298 @@
       "headRevisionId": "0B3pg24TcQFQFMnh5bmpPMzBDV1gySFNuSG1PK3BjS1pNY0tJPQ",
       "isAppAuthorized": true
     },
-    "1GumUYQA0pZGgjVpiwk5BOgyd4ic63iY-": "1vO2CBEovxHhYzuxNYlyWGhEHA4nvg1xX"
+    "1GumUYQA0pZGgjVpiwk5BOgyd4ic63iY-": "1vO2CBEovxHhYzuxNYlyWGhEHA4nvg1xX",
+    "1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY": {
+      "kind": "drive#file",
+      "id": "1fFswLxgi1lLcLI5FKMYBwmuuBxGcbSQe",
+      "name": "Copy of Demon Slayer - Kimetsu no Yaiba - 01.mkv",
+      "mimeType": "video/x-matroska",
+      "starred": false,
+      "trashed": false,
+      "explicitlyTrashed": false,
+      "parents": [
+        "0AHpg24TcQFQFUk9PVA"
+      ],
+      "spaces": [
+        "drive"
+      ],
+      "version": "1",
+      "webContentLink": "https://drive.google.com/uc?id=1fFswLxgi1lLcLI5FKMYBwmuuBxGcbSQe&export=download",
+      "webViewLink": "https://drive.google.com/file/d/1fFswLxgi1lLcLI5FKMYBwmuuBxGcbSQe/view?usp=drivesdk",
+      "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/video/x-matroska",
+      "hasThumbnail": false,
+      "thumbnailVersion": "0",
+      "viewedByMe": false,
+      "createdTime": "2020-07-05T08:07:10.324Z",
+      "modifiedTime": "2020-07-05T08:07:10.324Z",
+      "modifiedByMeTime": "2020-07-05T08:07:10.324Z",
+      "modifiedByMe": true,
+      "owners": [
+        {
+          "kind": "drive#user",
+          "displayName": "Superbeastly 9000",
+          "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+          "me": true,
+          "permissionId": "16496820697144295713",
+          "emailAddress": "pownthepofficial@gmail.com"
+        }
+      ],
+      "lastModifyingUser": {
+        "kind": "drive#user",
+        "displayName": "Superbeastly 9000",
+        "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+        "me": true,
+        "permissionId": "16496820697144295713",
+        "emailAddress": "pownthepofficial@gmail.com"
+      },
+      "shared": false,
+      "ownedByMe": true,
+      "capabilities": {
+        "canAddChildren": false,
+        "canAddMyDriveParent": false,
+        "canChangeCopyRequiresWriterPermission": true,
+        "canChangeViewersCanCopyContent": true,
+        "canComment": true,
+        "canCopy": true,
+        "canDelete": true,
+        "canDownload": true,
+        "canEdit": true,
+        "canListChildren": false,
+        "canModifyContent": true,
+        "canMoveChildrenWithinDrive": false,
+        "canMoveItemIntoTeamDrive": true,
+        "canMoveItemOutOfDrive": true,
+        "canMoveItemWithinDrive": true,
+        "canReadRevisions": true,
+        "canRemoveChildren": false,
+        "canRemoveMyDriveParent": true,
+        "canRename": true,
+        "canShare": true,
+        "canTrash": true,
+        "canUntrash": true
+      },
+      "viewersCanCopyContent": true,
+      "copyRequiresWriterPermission": false,
+      "writersCanShare": true,
+      "permissions": [
+        {
+          "kind": "drive#permission",
+          "id": "16496820697144295713",
+          "type": "user",
+          "emailAddress": "pownthepofficial@gmail.com",
+          "role": "owner",
+          "displayName": "Superbeastly 9000",
+          "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+          "deleted": false
+        }
+      ],
+      "permissionIds": [
+        "16496820697144295713"
+      ],
+      "originalFilename": "Copy of Demon Slayer - Kimetsu no Yaiba - 01.mkv",
+      "fullFileExtension": "mkv",
+      "fileExtension": "mkv",
+      "md5Checksum": "b05850c6f8806641431d70ea879ff068",
+      "size": "430886696",
+      "quotaBytesUsed": "430886696",
+      "headRevisionId": "0B3pg24TcQFQFVVNTcUJla2Z6S1JEYndZdnJlTWY3ZUZVc25zPQ",
+      "isAppAuthorized": true
+    },
+    "1fFswLxgi1lLcLI5FKMYBwmuuBxGcbSQe": "1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY",
+    "1vQ-nINvuaWDLCqc8UqSdxgGIxtA2ZatX": {
+      "kind": "drive#file",
+      "id": "1CveDk7gDY3dhKoe8R5RG3MwU-Du7izeG",
+      "name": "118 - The Man Without an Emblem.mkv",
+      "mimeType": "video/x-matroska",
+      "starred": false,
+      "trashed": false,
+      "explicitlyTrashed": false,
+      "parents": [
+        "0AHpg24TcQFQFUk9PVA"
+      ],
+      "spaces": [
+        "drive"
+      ],
+      "version": "1",
+      "webContentLink": "https://drive.google.com/uc?id=1CveDk7gDY3dhKoe8R5RG3MwU-Du7izeG&export=download",
+      "webViewLink": "https://drive.google.com/file/d/1CveDk7gDY3dhKoe8R5RG3MwU-Du7izeG/view?usp=drivesdk",
+      "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/video/x-matroska",
+      "hasThumbnail": false,
+      "thumbnailVersion": "0",
+      "viewedByMe": false,
+      "createdTime": "2020-07-05T11:43:57.946Z",
+      "modifiedTime": "2020-07-05T11:43:57.946Z",
+      "modifiedByMeTime": "2020-07-05T11:43:57.946Z",
+      "modifiedByMe": true,
+      "owners": [
+        {
+          "kind": "drive#user",
+          "displayName": "Superbeastly 9000",
+          "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+          "me": true,
+          "permissionId": "16496820697144295713",
+          "emailAddress": "pownthepofficial@gmail.com"
+        }
+      ],
+      "lastModifyingUser": {
+        "kind": "drive#user",
+        "displayName": "Superbeastly 9000",
+        "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+        "me": true,
+        "permissionId": "16496820697144295713",
+        "emailAddress": "pownthepofficial@gmail.com"
+      },
+      "shared": false,
+      "ownedByMe": true,
+      "capabilities": {
+        "canAddChildren": false,
+        "canAddMyDriveParent": false,
+        "canChangeCopyRequiresWriterPermission": true,
+        "canChangeViewersCanCopyContent": true,
+        "canComment": true,
+        "canCopy": true,
+        "canDelete": true,
+        "canDownload": true,
+        "canEdit": true,
+        "canListChildren": false,
+        "canModifyContent": true,
+        "canMoveChildrenWithinDrive": false,
+        "canMoveItemIntoTeamDrive": true,
+        "canMoveItemOutOfDrive": true,
+        "canMoveItemWithinDrive": true,
+        "canReadRevisions": true,
+        "canRemoveChildren": false,
+        "canRemoveMyDriveParent": true,
+        "canRename": true,
+        "canShare": true,
+        "canTrash": true,
+        "canUntrash": true
+      },
+      "viewersCanCopyContent": true,
+      "copyRequiresWriterPermission": false,
+      "writersCanShare": true,
+      "permissions": [
+        {
+          "kind": "drive#permission",
+          "id": "16496820697144295713",
+          "type": "user",
+          "emailAddress": "pownthepofficial@gmail.com",
+          "role": "owner",
+          "displayName": "Superbeastly 9000",
+          "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+          "deleted": false
+        }
+      ],
+      "permissionIds": [
+        "16496820697144295713"
+      ],
+      "originalFilename": "118 - The Man Without an Emblem.mkv",
+      "fullFileExtension": "mkv",
+      "fileExtension": "mkv",
+      "md5Checksum": "9c1fe5c9257548b10021d59366e77760",
+      "size": "227459273",
+      "quotaBytesUsed": "227459273",
+      "headRevisionId": "0B3pg24TcQFQFTU9Ha0kwMjdlcDEyNnJPRHNodFNHamk5ajgwPQ",
+      "isAppAuthorized": true
+    },
+    "1CveDk7gDY3dhKoe8R5RG3MwU-Du7izeG": "1vQ-nINvuaWDLCqc8UqSdxgGIxtA2ZatX",
+    "1vJQUa5QnZF1Xr_ISmB1W6E_d1CMEar7r": {
+      "kind": "drive#file",
+      "id": "1ubDTUN6S-9Rmpzqi0hd6HHKeqOhiCLbC",
+      "name": "119 - Realm of the Abyss.mkv",
+      "mimeType": "video/x-matroska",
+      "starred": false,
+      "trashed": false,
+      "explicitlyTrashed": false,
+      "parents": [
+        "0AHpg24TcQFQFUk9PVA"
+      ],
+      "spaces": [
+        "drive"
+      ],
+      "version": "1",
+      "webContentLink": "https://drive.google.com/uc?id=1ubDTUN6S-9Rmpzqi0hd6HHKeqOhiCLbC&export=download",
+      "webViewLink": "https://drive.google.com/file/d/1ubDTUN6S-9Rmpzqi0hd6HHKeqOhiCLbC/view?usp=drivesdk",
+      "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/video/x-matroska",
+      "hasThumbnail": false,
+      "thumbnailVersion": "0",
+      "viewedByMe": false,
+      "createdTime": "2020-07-05T11:46:19.393Z",
+      "modifiedTime": "2020-07-05T11:46:19.393Z",
+      "modifiedByMeTime": "2020-07-05T11:46:19.393Z",
+      "modifiedByMe": true,
+      "owners": [
+        {
+          "kind": "drive#user",
+          "displayName": "Superbeastly 9000",
+          "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+          "me": true,
+          "permissionId": "16496820697144295713",
+          "emailAddress": "pownthepofficial@gmail.com"
+        }
+      ],
+      "lastModifyingUser": {
+        "kind": "drive#user",
+        "displayName": "Superbeastly 9000",
+        "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+        "me": true,
+        "permissionId": "16496820697144295713",
+        "emailAddress": "pownthepofficial@gmail.com"
+      },
+      "shared": false,
+      "ownedByMe": true,
+      "capabilities": {
+        "canAddChildren": false,
+        "canAddMyDriveParent": false,
+        "canChangeCopyRequiresWriterPermission": true,
+        "canChangeViewersCanCopyContent": true,
+        "canComment": true,
+        "canCopy": true,
+        "canDelete": true,
+        "canDownload": true,
+        "canEdit": true,
+        "canListChildren": false,
+        "canModifyContent": true,
+        "canMoveChildrenWithinDrive": false,
+        "canMoveItemIntoTeamDrive": true,
+        "canMoveItemOutOfDrive": true,
+        "canMoveItemWithinDrive": true,
+        "canReadRevisions": true,
+        "canRemoveChildren": false,
+        "canRemoveMyDriveParent": true,
+        "canRename": true,
+        "canShare": true,
+        "canTrash": true,
+        "canUntrash": true
+      },
+      "viewersCanCopyContent": true,
+      "copyRequiresWriterPermission": false,
+      "writersCanShare": true,
+      "permissions": [
+        {
+          "kind": "drive#permission",
+          "id": "16496820697144295713",
+          "type": "user",
+          "emailAddress": "pownthepofficial@gmail.com",
+          "role": "owner",
+          "displayName": "Superbeastly 9000",
+          "photoLink": "https://lh3.googleusercontent.com/a-/AOh14Gg9rfgOD7njQTrdmUn5JEo7bLfHIhh8Z1r-kebeOw=s64",
+          "deleted": false
+        }
+      ],
+      "permissionIds": [
+        "16496820697144295713"
+      ],
+      "originalFilename": "119 - Realm of the Abyss.mkv",
+      "fullFileExtension": "mkv",
+      "fileExtension": "mkv",
+      "md5Checksum": "71310b1cae9c5fae484429b681be0944",
+      "size": "231373848",
+      "quotaBytesUsed": "231373848",
+      "headRevisionId": "0B3pg24TcQFQFanhQUWY1SjJRM2xqeTU4RFdMekxyZ01IVTJVPQ",
+      "isAppAuthorized": true
+    },
+    "1ubDTUN6S-9Rmpzqi0hd6HHKeqOhiCLbC": "1vJQUa5QnZF1Xr_ISmB1W6E_d1CMEar7r"
   },
   "downloads": {
     "1IepIfxgu--XFCSd6O-qa-iOBwhRnYamt": {
@@ -9896,6 +10151,12 @@
       "name": "10. The Battle of Concepts.mkv",
       "size": "252655229",
       "progress": 252655229
+    },
+    "1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY": {
+      "id": "1fFswLxgi1lLcLI5FKMYBwmuuBxGcbSQe",
+      "name": "Copy of Demon Slayer - Kimetsu no Yaiba - 01.mkv",
+      "size": "430886696",
+      "progress": 430886696
     }
   },
   "1D5k6hRQidsdv3neZspw3fCygiy6j9OYM": [

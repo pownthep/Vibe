@@ -1,37 +1,40 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
+import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
+import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
   media: {
-    width: 480,
-    height: 270,
+    width: 185,
+    height: 265,
     borderRadius: 4,
-    margin: 3,
+    marginRight: 10,
     cursor: "pointer",
   },
   img: {
     width: "100%",
-    height: "inherit",
+    height: "auto",
     objectFit: "cover",
     borderRadius: 4,
   },
 });
 
-export default function MediaCard({ image, name }) {
+export default function Poster({ image, name }) {
+  const [checked] = React.useState(true);
   const classes = useStyles();
-  const [checked] = useState(true);
-
   return (
     <Grow in={checked} timeout={800} className={classes.media} unmountOnExit>
-      <Paper elevation={3}>
+      <div>
         <img
           className={classes.img}
           src={"http://localhost:9001/img/?url=" + image}
           alt={name}
         />
-      </Paper>
+        <Typography variant="button" display="block" gutterBottom noWrap={true}>
+          {name}
+        </Typography>
+      </div>
     </Grow>
   );
 }
