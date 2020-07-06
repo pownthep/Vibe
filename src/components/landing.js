@@ -53,14 +53,16 @@ export default function Landing() {
           />
         </div>
         <div style={{ textAlign: "center", marginTop: 30 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            startIcon={<DesktopWindowsIcon />}
-          >
-            Windows 10
-          </Button>
+          <a href="https://github.com/pownthep/Vibe/releases/download/v1.0-beta.1/vibe-win32-x64.zip">
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              startIcon={<DesktopWindowsIcon />}
+            >
+              Windows 10
+            </Button>
+          </a>
           <Button
             variant="contained"
             color="secondary"
