@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
+// import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
   media: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
   img: {
     width: "100%",
-    height: "auto",
+    height: "inherit",
     objectFit: "cover",
     borderRadius: 4,
   },

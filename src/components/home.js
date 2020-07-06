@@ -14,15 +14,17 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { useHistory } from "react-router-dom";
 import Poster from "./poster";
+import RowList from "./row";
+import Avatar from "@material-ui/core/Avatar";
 
 export default function Home() {
   const [anime, setAnime] = useState([]);
   const [value, setValue] = useState(null);
   const [item, setItem] = useState({
-    width: 480,
-    height: 270,
-    rowHeight: 275,
-    viewMode: 0,
+    width: 185,
+    height: 265,
+    rowHeight: 310,
+    viewMode: 1,
   });
   let itemsPerRow = 1;
 
@@ -37,14 +39,14 @@ export default function Home() {
       return <MediaCard image={props.banner} name={props.name} />;
     else if (item.viewMode === 1)
       return <Poster image={props.poster} name={props.name} />;
-    else return <MediaCard image={props.banner} name={props.name} />;
+    else return <RowList {...props} />;
   }
 
   const Row = ({ index, style }) => {
     var start = index * itemsPerRow;
     var end = start + itemsPerRow;
     return (
-      <div className={index % 2 ? "ListItemOdd" : "ListItemEven"} style={style}>
+      <div style={style}>
         <div
           style={{
             display: "flex",
@@ -53,7 +55,12 @@ export default function Home() {
           }}
         >
           {anime.slice(start, end).map((el) => (
-            <a onClick={handleClick} key={el.id} id={el.id}>
+            <a
+              onClick={handleClick}
+              key={el.id}
+              id={el.id}
+              style={{ width: item.width === 0 ? "100%" : "auto" }}
+            >
               {viewGenerator(el)}
             </a>
           ))}
@@ -84,7 +91,7 @@ export default function Home() {
         <Autocomplete
           id="virtualize-demo"
           style={{
-            width: 480,
+            width: "100%",
             margin: "0 auto",
             marginBottom: 0,
             marginTop: 20,
@@ -98,12 +105,7 @@ export default function Home() {
           options={anime}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              size="small"
-              label="Search"
-              variant="outlined"
-            />
+            <TextField {...params} size="small" label="Search" />
           )}
           renderOption={(option, { inputValue }) => {
             const matches = match(option.name, inputValue);
@@ -128,12 +130,13 @@ export default function Home() {
         <Tooltip title="List view">
           <IconButton
             aria-label="view list"
+            color={item.viewMode === 2 ? "primary" : "default"}
             onClick={() =>
               setItem({
-                width: 480,
-                height: 270,
-                rowHeight: 275,
-                viewMode: 0,
+                width: 0,
+                height: 150,
+                rowHeight: 150,
+                viewMode: 2,
               })
             }
           >
@@ -143,6 +146,7 @@ export default function Home() {
         <Tooltip title="Grid view">
           <IconButton
             aria-label="view comfy"
+            color={item.viewMode === 1 ? "primary" : "default"}
             onClick={() =>
               setItem({
                 width: 185,
@@ -158,6 +162,7 @@ export default function Home() {
         <Tooltip title="Large view">
           <IconButton
             aria-label="view module"
+            color={item.viewMode === 0 ? "primary" : "default"}
             onClick={() =>
               setItem({
                 width: 480,
@@ -175,7 +180,8 @@ export default function Home() {
         <div style={{ width: "100%", height: "85vh", borderRadius: 4 }}>
           <AutoSizer>
             {({ height, width }) => {
-              itemsPerRow = Math.floor(width / item.width);
+              itemsPerRow =
+                item.width === 0 ? 1 : Math.floor(width / item.width);
               var rowCount = Math.ceil(anime.length / itemsPerRow);
               return (
                 <List

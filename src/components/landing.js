@@ -14,14 +14,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "80vh",
-    backgroundColor: theme.palette.background.paper,
+    height: "100vh",
   },
   flexIcon: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "30vh",
+    marginBottom: 10,
   },
 }));
 
@@ -32,14 +31,27 @@ export default function Landing() {
       <div>
         <div className={classes.flexIcon}>
           <img src={window.location + "/icon.ico"} alt="" />
-          <Typography variant="h1" component="h2">
-            VIBE
-          </Typography>
         </div>
-        <Typography variant="h4" style={{ textAlign: "center" }}>
-          Stream high-quality 1080p+ videos straight from Google Drive. No ads.
-          No bullshit.
+        <Typography variant="h5" style={{ textAlign: "center" }}>
+          Stream high-quality shows. No ads. No bullshit.
         </Typography>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 10,
+            marginTop: 10,
+          }}
+        >
+          <img
+            src="./capture.PNG"
+            alt="app screenshot"
+            style={{ width: "60%" }}
+            className="box"
+          />
+        </div>
         <div style={{ textAlign: "center", marginTop: 30 }}>
           <Button
             variant="contained"

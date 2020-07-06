@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -28,8 +28,6 @@ import SettingsPage from "./components/settings";
 import DrivePage from "./components/drive";
 import DownloadPage from "./components/download";
 import GetAppIcon from "@material-ui/icons/GetApp";
-
-const store = window.store ? new window.store() : false;
 
 const drawerWidth = 55;
 
@@ -87,7 +85,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PermanentDrawerLeft() {
   const classes = useStyles();
-
   const routes = [
     {
       path: "/",
@@ -133,17 +130,17 @@ export default function PermanentDrawerLeft() {
     },
   ];
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const authRes = await fetch("http://localhost:9001/authenticate");
-        const auth = await authRes.json();
-        store.set("auth", auth);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const authRes = await fetch("http://localhost:9001/authenticate");
+  //       const auth = await authRes.json();
+  //       store.set("auth", auth);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+  // }, []);
 
   const Titlebar = React.lazy(() => import("./components/titlebar"));
 
@@ -151,7 +148,7 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {store ? <Titlebar title="" backgroundColor="inherit" /> : <></>}
+          {window.store ? <Titlebar title="" backgroundColor="inherit" /> : <></>}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />
@@ -171,7 +168,7 @@ export default function PermanentDrawerLeft() {
                   {routes.map((route, index) => (
                     <Link to={route.path} key={index}>
                       <ListItem button>
-                        <ListItemIcon classes={{ root: classes.navIcon }}>
+                        <ListItemIcon classes={{ root: classes.navIcon }} >
                           {route.icon}
                         </ListItemIcon>
                       </ListItem>

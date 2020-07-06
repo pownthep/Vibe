@@ -27,7 +27,7 @@ import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
-import LinearProgress from "@material-ui/core/LinearProgress";
+// import LinearProgress from "@material-ui/core/LinearProgress";
 import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -35,6 +35,8 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import Fab from "@material-ui/core/Fab";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
+import nprogress from "nprogress";
+import "nprogress/nprogress.css";
 
 const styles = (theme) => ({
   root: {
@@ -202,6 +204,7 @@ class Player extends React.Component {
           tmp = tmp.concat(json);
           if (this._isMounted)
             this.setState({ progress: ((i + 1) * 100) / arrLength });
+          nprogress.set(this.state.progress / 100);
         }
       }
     }
@@ -215,6 +218,7 @@ class Player extends React.Component {
         showProgress: false,
         favourited: store.get(`favourites.${id}`),
       });
+      nprogress.done();
     }
     // Setting current episode
     if (this.props.match.params.epId && this._isMounted) {
@@ -232,6 +236,10 @@ class Player extends React.Component {
       timePos: this.state["time-pos"],
       currentTime: new Date().getTime(),
     });
+  }
+
+  componentWillMount() {
+    nprogress.start();
   }
 
   togglePause(e) {
@@ -607,7 +615,7 @@ class Player extends React.Component {
                   );
                 }}
               />
-              {this.state.progress !== 100 ? (
+              {/* {this.state.progress !== 100 ? (
                 <div className={classes.progress}>
                   <LinearProgress
                     variant="determinate"
@@ -617,7 +625,7 @@ class Player extends React.Component {
                 </div>
               ) : (
                 <></>
-              )}
+              )} */}
 
               <GridList cellHeight={190} className={classes.gridList} cols={5}>
                 {this.state.epList.slice(0, 5).map((tile, index) => (
