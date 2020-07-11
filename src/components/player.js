@@ -37,6 +37,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
+import Backdrop from "@material-ui/core/Backdrop";
 
 const styles = (theme) => ({
   root: {
@@ -101,6 +102,13 @@ const styles = (theme) => ({
   },
   actionIcons: {
     padding: "5px",
+  },
+  player: {
+    borderRadius: "5px",
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
   },
 });
 
@@ -230,6 +238,7 @@ class Player extends React.Component {
 
   componentWillUnmount() {
     this._isMounted = false;
+    nprogress.done();
     if (!this.state.currentEpisode) return;
     this.addToHistory({
       ...this.state.currentEpisode,
@@ -272,6 +281,12 @@ class Player extends React.Component {
     } else {
       if (name === "duration") {
         this.setState({ loading: false });
+        this.setState({
+          currentEpisode: {
+            ...this.state.currentEpisode,
+            duration: value,
+          },
+        });
         if (this.state.currentEpisode.timePos > 0) {
           this.setState({ "time-pos": this.state.currentEpisode.timePos });
           this.mpv.property("time-pos", this.state.currentEpisode.timePos);
@@ -414,7 +429,6 @@ class Player extends React.Component {
     if (reason === "clickaway") {
       return;
     }
-
     this.setState({ snackOpen: false });
   }
 
@@ -615,17 +629,6 @@ class Player extends React.Component {
                   );
                 }}
               />
-              {/* {this.state.progress !== 100 ? (
-                <div className={classes.progress}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={this.state.progress}
-                    color="secondary"
-                  />
-                </div>
-              ) : (
-                <></>
-              )} */}
 
               <GridList cellHeight={190} className={classes.gridList} cols={5}>
                 {this.state.epList.slice(0, 5).map((tile, index) => (
@@ -636,7 +639,7 @@ class Player extends React.Component {
                   >
                     <GridListTile>
                       <img
-                        src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}=w200-h190-p-k-nu-iv1`}
+                        src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
                         alt={tile.name}
                         style={{ maxHeight: 190 }}
                         onError={(e) =>

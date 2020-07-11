@@ -59,7 +59,14 @@ export default function Home() {
               onClick={handleClick}
               key={el.id}
               id={el.id}
-              style={{ width: item.width === 0 ? "100%" : "auto" }}
+              style={{
+                width:
+                  item.viewMode === 2
+                    ? "100%"
+                    : item.viewMode === 0
+                    ? "33%"
+                    : "auto",
+              }}
             >
               {viewGenerator(el)}
             </a>
@@ -91,7 +98,7 @@ export default function Home() {
         <Autocomplete
           id="virtualize-demo"
           style={{
-            width: "100%",
+            width: "80%",
             margin: "0 auto",
             marginBottom: 0,
             marginTop: 20,
@@ -167,7 +174,7 @@ export default function Home() {
               setItem({
                 width: 480,
                 height: 270,
-                rowHeight: 275,
+                rowHeight: 355,
                 viewMode: 0,
               })
             }
@@ -180,8 +187,10 @@ export default function Home() {
         <div style={{ width: "100%", height: "85vh", borderRadius: 4 }}>
           <AutoSizer>
             {({ height, width }) => {
-              itemsPerRow =
-                item.width === 0 ? 1 : Math.floor(width / item.width);
+              if (item.viewMode === 0) itemsPerRow = 3;
+              else if (item.viewMode === 1)
+                itemsPerRow = Math.floor(width / item.width);
+              else if (item.viewMode === 2) itemsPerRow = 1;
               var rowCount = Math.ceil(anime.length / itemsPerRow);
               return (
                 <List

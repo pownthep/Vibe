@@ -94,16 +94,19 @@ button {
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
+  border-radius: 10px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: inherit;
+  border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--scroll-thumb-color);
+  border-radius: 5px;
 }
 
 .titlebar {

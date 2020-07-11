@@ -27,8 +27,9 @@ debug.log
 index.bundle.js
 react-app-win32-x64
 bundling.js
-Vibe-win32-x64
+vibe-win32-x64
 vibe-view
 /server/cached.json
 /server/server.bundle.js
 /dist
+*.zip

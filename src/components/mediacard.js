@@ -5,8 +5,8 @@ import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
   media: {
-    width: 480,
-    height: 270,
+    width: "99%",
+    height: 350,
     borderRadius: 4,
     margin: 3,
     cursor: "pointer",

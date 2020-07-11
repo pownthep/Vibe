@@ -219,9 +219,9 @@ function startLocalServer(oauth2Client) {
       let data = await resp.data;
       let start = data.indexOf(`window['_DRIVE_ivd'] = '`);
       let sm = data.substring(start);
-      let end = sm.indexOf(";");
-      let assignment = sm.substring(0, end + 1);
-      let code = assignment.replace(`window['_DRIVE_ivd']`, "var driveData");
+      let end = sm.indexOf("';");
+      let assignment = sm.substring(0, end+1);
+      let code = assignment.replace(`window['_DRIVE_ivd'] =`, "var driveData =");
       eval(code);
       let json = JSON.parse(driveData);
       let final = json[0].map((item) => {

@@ -9,19 +9,26 @@ import Grow from "@material-ui/core/Grow";
 import Loader from "./loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "80vh",
-    backgroundColor: theme.palette.background.paper,
+    //backgroundColor: theme.palette.background.paper,
   },
   inline: {
     display: "inline",
   },
-  thumbnail: {
+  thumbnailCtn: {
     marginRight: 5,
     position: "relative",
+    width: "100%",
+    height: "inherit",
+    padding: 5,
+  },
+  thumbnail: {
+    marginRight: 5,
     width: "100%",
     height: "inherit",
   },
@@ -40,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: 162,
     paddingLeft: 10,
+    paddingTop: 5,
   },
   bgIcon: {
     fontSize: "3rem",
@@ -54,6 +62,7 @@ export default function History() {
     loading: true,
   });
   const [checked] = useState(true);
+  console.table(state.history);
 
   const clearHistory = (e) => {
     if (state.history) {
@@ -87,11 +96,12 @@ export default function History() {
         {rowItem ? (
           <Grow in={checked} timeout={600} key={"listitem-" + rowItem.id}>
             <div className={classes.listItemContainer}>
-              <div className={classes.thumbnail}>
+              <div className={classes.thumbnailCtn}>
                 <img
                   alt={rowItem.title}
                   className={classes.thumbnail}
                   src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`}
+                  style={{ borderRadius: "5px" }}
                 />
                 <div className={classes.playBtn}>
                   <Tooltip title="Continue watching" placement="right-start">
@@ -104,6 +114,14 @@ export default function History() {
                     </Link>
                   </Tooltip>
                 </div>
+                <LinearProgress
+                  variant="determinate"
+                  value={
+                    rowItem.duration
+                      ? (rowItem.timePos / rowItem.duration) * 100
+                      : 0
+                  }
+                />
               </div>
               <div className={classes.historyInfo}>
                 <h2 style={{ margin: 0 }}>

@@ -122,7 +122,6 @@ export default function Download() {
                   />
                 </div>
               )}
-              <Divider />
             </div>
           ))}
       </List>
