@@ -1,4 +1,4 @@
-rempackagevar fs = require("fs");
+var fs = require("fs");
 var googleAuth = require("google-auth-library");
 var express = require("express");
 var https = require("https");
