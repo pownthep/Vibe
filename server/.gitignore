@@ -2,7 +2,7 @@
 .credentials/**
 .temp/**
 node_modules/**
-img
+img/**
 cached.json
 server.bundle.js
 cached.json

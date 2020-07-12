@@ -10869,7 +10869,7 @@ module.exports={
   "_args": [
     [
       "axios@0.19.2",
-      "C:\\Users\\pl\\Desktop\\Vibe"
+      "/Users/pownthep/Documents/Vibe"
     ]
   ],
   "_development": true,
@@ -10895,7 +10895,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/axios/-/axios-0.19.2.tgz",
   "_spec": "0.19.2",
-  "_where": "C:\\Users\\pl\\Desktop\\Vibe",
+  "_where": "/Users/pownthep/Documents/Vibe",
   "author": {
     "name": "Matt Zabriskie"
   },
@@ -26856,7 +26856,7 @@ module.exports={
   "_args": [
     [
       "google-auth-library@0.12.0",
-      "C:\\Users\\pl\\Desktop\\Vibe"
+      "/Users/pownthep/Documents/Vibe"
     ]
   ],
   "_development": true,
@@ -26881,7 +26881,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/google-auth-library/-/google-auth-library-0.12.0.tgz",
   "_spec": "0.12.0",
-  "_where": "C:\\Users\\pl\\Desktop\\Vibe",
+  "_where": "/Users/pownthep/Documents/Vibe",
   "author": {
     "name": "Google Inc."
   },

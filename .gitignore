@@ -28,8 +28,8 @@ index.bundle.js
 react-app-win32-x64
 bundling.js
 vibe-win32-x64
+vibe-darwin-x64
 vibe-view
-/server/cached.json
-/server/server.bundle.js
+/server/server.bundle
 /dist
 *.zip

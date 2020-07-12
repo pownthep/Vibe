@@ -38,7 +38,7 @@ function createWindow() {
       enableRemoteModule: true,
       webSecurity: false,
     },
-    icon: path.join(__dirname, "assets/icon.ico"),
+    //icon: process.platform !== "darwin" ? path.join(__dirname, "assets/icon.ico"):path.join(__dirname, "assets/icon.icns"),
   });
 
   if (process.env.DEV) {
