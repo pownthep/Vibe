@@ -41,7 +41,7 @@ function createWindow() {
   });
 
   if (process.env.DEV) {
-    require(__dirname+"/server/server.js");
+    //require(__dirname+"/server/server.js");
     win.loadURL("http://localhost:3000")
   }
   else {

@@ -37,7 +37,6 @@ import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
-import Backdrop from "@material-ui/core/Backdrop";
 
 const styles = (theme) => ({
   root: {
@@ -174,7 +173,7 @@ class Player extends React.Component {
 
   async addToDownload(id, name) {
     const res = await fetch(
-      "http://localhost:9001/add_to_download_queue/" + id
+      `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${this.fmtName(name)}&serieName=${this.state.data.name}`
     );
     const data = await res.json();
     if (data.error) {
@@ -294,6 +293,10 @@ class Player extends React.Component {
           this.setState({ pause: false });
           this.mpv.property("pause", false);
         }
+        else {
+          this.setState({ pause: false });
+          this.mpv.property("pause", false);
+        }
       }
       this.setState({ [name]: value });
     }
@@ -350,7 +353,7 @@ class Player extends React.Component {
       this.setState({ auth: user });
       return;
     }
-    this.mpv.command("loadfile", "http://localhost:9001/stream/" + id);
+    this.mpv.command("loadfile", `http://localhost:9001/stream?id=${id}&episodeName=${this.fmtName(name)}&serieName=${this.state.data.name}`);
     this.setState({
       loading: true,
     });

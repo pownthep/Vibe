@@ -4,6 +4,7 @@ import MaterialTable from "material-table";
 import Grow from "@material-ui/core/Grow";
 import { LinearProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import prettyBytes from "pretty-bytes";
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -15,15 +16,26 @@ export default function Drive() {
   const classes = useStyles();
   const columns = [
     { title: "Name", field: "name" },
-    { title: "Size", field: "size" },
+    {
+      title: "Size",
+      field: "size",
+      render: (rowData) => prettyBytes(Number(rowData.size)),
+    },
     {
       title: "Thumbnail",
       field: "thumbnail",
       render: (rowData) => (
         <img
-          src={"http://127.0.0.1:9001/img/?url=" + rowData.thumbnail}
+          src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowData.name
+            .split("]")[0]
+            .replace("[", "")}`}
           alt={rowData.name}
           style={{ maxHeight: 50 }}
+          onError={(e) =>
+            (e.target.src =
+              "http://localhost:9001/img/?url=" +
+              "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")
+          }
         />
       ),
     },
@@ -32,14 +44,13 @@ export default function Drive() {
     data: [],
     info: {
       usedNumber: 0,
-      totalNumber: 0,
+      totalNumber: 1,
       usedString: "0 B",
-      totalString: "15 GB"
+      totalString: "15 GB",
     },
     loading: true,
   });
   useEffect(() => {
-
     async function getState() {
       const res1 = await fetch("http://127.0.0.1:9001/drive");
       const res2 = await fetch("http://127.0.0.1:9001/quota");
@@ -57,7 +68,9 @@ export default function Drive() {
 
   return (
     <>
-      <h1>{state.info.user ? state.info.user.displayName + " - ":""}Google Drive</h1>
+      <h1>
+        {state.info.user ? state.info.user.displayName + " - " : ""}Google Drive
+      </h1>
       <div className={classes.root}>
         {`Used: ${state.info.usedString}/${state.info.totalString}`}
         <LinearProgress
@@ -87,7 +100,11 @@ export default function Drive() {
                   const dataDelete = [...state.data];
                   const index = oldData.tableData.id;
                   dataDelete.splice(index, 1);
-                  setState((prev) => ({ ...prev, data: [...dataDelete], info: info }));
+                  setState((prev) => ({
+                    ...prev,
+                    data: [...dataDelete],
+                    info: info,
+                  }));
                   resolve();
                 } else {
                   reject();

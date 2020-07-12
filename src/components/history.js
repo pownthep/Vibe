@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 5,
   },
   bgIcon: {
-    fontSize: "3rem",
+    fontSize: "4rem",
   },
 }));
 
@@ -62,8 +62,6 @@ export default function History() {
     loading: true,
   });
   const [checked] = useState(true);
-  console.table(state.history);
-
   const clearHistory = (e) => {
     if (state.history) {
       store.set("history", {});
@@ -107,7 +105,7 @@ export default function History() {
                   <Tooltip title="Continue watching" placement="right-start">
                     <Link to={`/watch/${rowItem.index}/${rowItem.id}`}>
                       <IconButton edge="end" aria-label="comments">
-                        <PlayCircleFilledIcon
+                        <PlayCircleOutlineIcon
                           classes={{ root: classes.bgIcon }}
                         />
                       </IconButton>

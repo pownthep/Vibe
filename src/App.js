@@ -5,7 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import SettingsIcon from "@material-ui/icons/Settings";
+import TuneIcon from "@material-ui/icons/Tune";
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,9 +15,9 @@ import {
 } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import HistoryIcon from "@material-ui/icons/History";
-import CloudIcon from "@material-ui/icons/Cloud";
+import CloudQueueIcon from "@material-ui/icons/CloudQueue";
 import Loader from "./components/loader";
 import SearchIcon from "@material-ui/icons/Search";
 import PlayerPage from "./components/player";
@@ -27,7 +27,7 @@ import HistoryPage from "./components/history";
 import SettingsPage from "./components/settings";
 import DrivePage from "./components/drive";
 import DownloadPage from "./components/download";
-import GetAppIcon from "@material-ui/icons/GetApp";
+import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
 
 const drawerWidth = 55;
 
@@ -98,21 +98,21 @@ export default function PermanentDrawerLeft() {
       exact: true,
       component: FavouritePage,
       label: "Favourites",
-      icon: <FavoriteIcon />,
+      icon: <FavoriteBorderIcon />,
     },
     {
       path: "/downloader",
       exact: true,
       component: DownloadPage,
       label: "Downloader",
-      icon: <GetAppIcon />,
+      icon: <SystemUpdateAltIcon />,
     },
     {
       path: "/drive",
       exact: true,
       component: DrivePage,
       label: "G Drive",
-      icon: <CloudIcon />,
+      icon: <CloudQueueIcon />,
     },
     {
       path: "/history",
@@ -126,21 +126,9 @@ export default function PermanentDrawerLeft() {
       exact: true,
       component: SettingsPage,
       label: "Settings",
-      icon: <SettingsIcon />,
+      icon: <TuneIcon />,
     },
   ];
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const authRes = await fetch("http://localhost:9001/authenticate");
-  //       const auth = await authRes.json();
-  //       store.set("auth", auth);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   })();
-  // }, []);
 
   const Titlebar = React.lazy(() => import("./components/titlebar"));
 
@@ -148,7 +136,11 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {window.store ? <Titlebar title="" backgroundColor="inherit" /> : <></>}
+          {window.store ? (
+            <Titlebar title="" backgroundColor="inherit" />
+          ) : (
+            <></>
+          )}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />
@@ -165,10 +157,11 @@ export default function PermanentDrawerLeft() {
                 {" "}
                 <div className={classes.padding}></div>
                 <List dense={false}>
+                  <div style={{ height: 12 }}></div>
                   {routes.map((route, index) => (
                     <Link to={route.path} key={index}>
                       <ListItem button>
-                        <ListItemIcon classes={{ root: classes.navIcon }} >
+                        <ListItemIcon classes={{ root: classes.navIcon }}>
                           {route.icon}
                         </ListItemIcon>
                       </ListItem>

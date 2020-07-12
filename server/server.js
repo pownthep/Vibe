@@ -94,8 +94,6 @@ function getNewToken(oauth2Client, callback) {
     access_type: "offline",
     scope: SCOPES,
   });
-  // console.log("Authorize this app by visiting this url: ");
-  // console.log(authUrl);
   callback(oauth2Client);
 }
 
@@ -131,10 +129,6 @@ function storeToken(token) {
 }
 
 function startLocalServer(oauth2Client) {
-  app.get("/icon", (req, res) =>
-    res.sendFile(__dirname + "/img/app_icon2.png")
-  );
-
   app.get("/authenticate", (req, res) => {
     fs.readFile(TOKEN_PATH, function (err, token) {
       if (err) {
@@ -149,10 +143,6 @@ function startLocalServer(oauth2Client) {
         res.json({ authenticated: true });
       }
     });
-  });
-
-  app.get("/redirect", async (req, res) => {
-    res.redirect("https://google.com");
   });
 
   app.get("/img", async (req, res) => {
@@ -195,18 +185,6 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/data", async (req, res) => {
-    res.json(data.anime);
-  });
-
-  app.get("/data/:id", async (req, res) => {
-    res.json(data.anime[req.params.id]);
-  });
-
-  app.get("/ready", (req, res) => {
-    res.json(oauth2Client.credentials);
-  });
-
   app.get("/list/:id", async (req, res) => {
     try {
       if (store.get(`series.${req.params.id}`)) {
@@ -220,8 +198,11 @@ function startLocalServer(oauth2Client) {
       let start = data.indexOf(`window['_DRIVE_ivd'] = '`);
       let sm = data.substring(start);
       let end = sm.indexOf("';");
-      let assignment = sm.substring(0, end+1);
-      let code = assignment.replace(`window['_DRIVE_ivd'] =`, "var driveData =");
+      let assignment = sm.substring(0, end + 1);
+      let code = assignment.replace(
+        `window['_DRIVE_ivd'] =`,
+        "var driveData ="
+      );
       eval(code);
       let json = JSON.parse(driveData);
       let final = json[0].map((item) => {
@@ -231,6 +212,7 @@ function startLocalServer(oauth2Client) {
         };
       });
       res.json(final);
+
       store.set(`series.${req.params.id}`, final);
     } catch (error) {
       console.log(error);
@@ -267,40 +249,34 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/quota", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       var auth = "Bearer ".concat(access_token);
       var url = "https://www.googleapis.com/drive/v2/about";
-      axios
-        .get(url, {
+      try {
+        const about = await axios.get(url, {
           headers: { Authorization: auth, Accept: "application/json" },
-        })
-        .then((json) => {
-          res.json({
-            ...json.data,
-            usedNumber: Number(json.data.quotaBytesUsed),
-            totalNumber: Number(json.data.quotaBytesTotal),
-            usedString: prettyBytes(Number(json.data.quotaBytesUsed)),
-            totalString: prettyBytes(Number(json.data.quotaBytesTotal)),
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.send({ error: true, message: err });
         });
+        res.json({
+          ...about.data,
+          usedNumber: Number(about.data.quotaBytesUsed),
+          totalNumber: Number(about.data.quotaBytesTotal),
+          usedString: prettyBytes(Number(about.data.quotaBytesUsed)),
+          totalString: prettyBytes(Number(about.data.quotaBytesTotal)),
+        });
+      } catch (error) {
+        console.log(error);
+        res.send({ error: true, message: error });
+      }
     });
   });
 
   app.get("/drive", (req, res) => {
-    if (store.get("files") && isLatest) {
-      res.json(store.get("files"));
-      return;
-    }
     refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       var options = {
         host: "www.googleapis.com",
-        path: "/drive/v3/files?&fields=*&pageSize=1000",
+        path: `/drive/v3/files?&fields=nextPageToken,files(name,id,size,ownedByMe,mimeType)&pageSize=1000&orderBy=quotaBytesUsed%20desc`,
         method: "GET",
         headers: {
           Authorization: "Bearer " + access_token,
@@ -316,24 +292,12 @@ function startLocalServer(oauth2Client) {
         response.on("end", function () {
           var info = JSON.parse(allData);
           if (!info.error) {
-            var files = info.files
-              .filter(
-                (file) =>
-                  file.size > 0 &&
-                  file.ownedByMe &&
-                  file.mimeType.includes("video")
-              )
-              .sort((a, b) => (a.size < b.size ? 1 : -1))
-              .map((file) => {
-                return {
-                  id: file.id,
-                  name: file.name,
-                  size: file.size ? prettyBytes(parseInt(file.size)) : 0,
-                  thumbnail: file.hasThumbnail
-                    ? file.thumbnailLink
-                    : file.iconLink,
-                };
-              });
+            var files = info.files.filter(
+              (file) =>
+                file.size > 0 &&
+                file.ownedByMe &&
+                file.mimeType.includes("video")
+            );
             store.set("files", files);
             isLatest = true;
             res.json(files);
@@ -345,20 +309,11 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/copy/:id", async (req, res) => {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var fileId = req.params.id;
-      httpCopyFile(fileId, access_token, res);
-    });
-  });
-
   app.get("/all_series", async (req, res) => {
     try {
       const resp = await axios(
         "https://boring-northcutt-5fd361.netlify.app/completed-series.json"
       );
-      //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);
     } catch (error) {
       res.json([]);
@@ -370,7 +325,6 @@ function startLocalServer(oauth2Client) {
       const resp = await axios(
         "https://boring-northcutt-5fd361.netlify.app/filtered.json"
       );
-      //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);
     } catch (error) {
       res.json([]);
@@ -382,7 +336,6 @@ function startLocalServer(oauth2Client) {
       const resp = await axios(
         "https://boring-northcutt-5fd361.netlify.app/reduced.json"
       );
-      //const data = resp.data.filter((item) => item.episodes.length > 0);
       res.json(resp.data);
     } catch (error) {
       res.json([]);
@@ -397,47 +350,77 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/add_to_download_queue/:id", async (req, res) => {
-    try {
-      if (store.get(`downloads.${req.params.id}`)) {
-        res.json({ downloaded: true });
-        return;
+  function checkFile(fileId, token) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var headers = {
+          headers: {
+            Authorization: "Bearer " + token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        };
+        var searchUrl = `https://www.googleapis.com/drive/v3/files?q=name%20contains%20%22${fileId}%22&fields=files(name%2Cid%2CmimeType%2Csize)`;
+        const searchRes = await axios.get(searchUrl, headers);
+        resolve(searchRes.data.files);
+      } catch (error) {
+        reject(error);
       }
-      let file = store.get(`drive.${req.params.id}`);
-      if (!file) {
-        console.log("File not in drive");
-        const copy = await axios.get(
-          "http://localhost:9001/copy/" + req.params.id
+    });
+  }
+
+  app.get("/add_to_download_queue", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      let file = null;
+      try {
+        const files = await checkFile(
+          req.query.id,
+          oauth2Client.credentials.access_token
         );
-        file = copy.data;
-        isLatest = false;
+        console.log(files);
+        if (files.length === 1) {
+          console.log("file exist in drive");
+          file = files[0];
+        } else {
+          console.log("copying file to drive");
+          const newFile = await httpCopyFile(
+            req.query.id,
+            oauth2Client.credentials.access_token,
+            `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
+          );
+          file = newFile;
+        }
+        if (file) {
+          store.set("downloads." + req.query.id, {
+            id: file.id,
+            name: file.name,
+            size: file.size,
+            progress: 0,
+          });
+          if (!downloaderRunning) fileDownloader();
+          res.json(file);
+        }
+      } catch (error) {
+        console.log(error);
+        res.json({ error: JSON.stringify(error) });
       }
-      if (file.error) {
-        res.json(file);
-        return;
-      }
-      store.set("downloads." + req.params.id, {
-        id: file.id,
-        name: file.name,
-        size: file.size,
-        progress: 0,
-      });
-      downloadingInfo = store.get("downloads");
-      fileDownloader();
-      res.json(file);
-    } catch (error) {
-      console.log(error);
-      res.json({ error: JSON.stringify(error) });
-    }
+    });
   });
 
-  let downloadingInfo = store.get("downloads") ? store.get("downloads") : {};
-
+  let downloaderRunning = false;
   async function fileDownloader() {
-    let toDownloadList = Object.entries(downloadingInfo).filter(
+    if (!store.get("downloads")) {
+      downloaderRunning = false;
+      return;
+    }
+    let toDownloadList = Object.entries(store.get("downloads")).filter(
       ([key, value]) => value.progress === 0
     );
-    if (toDownloadList.length === 0) return;
+    if (toDownloadList.length === 0) {
+      downloaderRunning = false;
+      return;
+    }
+    downloaderRunning = true;
     let firstItemKey = toDownloadList[0][0];
     let firstItemValue = toDownloadList[0][1];
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
@@ -458,10 +441,10 @@ function startLocalServer(oauth2Client) {
           var progress = 0;
           response.on("data", function (chunk) {
             progress += chunk.length;
-            downloadingInfo[firstItemKey].progress = progress;
+            store.set(`downloads.${firstItemKey}.progress`, progress);
           });
           response.on("end", function () {
-            downloadingInfo[firstItemKey].progress = progress;
+            store.set(`downloads.${firstItemKey}.progress`, progress);
             fileDownloader();
           });
           response.pipe(dest);
@@ -473,7 +456,15 @@ function startLocalServer(oauth2Client) {
     });
   }
 
+  app.get("/downloaded", (req, res) => {
+    fs.readdir(__dirname + "/downloaded", (err, files) => {
+      if (err) res.json([]);
+      else res.json(files);
+    });
+  });
+
   app.get("/downloading", (req, res) => {
+    fileDownloader();
     res.set({
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
@@ -484,8 +475,12 @@ function startLocalServer(oauth2Client) {
       "Access-Control-Allow-Headers":
         "Origin, X-Requested-With, Content-Type, Accept",
     });
+    if (store.get("downloads"))
+      res.write(`data: ${JSON.stringify(store.get("downloads"))}\n\n`);
+    else res.write(`data: ${JSON.stringify({})}\n\n`);
     setInterval(() => {
-      res.write(`data: ${JSON.stringify(downloadingInfo)}\n\n`);
+      if (store.get("downloads"))
+        res.write(`data: ${JSON.stringify(store.get("downloads"))}\n\n`);
     }, 1000);
   });
 
@@ -508,128 +503,37 @@ function startLocalServer(oauth2Client) {
     }
   });
 
-  app.get("/stream/:id", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var fileId = req.params.id;
-      if (store.get(`drive.${fileId}`)) {
-        var item = store.get(`drive.${fileId}`);
-        var fileInfo = getInfoFromId(item.id);
-        var action = null;
-        if (fileInfo) {
-          performRequest(fileInfo);
-        } else {
-          getFileInfo(item.id, access_token, (info) => {
-            addInfo(item.id, info, oauth2Client);
-            var fileInfo = getInfoFromId(item.id);
-            performRequest(fileInfo);
-          });
-        }
-        function performRequest(fileInfo) {
-          var skipDefault = false;
-          if (action == "download") {
-            performRequest_download_start(req, res, access_token, fileInfo);
-            skipDefault = true;
-          }
-          if (action == "download_stop") {
-            performRequest_download_stop(req, res, access_token, fileInfo);
-            skipDefault = true;
-          }
-
-          if (!skipDefault) {
-            performRequest_default(req, res, access_token, fileInfo);
-          }
-        }
-        return;
-      }
-      var options = {
-        host: "www.googleapis.com",
-        path: "/drive/v3/files/" + fileId + "/copy?fields=*",
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + access_token,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      };
-      var httpReq = https.request(options, async (response) => {
-        var body = "";
-        response.on("data", function (chunk) {
-          body += chunk;
-        });
-        response.on("end", function () {
-          var item = JSON.parse(body);
-          store.set(`drive.${req.params.id}`, item);
-          store.set(`drive.${item.id}`, req.params.id);
-          isLatest = false;
-          var fileInfo = getInfoFromId(item.id);
-          var action = null;
-          if (fileInfo) {
-            performRequest(fileInfo);
-          } else {
-            getFileInfo(item.id, access_token, (info) => {
-              addInfo(item.id, info, oauth2Client);
-              var fileInfo = getInfoFromId(item.id);
-              performRequest(fileInfo);
-            });
-          }
-          function performRequest(fileInfo) {
-            var skipDefault = false;
-            if (action == "download") {
-              performRequest_download_start(req, res, access_token, fileInfo);
-              skipDefault = true;
-            }
-            if (action == "download_stop") {
-              performRequest_download_stop(req, res, access_token, fileInfo);
-              skipDefault = true;
-            }
-
-            if (!skipDefault) {
+  app.get("/stream", (req, res) => {
+    var filePath =
+      __dirname +
+      "/downloaded" +
+      `/[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`;
+    fs.access(filePath, fs.constants.R_OK, (err) => {
+      if (err) {
+        refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+          var access_token = oauth2Client.credentials.access_token;
+          var fileId = req.query.id;
+          try {
+            const files = await checkFile(fileId, access_token);
+            if (files.length === 1) {
+              console.log("file exist in drive");
+              var fileInfo = files[0];
               performRequest_default(req, res, access_token, fileInfo);
+            } else {
+              console.log("copying file to drive");
+              const copiedFile = await httpCopyFile(
+                fileId,
+                access_token,
+                `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
+              );
+              performRequest_default(req, res, access_token, copiedFile);
             }
+          } catch (error) {
+            res.status(500);
           }
         });
-      });
-      httpReq.on("error", function (err) {
-        console.log(err);
-      });
-      httpReq.end();
-    });
-  });
-
-  app.get(/\/.{15,}/, function (req, res) {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var urlSplitted = req.url.match("^[^?]*")[0].split("/");
-      var fileId = urlSplitted[1];
-      var action = null;
-      console.log(fileId);
-      if (urlSplitted[2]) action = urlSplitted[2];
-      var fileInfo = getInfoFromId(fileId);
-      if (fileInfo) {
-        performRequest(fileInfo);
       } else {
-        getFileInfo(fileId, access_token, (info) => {
-          addInfo(fileId, info, oauth2Client);
-          var fileInfo = getInfoFromId(fileId);
-          performRequest(fileInfo);
-        });
-      }
-
-      function performRequest(fileInfo) {
-        var skipDefault = false;
-        if (action == "download") {
-          performRequest_download_start(req, res, access_token, fileInfo);
-          skipDefault = true;
-        }
-        if (action == "download_stop") {
-          performRequest_download_stop(req, res, access_token, fileInfo);
-          skipDefault = true;
-        }
-
-        if (!skipDefault) {
-          performRequest_default(req, res, access_token, fileInfo);
-        }
+        res.sendFile(filePath);
       }
     });
   });
@@ -639,8 +543,8 @@ function startLocalServer(oauth2Client) {
 }
 
 function performRequest_default(req, res, access_token, fileInfo) {
-  var fileSize = fileInfo.info.size;
-  var fileMime = fileInfo.info.mimeType;
+  var fileSize = fileInfo.size;
+  var fileMime = fileInfo.mimeType;
   var fileId = fileInfo.id;
   const range = req.headers.range;
   if (range) {
@@ -695,100 +599,6 @@ function performRequest_default(req, res, access_token, fileInfo) {
       }
     );
   }
-}
-
-function performRequest_download_start(req, res, access_token, fileInfo) {
-  var fileSize = fileInfo.info.size;
-  var fileId = fileInfo.id;
-  var status = getDownloadStatus(fileId);
-  if (!status) {
-    status = addDownloadStatus(fileId);
-    var lastTime = new Date().getTime();
-    var downloadedSize = 0;
-    var downloadSize = 0;
-    var startChunk = 0;
-    if (req.query.p && req.query.p >= 0 && req.query.p <= 100)
-      startChunk = Math.floor(((fileSize / CHUNK_SIZE) * req.query.p) / 100);
-    if (
-      req.query.c &&
-      req.query.c >= 0 &&
-      req.query.c <= Math.floor(fileSize / CHUNK_SIZE)
-    )
-      startChunk = req.query.c;
-    downloadSize = fileSize - startChunk * CHUNK_SIZE;
-
-    var videoDuration = null;
-    fileInfo.getVideoLength
-      .then((data) => {
-        videoDuration = data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    var echoStream = new stream.Writable();
-    var chunkSizeSinceLast = 0;
-    echoStream._write = function (chunk, encoding, done) {
-      chunkSizeSinceLast += chunk.length;
-      var nowTime = new Date().getTime();
-
-      //update status
-      if (nowTime - lastTime > 2000) {
-        var speedInMBit =
-          (chunkSizeSinceLast * 8) / (nowTime - lastTime) / 1000;
-        var speedInByte = (speedInMBit / 8) * 1000000;
-        downloadedSize += chunkSizeSinceLast;
-        status.status = ((downloadedSize / downloadSize) * 100).toFixed(3);
-        status.speedMbit = speedInMBit.toFixed(3);
-        status.speedByte = speedInByte;
-        if (videoDuration) {
-          var timeLeftBeforeStreaming = Math.max(
-            Math.round(
-              (downloadSize - downloadedSize) / speedInByte -
-                (videoDuration * downloadSize) / fileSize
-            ),
-            0
-          );
-          status.timeLeftBeforeStreaming = timeLeftBeforeStreaming;
-        }
-        lastTime = nowTime;
-        chunkSizeSinceLast = 0;
-      }
-
-      done();
-    };
-
-    downloadFile(
-      fileId,
-      access_token,
-      startChunk * CHUNK_SIZE,
-      fileSize - 1,
-      echoStream,
-      () => {
-        removeDownloadStatus(fileId);
-      },
-      (richiesta) => {
-        status.onClose = () => {
-          if (typeof richiesta.abort === "function") richiesta.abort();
-          if (typeof richiesta.destroy === "function") richiesta.destroy();
-          removeDownloadStatus(fileId);
-        };
-      }
-    );
-  }
-  res.writeHead(200);
-  res.write(JSON.stringify(status));
-  res.end();
-}
-
-function performRequest_download_stop(req, res, access_token, fileInfo) {
-  var fileId = fileInfo.id;
-  var status = getDownloadStatus(fileId);
-  if (status) {
-    status.onClose();
-  }
-  res.writeHead(200);
-  res.end();
 }
 
 function downloadFile(fileId, access_token, start, end, pipe, onEnd, onStart) {
@@ -902,34 +712,39 @@ function httpDownloadFile(
   onStart(req);
 }
 
-function httpCopyFile(fileId, access_token, response) {
-  var options = {
-    host: "www.googleapis.com",
-    path: "/drive/v3/files/" + fileId + "/copy?fields=*",
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + access_token,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  };
-  var req = https.request(options, async (res) => {
-    var body = "";
-    res.on("data", function (chunk) {
-      body += chunk;
+function httpCopyFile(fileId, access_token, fileName) {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify({
+      name: fileName,
     });
-    res.on("end", function () {
-      let json = JSON.parse(body);
-      store.set(`drive.${fileId}`, json);
-      store.set(`drive.${json.id}`, fileId);
-      response.json(JSON.parse(body));
+    var options = {
+      host: "www.googleapis.com",
+      path: "/drive/v3/files/" + fileId + "/copy?fields=name,id,mimeType,size",
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + access_token,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Content-Length": data.length,
+      },
+    };
+    var req = https.request(options, async (res) => {
+      var body = "";
+      res.on("data", function (chunk) {
+        body += chunk;
+      });
+      res.on("end", function () {
+        let json = JSON.parse(body);
+        isLatest = false;
+        resolve(json);
+      });
     });
+    req.on("error", function (err) {
+      reject(err);
+    });
+    req.write(data);
+    req.end();
   });
-  req.on("error", function (err) {
-    console.log(err);
-    res.json(err);
-  });
-  req.end();
 }
 
 function httpDeleteFile(fileId, access_token, response) {
@@ -991,113 +806,4 @@ function flushBuffers(arrBuffer, fileId, startByte) {
     );
   }
   return [remainBuffer];
-}
-
-function getFileInfo(fileId, access_token, onData) {
-  var options = {
-    host: "www.googleapis.com",
-    path: "/drive/v3/files/" + fileId + "?alt=json&fields=*",
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + access_token,
-    },
-  };
-
-  callback = function (response) {
-    var allData = "";
-    response.on("data", function (chunk) {
-      allData += chunk;
-    });
-    response.on("end", function () {
-      var info = JSON.parse(allData);
-      if (!info.error) onData(info);
-      else console.log(info.error);
-    });
-  };
-
-  https.request(options, callback).end();
-}
-
-//File info
-var filesInfo = [];
-
-function getInfoFromId(fileId) {
-  var result = null;
-  filesInfo.forEach((data) => {
-    if (data.id == fileId) {
-      result = data;
-    }
-  });
-  return result;
-}
-
-function addInfo(fileId, fileInfo, oauth2Client) {
-  var info = { id: fileId, info: fileInfo };
-  info.getVideoLength = new Promise((resolve, reject) => {
-    if (!info.videoLength) {
-      refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-        var access_token = oauth2Client.credentials.access_token;
-        var auth = "Bearer ".concat(access_token);
-        var url =
-          "https://www.googleapis.com/drive/v3/files/" +
-          fileId +
-          "?fields=videoMediaMetadata";
-        axios
-          .get(url, {
-            headers: { Authorization: auth, Accept: "application/json" },
-          })
-          .then((metadata) => {
-            var duration = Number(metadata.durationMillis) / 1000;
-            info.videoLength = duration;
-            resolve(duration);
-          })
-          .catch((err) => {
-            console.log(err);
-            reject(err);
-          });
-      });
-      // getVideoDurationInSeconds("http://127.0.0.1:" + PORT + "/" + fileId)
-      //   .then((duration) => {
-      //     info.videoLength = duration;
-      //     console.log(duration);
-      //     resolve(duration);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     reject(error);
-      //   });
-    } else {
-      resolve(info.videoLength);
-    }
-  });
-
-  filesInfo.push(info);
-}
-
-//Downloads status
-var downloadStatus = [];
-
-function getDownloadStatus(fileId) {
-  var result = null;
-  downloadStatus.forEach((data) => {
-    if (data.id == fileId) {
-      result = data;
-    }
-  });
-  return result;
-}
-
-function addDownloadStatus(fileId) {
-  var status = { id: fileId };
-  status.onClose = () => {};
-  downloadStatus.push(status);
-  return status;
-}
-
-function removeDownloadStatus(fileId) {
-  for (var i = 0; i < downloadStatus.length; i++) {
-    if (downloadStatus[i].id == fileId) {
-      downloadStatus.splice(i, 1);
-    }
-  }
 }

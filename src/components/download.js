@@ -13,14 +13,14 @@ import PauseCircleFilledIcon from "@material-ui/icons/PauseCircleFilled";
 import Box from "@material-ui/core/Box";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import PropTypes from "prop-types";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import Loader from "./loader";
-
+import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    maxHeight: "75vh",
-    backgroundColor: theme.palette.background.paper,
+    maxHeight: "85vh",
+    //backgroundColor: theme.palette.background.paper,
     overflow: "auto",
     position: "relative",
   },
@@ -76,6 +76,17 @@ export default function Download() {
     <>
       {loading ? <Loader /> : <></>}
       <h1>Download</h1>
+      <IconButton
+        edge="end"
+        aria-label="pause button"
+        onClick={(e) => {
+          window.shell.openPath(window.directory + "/server/downloaded/");
+        }}
+      >
+        <Tooltip title="Open folder">
+          <FolderOpenIcon />
+        </Tooltip>
+      </IconButton>
       <List className={classes.root}>
         {Object.entries(progress)
           .reverse()
@@ -88,7 +99,7 @@ export default function Download() {
                     alt="thumbnail"
                   />
                 </ListItemAvatar>
-                <ListItemText primary={value.name} />
+                <ListItemText primary={fmtName(value.name)} />
                 {(value.progress / Number(value.size)) * 100 !== 100 ? (
                   <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="pause button">
@@ -108,7 +119,7 @@ export default function Download() {
                         );
                       }}
                     >
-                      <PlayCircleFilledIcon />
+                      <PlayCircleOutlineIcon />
                     </IconButton>
                   </Tooltip>
                 )}
@@ -122,9 +133,20 @@ export default function Download() {
                   />
                 </div>
               )}
+              <Divider />
             </div>
           ))}
       </List>
     </>
   );
+}
+
+function fmtName(s) {
+  return s
+    .replace(/\[(.+?)\]/g, "")
+    .replace(/\((.+?)\)/g, "")
+    .replace("Copy of ", "")
+    .replace("-", " ")
+    .replace(".mkv", "")
+    .trim();
 }

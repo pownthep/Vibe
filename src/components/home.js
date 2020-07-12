@@ -5,9 +5,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import ListboxComponent from "./listbox";
-import ViewListIcon from "@material-ui/icons/ViewList";
-import ViewModuleIcon from "@material-ui/icons/ViewModule";
-import ViewComfyIcon from "@material-ui/icons/ViewComfy";
+import ViewListRoundedIcon from "@material-ui/icons/ViewListRounded";
+import ViewModuleRoundedIcon from "@material-ui/icons/ViewModuleRounded";
+import ViewComfyRoundedIcon from "@material-ui/icons/ViewComfyRounded";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -15,7 +15,6 @@ import { FixedSizeList as List } from "react-window";
 import { useHistory } from "react-router-dom";
 import Poster from "./poster";
 import RowList from "./row";
-import Avatar from "@material-ui/core/Avatar";
 
 export default function Home() {
   const [anime, setAnime] = useState([]);
@@ -50,7 +49,7 @@ export default function Home() {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "start",
             alignItems: "center",
           }}
         >
@@ -90,7 +89,7 @@ export default function Home() {
     <>
       <div
         style={{
-          margin: "0 auto",
+          //margin: "0 auto",
           width: "100%",
           textAlign: "center",
         }}
@@ -98,10 +97,10 @@ export default function Home() {
         <Autocomplete
           id="virtualize-demo"
           style={{
-            width: "80%",
-            margin: "0 auto",
+            width: "100%",
+            //margin: "0 auto",
             marginBottom: 0,
-            marginTop: 20,
+            marginTop: 0,
           }}
           disableListWrap
           ListboxComponent={ListboxComponent}
@@ -147,7 +146,7 @@ export default function Home() {
               })
             }
           >
-            <ViewListIcon />
+            <ViewListRoundedIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Grid view">
@@ -163,7 +162,7 @@ export default function Home() {
               })
             }
           >
-            <ViewComfyIcon />
+            <ViewComfyRoundedIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Large view">
@@ -179,7 +178,7 @@ export default function Home() {
               })
             }
           >
-            <ViewModuleIcon />
+            <ViewModuleRoundedIcon />
           </IconButton>
         </Tooltip>
       </div>
