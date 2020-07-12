@@ -1,42 +1,71 @@
 {
-  "files": [
-    {
-      "id": "1X1Bdu8LTvp-EYz9_B8vk_S-gOGlmk5gp",
-      "name": "[1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY]-Demon Slayer - Kimetsu no Yaiba-01",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "430886696"
-    },
-    {
-      "id": "1vDi53LjwuKDwOY8owGlfCSVzBg1gp4Fs",
-      "name": "[1FWIC4t34x9i-8cTy1PPfFgZPoPS334sT]-My Hero Academia Season 4-88. His Start",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "340975586"
-    },
-    {
-      "id": "15s9MkwmqnmQ7ehnxW3CysXU6iyk-Cn2l",
-      "name": "[1l9a5rioE2MPTjCLIctn9IuMgoVyklkBx]-Demon Slayer - Kimetsu no Yaiba-03",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "320105057"
-    },
-    {
-      "id": "1-VmQW_mHF4uMluTeY70-ZzIUqv95Js6T",
-      "name": "[14zK1j1lXzzTUkgrxBhJFKerxdMhkUhpT]-Demon Slayer - Kimetsu no Yaiba-04",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "255593458"
-    },
-    {
-      "id": "1xWFHtvk2bE738dIq_REp5vw6zAkt5X7Z",
-      "name": "[18ViOqTQCUGZCv5l3bcIrhA4PoAAVUpe1]-Demon Slayer - Kimetsu no Yaiba-02",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "253483371"
-    }
-  ],
   "series": {
+    "18jpIm0stCHPsvAJhiJ5NB83Az9RxqmHu": [
+      {
+        "id": "1aXFxx03sQszLpBg2guDxyWaH2JB3DSC0",
+        "name": "Bonus"
+      },
+      {
+        "id": "1RrCqsjCEGwy_fclfEh1-4lGO4ipydsK5",
+        "name": "01. Hitagi Crab, Part One.mkv"
+      },
+      {
+        "id": "1dzOlElbnf2ePANkft_3YEmdlMamxytaB",
+        "name": "02. Hitagi Crab, Part Two.mkv"
+      },
+      {
+        "id": "18bjuvSxXHXyScAwpeZKxe0DoASlFn6RA",
+        "name": "03. Mayoi Snail, Part One.mkv"
+      },
+      {
+        "id": "16CSNlHLCSCbeCgX0eThR2E_EpdyRyWbe",
+        "name": "04. Mayoi Snail, Part Two.mkv"
+      },
+      {
+        "id": "1Vyx54tnPiWCIeoKPsp17h2scEa_UpH7m",
+        "name": "05. Mayoi Snail, Part Three.mkv"
+      },
+      {
+        "id": "1-hoWb3D3lwHyCsCOF5v5kunr_a7z17bl",
+        "name": "06. Suruga Monkey, Part One.mkv"
+      },
+      {
+        "id": "1CdPq8XaqJEiMCVHBYiho4Y5HJuxYNIBn",
+        "name": "07. Suruga Monkey, Part Two.mkv"
+      },
+      {
+        "id": "1nOGJwIV3CUfxHMzPEBM1sSMnFyBNV5zf",
+        "name": "08. Suruga Monkey, Part Three.mkv"
+      },
+      {
+        "id": "1Y7GjgMyvXnKvFFKdMcO5KoB7HQZfc5mX",
+        "name": "09. Nadeko Snake, Part One.mkv"
+      },
+      {
+        "id": "1_p4E2bXnvLpHthKu504PZWBkuMHh-CKa",
+        "name": "10. Nadeko Snake, Part Two.mkv"
+      },
+      {
+        "id": "18CnyM9o9V5xiHdHD6RJmjXCN-gkegEB_",
+        "name": "11. Tsubasa Cat, Part One.mkv"
+      },
+      {
+        "id": "1w0wMrxygf9dUap0JIZiYb6oj6vYgIYEA",
+        "name": "12. Tsubasa Cat, Part Two.mkv"
+      },
+      {
+        "id": "1EJ9cAr7hxcI3zIRZG2rrel2RVv-C0FPr",
+        "name": "13. Tsubasa Cat, Part Three.mkv"
+      },
+      {
+        "id": "1RMc67J1rXuC_LG13u14o9V4KWr7vxT9M",
+        "name": "14. Tsubasa Cat, Part Four.mkv"
+      },
+      {
+        "id": "1lUPztAtzz5mOlfVyhY0Lm8Ma-PnNfqoF",
+        "name": "15. Tsubasa Cat, Part Five.mkv"
+      }
+    ],
     "1Vvy91I-j4V04WBgJ3GqzmCFqngUoZans": [
       {
         "id": "1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY",
@@ -142,515 +171,15 @@
         "id": "11bFk8u-qeAPPhJMXG47yQdOnM-4geEcO",
         "name": "Copy of Demon Slayer - Kimetsu no Yaiba - 26.mkv"
       }
-    ],
-    "1jw7f5K2540zEzSHPbePRBD9bSDRILxtb": [
-      {
-        "id": "1rTJLMDAiWts7tyTyUfdWWalsj_4Tn_Ab",
-        "name": "64. The Scoop on U.A. Class 1A.mkv"
-      },
-      {
-        "id": "13oNQPtAQiHetLu_0xOk_pX2uxE_kGMCX",
-        "name": "65. Overhaul.mkv"
-      },
-      {
-        "id": "1L9IWC5N0nSBxSeTL3chgJTevvleUCu8N",
-        "name": "66. Boy Meets....mkv"
-      },
-      {
-        "id": "1DEobcfYyMlndMt9aj1PmO0b1W5_h_8au",
-        "name": "67. Fighting Fate.mkv"
-      },
-      {
-        "id": "14c0PyNdgjRNkaMpc_RQ0jky0vCzUnFnn",
-        "name": "68. Let's Go, Gutsy Red Riot.mkv"
-      },
-      {
-        "id": "17xz7MGQ7Jcw-1lIGfviPkgGJPMwd3f_G",
-        "name": "69. An Unpleasant Talk.mkv"
-      },
-      {
-        "id": "1EZNxj3qIw9NQvarrUuRvLeKa1LWcI26X",
-        "name": "70. GO!!.mkv"
-      },
-      {
-        "id": "1z-Y_eZD5tW5XYMQf2vGYpwnQnKuNG8j2",
-        "name": "71. Suneater of the Big Three.mkv"
-      },
-      {
-        "id": "18wPvU4Ct6Mpprwo0w9LaM4aoyAbkToQu",
-        "name": "72. Red Riot.mkv"
-      },
-      {
-        "id": "1nQCpKA_5ENKYetcoh_j5Pxsajm1KHtCc",
-        "name": "73. Temp Squad.mkv"
-      },
-      {
-        "id": "1fDOmJ7Cp_JipRM4w6FXGLJiS5mCxfZsL",
-        "name": "74. Lemillion.mkv"
-      },
-      {
-        "id": "1791Z-KAHbD4QbmjkinTG-mw-n-RPoBHU",
-        "name": "75. Unforeseen Hope.mkv"
-      },
-      {
-        "id": "1JQh9Dtdq4XDmlpEYLVJNsghP2MHaCZsj",
-        "name": "76. Infinite 100%.mkv"
-      },
-      {
-        "id": "1X-Sv2zDqXXXJCvRGC080DOynMUqVDi2V",
-        "name": "77. Bright Future.mkv"
-      },
-      {
-        "id": "1K8QLiWXFVSrHgURq4TtkQDwLdxBymLTc",
-        "name": "78. Smoldering Flames.mkv"
-      },
-      {
-        "id": "1NpmCZMNpISzn6aQ421WJoK91VAew0-vy",
-        "name": "79. Win Those Kids' Hearts.mkv"
-      },
-      {
-        "id": "1MevAfzNi3J5jJIg38Jj56j9ydFVS_7VB",
-        "name": "80. Relief for License Trainees.mkv"
-      },
-      {
-        "id": "1BoqTFqlM-vmyQCA5kqXiKEjX_AxudijQ",
-        "name": "81. School Festival.mkv"
-      },
-      {
-        "id": "1qHCQbbi2VMNe-0c8MyGYJVxwLvumYamo",
-        "name": "82. Prepping for the School Festival is the Funnest Part.mkv"
-      },
-      {
-        "id": "1dP42-Jmyq4fPkbhLxdhnLA6XogehJtJa",
-        "name": "83. Golden Tips Imperial.mkv"
-      },
-      {
-        "id": "1697__RoBUQkxaKgB-WPdVOip66Lz3cAP",
-        "name": "84. Deku vs. Gentle Criminal.mkv"
-      },
-      {
-        "id": "1BnIFb7bDNxd2ual9rl_Vf2nq1K2bPQuQ",
-        "name": "85. School Festival Start!!.mkv"
-      },
-      {
-        "id": "12koic7suL_NW4s4bIEU2m1N7lWyTHS7h",
-        "name": "86. Let It Flow! School Festival!.mkv"
-      },
-      {
-        "id": "1fnhWAVVShGBGa7S82doEqi0spgqkHgWk",
-        "name": "87. Japanese Hero Billboard Chart.mkv"
-      },
-      {
-        "id": "1FWIC4t34x9i-8cTy1PPfFgZPoPS334sT",
-        "name": "88. His Start.mkv"
-      }
-    ],
-    "1sFJkC16hqp9EkLn57U08uWoeu1ictUvJ": [
-      {
-        "id": "1H4_fpKPtbhiXp56_RIkomdw0kmzQKD6C",
-        "name": "01. Prologue of the Beginning and the End.mkv"
-      },
-      {
-        "id": "189R3IHlIPv2gbZqOMZK7xlYYdBLKJnso",
-        "name": "02. Paranoia of Time Leaps.mkv"
-      },
-      {
-        "id": "1YDc17aNSWH5_WnIhh4UKVeESefJQiIO9",
-        "name": "03. Paranoia of Parallel Process.mkv"
-      },
-      {
-        "id": "19E2HN3eBi7nIGVtYb-TYNPaU-ir1hEQX",
-        "name": "04. Rendezvous of Abstract Fluctuation.mkv"
-      },
-      {
-        "id": "1dr675NJ_otXw3TPzD7FDovblv-889akM",
-        "name": "05. Rendezvous of Electrical Charge Conflict.mkv"
-      },
-      {
-        "id": "18ZnHTniClB5JO22SVECX7J1vqc416EJg",
-        "name": "06. Divergence of Butterfly Effect.mkv"
-      },
-      {
-        "id": "1VqDAQLiU42DWITlNhjavBU7tW2DGIA65",
-        "name": "07. Divergence of Fault.mkv"
-      },
-      {
-        "id": "1gqJ4DeEg9NevLZzvrMtRAy13LIok4Pai",
-        "name": "08. Homeostasis of Dreams.mkv"
-      },
-      {
-        "id": "1jixqP_EN1k1Ox7sXTmmU_jjZWyirTEzo",
-        "name": "09. Homeostasis of Illusions.mkv"
-      },
-      {
-        "id": "1-GQMETLkOzqNeWPbiVvv7A9rlSYIN7MQ",
-        "name": "10. Homeostasis of Complements.mkv"
-      },
-      {
-        "id": "15xZTY4Qmy2f-ItjXnPtf_MnDWrZSWjKc",
-        "name": "11. Dogma of Space-Time Boundary.mkv"
-      },
-      {
-        "id": "1RP7JX5Yhy7RWYElG9zvzMcTCynY2jZUA",
-        "name": "12. Dogma of Static Limit.mkv"
-      },
-      {
-        "id": "1qdzU5HTNd5szcBe-NSKf1mdFhlypDR6p",
-        "name": "13. Necrosis of Metaphysical.mkv"
-      },
-      {
-        "id": "1pcWwp-n3uD54aeihRyxm4WXN3pL8P26C",
-        "name": "14. Necrosis of Physical.mkv"
-      },
-      {
-        "id": "16TGkm6nr2sudqU_RfDbB9CLRSo4ti5Af",
-        "name": "15. Missing Link Necrosis.mkv"
-      },
-      {
-        "id": "1PovvDTz_ENd85SjqbeRZn24RMPh7DLDR",
-        "name": "16. Irreversible Necrosis.mkv"
-      },
-      {
-        "id": "1nXfIMe_0fwiMGllCwC8PF6j1dA1XNeB9",
-        "name": "17. Complex Virtual Image Distortion.mkv"
-      },
-      {
-        "id": "1ZLx-UWI8zH0P9iHHM0gf6ktLHX_LESuZ",
-        "name": "18. Androgynous Self Resemblance.mkv"
-      },
-      {
-        "id": "12OZu1KmPMNisjKwGf8q7ivpKdQjXxfGS",
-        "name": "19. Apoptosis of Pyramid Scheme.mkv"
-      },
-      {
-        "id": "16lCDGX5GpbLW90PiRNv3wXGBmF194mmw",
-        "name": "20. Finalize Apoptosis.mkv"
-      },
-      {
-        "id": "1mQoFhdOwIJpdnvtsYTKigH2Jb545QjmL",
-        "name": "21. Melt of the Principle of Causality.mkv"
-      },
-      {
-        "id": "1uFi2b2a0I4M76nim3BHHSPj_5GMOSIYS",
-        "name": "22. Being Meltdown.mkv"
-      },
-      {
-        "id": "1yi2ttnXUI39Zo2Nsf69RzmvpWCy4SfWc",
-        "name": "23. Open the Steins Gate.mkv"
-      },
-      {
-        "id": "1N4iqw4I5VOdsmFp883tj2rAfO3gT1BR-",
-        "name": "24. The Prologue Begins With the End.mkv"
-      }
-    ],
-    "1AAm276wh5NPtLuMbBnDrWmK4eIe8Um92": [
-      {
-        "id": "16lZbp-Z8YgZPVfkA7HR8YVLbK48OvFdp",
-        "name": "[AnimeKaizoku] No Game No Life - 01 - Beginner  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1irBwkXHbXyR914PP_j1LKXqnkoSocYab",
-        "name": "[AnimeKaizoku] No Game No Life - 02 - Challenger  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1bxCvy-jqRnB-C68sq-oK8Dw6aNwSeMeZ",
-        "name": "[AnimeKaizoku] No Game No Life - 03 - Expert  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1sVsh2iD-DXIkv8VrvwJP8b1v45HqTZYw",
-        "name": "[AnimeKaizoku] No Game No Life - 04 - Grandmaster  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "12eXIf5u_H_2SGUxjNT12Ro_AUgjeIrm3",
-        "name": "[AnimeKaizoku] No Game No Life - 05 - Weak Square  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1VzlWQd8bNyYg27M3MyiFZ-P08Uqv9jt4",
-        "name": "[AnimeKaizoku] No Game No Life - 06 - Interesting  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1okeNiHRNpDkFaUMqXq5EpoyzKlXVlvip",
-        "name": "[AnimeKaizoku] No Game No Life - 07 - Sacrifice  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1xzZtX39raAmQnO1FbgNgd1VjJfgAhPwO",
-        "name": "[AnimeKaizoku] No Game No Life - 08 - Fake End  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1eqsbBMib0z2GdP5b7KPL0i88WfwNsw3a",
-        "name": "[AnimeKaizoku] No Game No Life - 09 - Sky Walk  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "18aUnWntdfYoLX91sG44tn8R8yFY_grgC",
-        "name": "[AnimeKaizoku] No Game No Life - 10 - Blue Rose  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "14ThTmehfofb_z2t3ztNz7CmuGadmwoSJ",
-        "name": "[AnimeKaizoku] No Game No Life - 11 - Killing Giant  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      },
-      {
-        "id": "1zSe2xOU3Y5iXFX-bObUYr1tyy7mV9-Bh",
-        "name": "[AnimeKaizoku] No Game No Life - 12 - Rule Number 10  (BDrip Dual Audio) [1080p][SHINIGAMI_KIRA].mkv"
-      }
-    ],
-    "1d4LLdscwge9oRhUJZt68YvHFo2EhJ3vX": [
-      {
-        "id": "1IepIfxgu--XFCSd6O-qa-iOBwhRnYamt",
-        "name": "01. Greetings.mkv"
-      },
-      {
-        "id": "1chkhb6T49eDcALVlaQ4OFhjsHb3k1SV9",
-        "name": "02. The Threat of Left.mkv"
-      },
-      {
-        "id": "1fvOEzq85d60sFHvUm1pTUPd1XAnsEw4v",
-        "name": "03. Guess-Monster.mkv"
-      },
-      {
-        "id": "1DOAHpqYuFq7c7_4RL0-dG490X0kyRCen",
-        "name": "04. The Halo Around the Moon.mkv"
-      },
-      {
-        "id": "1YObApqNfOLj2UVRYV_R0SA7JnCOtipfj",
-        "name": "05. One vs. Many.mkv"
-      },
-      {
-        "id": "10g7iqKaRHwi1XDzXIhJ-CABjFeWlBdGv",
-        "name": "06. The Chemical Change of Encounters.mkv"
-      },
-      {
-        "id": "1SH2kgvrNbISJiVKnrw5yVvg_GM1sswlP",
-        "name": "07. Obsession.mkv"
-      },
-      {
-        "id": "1ljlbW4gluVwT3DwRxWGhSAQfztCfcOtN",
-        "name": "08. An Annoying Guy.mkv"
-      },
-      {
-        "id": "1gZtP4jDefGePT8hiIf3C0tp3F55CRAtV",
-        "name": "09. The Volleyball Freaks.mkv"
-      },
-      {
-        "id": "1aOw1kb9kHJOGnJMCDer5FRFjB7SpEQ-a",
-        "name": "10. The Battle of Concepts.mkv"
-      }
-    ],
-    "1B3ox0FkmBqDS-7L2rTun4N7CalJH9-1m": [
-      {
-        "id": "19_Y5uIUunDMVmFJQrQzVJiD85X9Qxj_u",
-        "name": "01. Ripped Apart ~Someone Is Watching~.mkv"
-      },
-      {
-        "id": "1_QDQ1eqWf3L3mEZy9HGdv44OWG5XxbcA",
-        "name": "02. Urban Legends ~Encountering Rumors~.mkv"
-      },
-      {
-        "id": "1QtJ5u3HXLLHLl6me1OWde6ZDIu6gh4pC",
-        "name": "03. One Danger After Another ~Degeneration~.mkv"
-      },
-      {
-        "id": "1f3xHLby_dOneuIJJcJRVM6xBwb-wQafx",
-        "name": "04. Inside ~Evil Spirit~.mkv"
-      },
-      {
-        "id": "1uSiXe17tOcVZmHIeZ801Npdv3q06l5Vd",
-        "name": "05. Discord ~Choices~.mkv"
-      },
-      {
-        "id": "1qpFppDeJtFOMWRExTrIpnIlTTmCZAj-e",
-        "name": "06. Poor, Lonely, Whitey.mkv"
-      },
-      {
-        "id": "1Nv3WKF-9InWFGUq265N7LMFo_yjLt1TL",
-        "name": "07. Cornered ~True Identity~.mkv"
-      },
-      {
-        "id": "174gbqLATZ8TOO0dc1TRop-mrtLC8kfwz",
-        "name": "08. Even Then ~Continue Forward~.mkv"
-      },
-      {
-        "id": "1TKs2EYrFbaRXR7_h5-5iHySNGb4rdSfb",
-        "name": "09. Show Me What You've Got ~Band Together~.mkv"
-      },
-      {
-        "id": "1IcVMAQILutasRLPWw5bAE8nTbtFJDou1",
-        "name": "10. Collision ~Power Type~.mkv"
-      },
-      {
-        "id": "1HdxghCGT49dMgK3h6ASyUBNGZW-FneV8",
-        "name": "11. Guidance ~Psychic Sensor~.mkv"
-      },
-      {
-        "id": "1zkBw9768inJKWvxQAdFCGNfumGTcB8zQ",
-        "name": "12. Battle for Social Rehabilitation ~Friendship~.mkv"
-      },
-      {
-        "id": "1TjphlC3utyzypQ-2E4I6FaZe2d9ky-b2",
-        "name": "13. Boss Fight ~The Final Light~.mkv"
-      }
-    ],
-    "1wyNlkhUAjthriNnr1JVt0LlcixFcwOcL": [
-      {
-        "id": "1pC9aoDcD9WOe5-c7KcXhh88urzKLAsC6",
-        "name": "01. The Shield Hero.mkv"
-      },
-      {
-        "id": "1WTqDnBKaIzwyMZlaOEG1X7sVwlcw0LIt",
-        "name": "02. The Slave Girl.mkv"
-      },
-      {
-        "id": "1kmLMxPEuXRQbTjcJYJSZqBa5lw0RZFWF",
-        "name": "03. Wave of Catastrophe.mkv"
-      },
-      {
-        "id": "1qUqZGstCntt46gUMpY6C5sGYmVkR3oVG",
-        "name": "04. Lullaby at Dawn.mkv"
-      },
-      {
-        "id": "1kgP0XNhOomJNNM-jqUxqrY3AIKJq7O7P",
-        "name": "05. Filo.mkv"
-      },
-      {
-        "id": "1v_XRfQSPmlyH5eMTTohl5O8c8zmAWPrG",
-        "name": "06. A New Comrade.mkv"
-      },
-      {
-        "id": "14MpFop3DAsu6nzus9dFefMBZtRbU2WvO",
-        "name": "07. The Savior of the Heavenly Fowl.mkv"
-      },
-      {
-        "id": "1PJviw2ZdfYzcmi0T9iTTPjXpsaqS_hKy",
-        "name": "08. Curse Shield.mkv"
-      },
-      {
-        "id": "1sx7IOd3Zdvkb0IdJL6DX8SDBHB9Dl7JA",
-        "name": "09. Melty.mkv"
-      },
-      {
-        "id": "1KE1nth9MU9VDHB8O4OgHQVetH3QY4ltT",
-        "name": "10. In the Midst of Turmoil.mkv"
-      },
-      {
-        "id": "1piw1OGtAcX6snDfBhrPNKctO89ymiZCW",
-        "name": "11. Catastrophe Returns.mkv"
-      },
-      {
-        "id": "19r9a2WsNcUW7JC2JiE4bAK0OAZT-2dlR",
-        "name": "12. The Raven Invader.mkv"
-      },
-      {
-        "id": "1D72H1rAXT5c8WY1GaTaHCdBZW5UqwUHm",
-        "name": "13. The Devil of the Shield.mkv"
-      },
-      {
-        "id": "1QrUzsJcK_MJwUcdQ99ntqy01Lc-j7_R9",
-        "name": "14. Everlasting Memory.mkv"
-      },
-      {
-        "id": "1pgx91QS5kElD38w7VvEMEpAGdee5ERR0",
-        "name": "15. Raphtalia.mkv"
-      },
-      {
-        "id": "1uJ7O3ve7gfohO1llzFxF8PplHfP89PBp",
-        "name": "16. Filolial Queen.mkv"
-      },
-      {
-        "id": "1FTyQj6UaHGVy9X7r1wJm7ODY56wpIRIH",
-        "name": "17. A Promise Made.mkv"
-      },
-      {
-        "id": "1gfIoL_5EXf_sAf7TUdON0nlhf2T93Ft4",
-        "name": "18. A Conspiracy Linked.mkv"
-      },
-      {
-        "id": "1Eu2yTllr1T__5s7ka4-PEEYlhbNomn1R",
-        "name": "19. The Four Cardinal Heroes.mkv"
-      },
-      {
-        "id": "1C1z3Lb2OXjKw0F3HY9gJXWvmMMGpl4NT",
-        "name": "20. Battle of Good and Evil.mkv"
-      },
-      {
-        "id": "1UVb-A3KAmWKnDBVhH9VACe36FlTnpzIl",
-        "name": "21. Naofumi's Triumphant Return.mkv"
-      },
-      {
-        "id": "1H4Skb3ZnBGLb5dRrnZj1gcDEs2HTkREw",
-        "name": "22. Four Heroes Council.mkv"
-      },
-      {
-        "id": "1t6Aqd9OM7UbHEPZuP2KkIWxypM7ptq8_",
-        "name": "23. Cal Mira Archipelago.mkv"
-      },
-      {
-        "id": "1QSiL2Dl4F6KoJjOQWeuR6Rty6qHr59bT",
-        "name": "24. Guardians of Another World.mkv"
-      },
-      {
-        "id": "16mVHvMKmtsLCq7kvvj64XcHziI1jFH2Z",
-        "name": "25. The Rising of the Shield Hero.mkv"
-      }
-    ],
-    "1-q_NIpKnME7IgG-i0q-slELMoFkRr3BQ": [
-      {
-        "id": "1XWqvVH-KSSdcC9wqkIFTgjV1-3ZYWzNl",
-        "name": "01. A Chance Encounter - Begegnung.mkv"
-      },
-      {
-        "id": "1YB4ov7NHp1qqGC9Ega8RAXSYbAaLTs98",
-        "name": "02. Annihilation - Vernichtung.mkv"
-      },
-      {
-        "id": "1VqLB4PuKZVcSYbdW6gW7C1DsZtiu4jvZ",
-        "name": "03. Deep Feelings - Im Innersten.mkv"
-      },
-      {
-        "id": "1rMKLvUq5V3U45Jaz_fNekmFCgLOFltHh",
-        "name": "04. Attack - Aufeinandertreffen.mkv"
-      },
-      {
-        "id": "1vQRroX7INd2nNxjeo82vNIFyD23MZcgj",
-        "name": "05. Receipt - Empfang.mkv"
-      },
-      {
-        "id": "1TG-73NNUSjqQJ8LksLY3zx340vnRB9Sh",
-        "name": "06. Innermost Feelings - Herzenswaerme.mkv"
-      },
-      {
-        "id": "1fqOekb3VfzLmf27xsYDDuubBvhMj8bA2",
-        "name": "07. Confrontation - Zufaellige Begegnung.mkv"
-      },
-      {
-        "id": "1CWMc63W41ix39MFU6k9m_w7kztlyyUw7",
-        "name": "08. The Beginning - Beginn.mkv"
-      },
-      {
-        "id": "1hx9WCax9eji20yd8_7pD_6oMZw-iiDVn",
-        "name": "09. Reminiscence - Schoene Erinnerung.mkv"
-      },
-      {
-        "id": "1npewCeyTpp5mIXciuYuwH-22V3V8UdmN",
-        "name": "10. Infant - Saeugling.mkv"
-      },
-      {
-        "id": "1uW1f-nuAZUTniL6YZJRnpa6A5q3_IIKZ",
-        "name": "11. Complication - Vermischung.mkv"
-      },
-      {
-        "id": "1HBHJ7YGJ9Ls0ZnzOJm_paNDWU5PjDq0G",
-        "name": "12. Quagmire - Taumeln.mkv"
-      },
-      {
-        "id": "1B52xdYTCa4aTp-FiUmwk1BLs3VznDUVc",
-        "name": "13. No Return - Erleuchtung.mkv"
-      },
-      {
-        "id": "14tvq8fE0wlG9boNS691KCqokqo9H5IU7",
-        "name": "desktop.ini"
-      }
     ]
   },
   "downloads": {
+    "1RrCqsjCEGwy_fclfEh1-4lGO4ipydsK5": {
+      "id": "1jXwvnydOW_UpjPHrSxRwAx5xgzSEeCEF",
+      "name": "[1RrCqsjCEGwy_fclfEh1-4lGO4ipydsK5]-Bakemonogatari-01. Hitagi Crab, Part One",
+      "size": "248735867",
+      "progress": 248735867
+    },
     "1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY": {
       "id": "1X1Bdu8LTvp-EYz9_B8vk_S-gOGlmk5gp",
       "name": "[1q8nX_t_WsEpGv9ULBx8XK7GzeO1nPWeY]-Demon Slayer - Kimetsu no Yaiba-01",
@@ -668,18 +197,6 @@
       "name": "[1l9a5rioE2MPTjCLIctn9IuMgoVyklkBx]-Demon Slayer - Kimetsu no Yaiba-03",
       "size": "320105057",
       "progress": 320105057
-    },
-    "14zK1j1lXzzTUkgrxBhJFKerxdMhkUhpT": {
-      "id": "1-VmQW_mHF4uMluTeY70-ZzIUqv95Js6T",
-      "name": "[14zK1j1lXzzTUkgrxBhJFKerxdMhkUhpT]-Demon Slayer - Kimetsu no Yaiba-04",
-      "size": "255593458",
-      "progress": 255593458
-    },
-    "1FWIC4t34x9i-8cTy1PPfFgZPoPS334sT": {
-      "id": "1vDi53LjwuKDwOY8owGlfCSVzBg1gp4Fs",
-      "name": "[1FWIC4t34x9i-8cTy1PPfFgZPoPS334sT]-My Hero Academia Season 4-88. His Start",
-      "size": "340975586",
-      "progress": 340975586
     }
   }
 }

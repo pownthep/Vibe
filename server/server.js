@@ -439,12 +439,16 @@ function startLocalServer(oauth2Client) {
         };
         callback = function (response) {
           var progress = 0;
+          const interval = setInterval(() => {
+            store.set(`downloads.${firstItemKey}.progress`, progress);
+          }, 1000);
           response.on("data", function (chunk) {
             progress += chunk.length;
-            store.set(`downloads.${firstItemKey}.progress`, progress);
+            
           });
           response.on("end", function () {
             store.set(`downloads.${firstItemKey}.progress`, progress);
+            clearInterval(interval);
             fileDownloader();
           });
           response.pipe(dest);
