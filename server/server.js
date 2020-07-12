@@ -1,10 +1,7 @@
-var fs = require("fs");
-var { google } = require("googleapis");
+rempackagevar fs = require("fs");
 var googleAuth = require("google-auth-library");
 var express = require("express");
 var https = require("https");
-var endMw = require("express-end");
-var stream = require("stream");
 var app = express();
 var cors = require("cors");
 const axios = require("axios");
@@ -27,7 +24,6 @@ var TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 var TEMP_DIR = __dirname + "/.temp/";
 var CHUNK_SIZE = 20000000;
 var PORT = 9001;
-var data = {};
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 const DL_DIR = __dirname + "/downloaded/";
@@ -49,19 +45,21 @@ fs.access(DL_DIR, fs.constants.F_OK, (err) => {
     });
 });
 
-// Load client secrets from a local file.
-fs.readFile(__dirname + "/client_secret.json", function processClientSecrets(
-  err,
-  content
-) {
-  if (err) {
-    console.log("Error loading client secret file: " + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Drive API.
-  authorize(JSON.parse(content), startLocalServer);
-});
+const credentials = {
+  web: {
+    client_id:
+      "880830326274-85ckm42lhoiec3jofmcbdohl8q6rrnlf.apps.googleusercontent.com",
+    project_id: "drivestreaming",
+    auth_uri: "https://accounts.google.com/o/oauth2/auth",
+    token_uri: "https://oauth2.googleapis.com/token",
+    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+    client_secret: "sBXvKT72bohos7VBMYKqU5i2",
+    redirect_uris: ["http://127.0.0.1:9001/code"],
+    javascript_origins: ["http://127.0.0.1:9001"],
+  },
+};
+
+authorize(credentials, startLocalServer);
 
 function authorize(credentials, callback) {
   var clientSecret = credentials.web.client_secret;
@@ -444,7 +442,6 @@ function startLocalServer(oauth2Client) {
           }, 1000);
           response.on("data", function (chunk) {
             progress += chunk.length;
-            
           });
           response.on("end", function () {
             store.set(`downloads.${firstItemKey}.progress`, progress);
@@ -508,36 +505,26 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/stream", (req, res) => {
-    var filePath =
-      __dirname +
-      "/downloaded" +
-      `/[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`;
-    fs.access(filePath, fs.constants.R_OK, (err) => {
-      if (err) {
-        refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-          var access_token = oauth2Client.credentials.access_token;
-          var fileId = req.query.id;
-          try {
-            const files = await checkFile(fileId, access_token);
-            if (files.length === 1) {
-              console.log("file exist in drive");
-              var fileInfo = files[0];
-              performRequest_default(req, res, access_token, fileInfo);
-            } else {
-              console.log("copying file to drive");
-              const copiedFile = await httpCopyFile(
-                fileId,
-                access_token,
-                `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
-              );
-              performRequest_default(req, res, access_token, copiedFile);
-            }
-          } catch (error) {
-            res.status(500);
-          }
-        });
-      } else {
-        res.sendFile(filePath);
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var fileId = req.query.id;
+      try {
+        const files = await checkFile(fileId, access_token);
+        if (files.length === 1) {
+          console.log("file exist in drive");
+          var fileInfo = files[0];
+          performRequest_default(req, res, access_token, fileInfo);
+        } else {
+          console.log("copying file to drive");
+          const copiedFile = await httpCopyFile(
+            fileId,
+            access_token,
+            `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
+          );
+          performRequest_default(req, res, access_token, copiedFile);
+        }
+      } catch (error) {
+        res.status(500);
       }
     });
   });

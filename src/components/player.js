@@ -173,7 +173,9 @@ class Player extends React.Component {
 
   async addToDownload(id, name) {
     const res = await fetch(
-      `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${this.fmtName(name)}&serieName=${this.state.data.name}`
+      `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${this.fmtName(
+        name
+      )}&serieName=${this.state.data.name}`
     );
     const data = await res.json();
     if (data.error) {
@@ -292,8 +294,7 @@ class Player extends React.Component {
 
           this.setState({ pause: false });
           this.mpv.property("pause", false);
-        }
-        else {
+        } else {
           this.setState({ pause: false });
           this.mpv.property("pause", false);
         }
@@ -353,7 +354,23 @@ class Player extends React.Component {
       this.setState({ auth: user });
       return;
     }
-    this.mpv.command("loadfile", `http://localhost:9001/stream?id=${id}&episodeName=${this.fmtName(name)}&serieName=${this.state.data.name}`);
+    var filePath =
+      window.directory +
+      "/server/downloaded/" +
+      `[${id}]-${this.state.data.name}-${this.fmtName(name)}`;
+    window.access(filePath, (err) => {
+      if (err) {
+        console.log(err);
+        this.mpv.command(
+          "loadfile",
+          `http://localhost:9001/stream?id=${id}&episodeName=${this.fmtName(
+            name
+          )}&serieName=${this.state.data.name}`
+        );
+      } else {
+        this.mpv.command("loadfile", filePath);
+      }
+    });
     this.setState({
       loading: true,
     });
