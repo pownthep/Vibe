@@ -340,6 +340,17 @@ function startLocalServer(oauth2Client) {
     }
   });
 
+  app.get("/full-json", async (req, res) => {
+    try {
+      const resp = await axios(
+        "https://boring-northcutt-5fd361.netlify.app/full.json"
+      );
+      res.json(resp.data);
+    } catch (error) {
+      res.json([]);
+    }
+  });
+
   app.get("/delete/:id", (req, res) => {
     refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
@@ -529,9 +540,36 @@ function startLocalServer(oauth2Client) {
     });
   });
 
+  app.get("/video/:id", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var fileId = req.params.id;
+      try {
+        const files = await checkFile(fileId, access_token);
+        if (files.length === 1) {
+          console.log("file exist in drive");
+          var fileInfo = files[0];
+          performRequest_default(req, res, access_token, fileInfo);
+        } else {
+          console.log("copying file to drive");
+          const copiedFile = await httpCopyFile(
+            fileId,
+            access_token,
+            `[${req.params.id}]-${req.params.serieName}-${req.params.episodeName}`
+          );
+          performRequest_default(req, res, access_token, copiedFile);
+        }
+      } catch (error) {
+        res.status(500);
+      }
+    });
+  });
+
   app.listen(PORT);
   console.log("Server started at port: " + PORT);
 }
+
+
 
 function performRequest_default(req, res, access_token, fileInfo) {
   var fileSize = fileInfo.size;
@@ -550,6 +588,7 @@ function performRequest_default(req, res, access_token, fileInfo) {
       //'Content-Type': 'video/mp4',
       "Content-Type": fileMime,
     };
+    //console.log(chunksize);
     res.writeHead(206, head);
     downloadFile(
       fileId,
@@ -568,6 +607,7 @@ function performRequest_default(req, res, access_token, fileInfo) {
       }
     );
   } else {
+    console.log("No requested range");
     const head = {
       "Content-Length": fileSize,
       "Content-Type": fileMime,

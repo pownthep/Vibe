@@ -50,20 +50,27 @@ export default function Drive() {
     },
     loading: true,
   });
+
   useEffect(() => {
-    async function getState() {
+    let mounted = true;
+    const getState = async () => {
       const res1 = await fetch("http://127.0.0.1:9001/drive");
       const res2 = await fetch("http://127.0.0.1:9001/quota");
       const data = await res1.json();
       const info = await res2.json();
-      setState((json) => ({
-        ...json,
-        data: data,
-        info: info,
-        loading: false,
-      }));
-    }
+      console.log("setting state");
+      if (mounted)
+        setState((json) => ({
+          ...json,
+          data: data,
+          info: info,
+          loading: false,
+        }));
+    };
     getState();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (

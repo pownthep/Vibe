@@ -35,8 +35,6 @@ function createWindow() {
     webPreferences: {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
-      enableRemoteModule: true,
-      webSecurity: false,
     },
     //icon: process.platform !== "darwin" ? path.join(__dirname, "assets/icon.ico"):path.join(__dirname, "assets/icon.icns"),
   });
@@ -47,13 +45,13 @@ function createWindow() {
   }
   else {
     require(__dirname+"/server/server.bundle.js");
-    win.loadURL(
-      url.format({
-        pathname: path.join(__dirname, "/build/index.html"),
-        protocol: "file:",
-        slashes: true,
-      })
-    );
+    win.loadFile(path.join(__dirname, "/build/index.html"));
+    //   url.format({
+    //     pathname: path.join(__dirname, "/build/index.html"),
+    //     protocol: "file:",
+    //     slashes: true,
+    //   })
+    // );
   }
 
   win.once("ready-to-show", () => {});

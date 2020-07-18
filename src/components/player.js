@@ -27,7 +27,7 @@ import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
-// import LinearProgress from "@material-ui/core/LinearProgress";
+import stringHash from "string-hash";
 import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -51,6 +51,9 @@ const styles = (theme) => ({
   gridList: {
     width: "100%",
     height: 200,
+  },
+  listTile: {
+    borderRadius: 5,
   },
   icon: {
     color: "rgba(255, 255, 255, 0.54)",
@@ -124,11 +127,10 @@ class Player extends React.Component {
       "time-pos": 0,
       duration: 0,
       fullscreen: false,
-      data: {},
+      data: { episodes: [] },
       episodes: [],
       loading: false,
       value: null,
-      epList: [],
       page: 1,
       checked: true,
       volume_value: 50,
@@ -162,7 +164,6 @@ class Player extends React.Component {
     this.cycleAudio = this.cycleAudio.bind(this);
     this.togglePause = this.togglePause.bind(this);
     this.addToHistory = this.addToHistory.bind(this);
-    this.fmtName = this.fmtName.bind(this);
     this.valueLabelFormat = this.valueLabelFormat.bind(this);
     this.bannerRef = React.createRef();
     this.handleMenu = this.handleMenu.bind(this);
@@ -173,9 +174,7 @@ class Player extends React.Component {
 
   async addToDownload(id, name) {
     const res = await fetch(
-      `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${this.fmtName(
-        name
-      )}&serieName=${this.state.data.name}`
+      `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
     );
     const data = await res.json();
     if (data.error) {
@@ -200,30 +199,13 @@ class Player extends React.Component {
     this._isMounted = true;
     const id = this.props.match.params.id;
     const user = await AuthenticateUser();
-    let arrLength = window.data[id].episodes.length;
-    let tmp = [];
 
-    // Get episodes
-    if (arrLength > 0 && this._isMounted) {
-      for (let i = 0; i < arrLength; i++) {
-        if (this._isMounted) {
-          const url = window.data[id].episodes[i];
-          const res = await fetch("http://127.0.0.1:9001/list/" + url);
-          const json = await res.json();
-          tmp = tmp.concat(json);
-          if (this._isMounted)
-            this.setState({ progress: ((i + 1) * 100) / arrLength });
-          nprogress.set(this.state.progress / 100);
-        }
-      }
-    }
     // Set state if the component is mounted
     if (this._isMounted) {
       this.setState({
         data: window.data[id],
-        episodes: tmp,
-        epList: tmp,
         auth: user,
+        episodes: window.data[id].episodes.slice(0, 5),
         showProgress: false,
         favourited: store.get(`favourites.${id}`),
       });
@@ -235,6 +217,7 @@ class Player extends React.Component {
       const episode = store.get(`history.${epId}`);
       this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
     }
+    console.log(window.data[id].episodes);
   }
 
   componentWillUnmount() {
@@ -357,13 +340,13 @@ class Player extends React.Component {
     var filePath =
       window.directory +
       "/server/downloaded/" +
-      `[${id}]-${this.state.data.name}-${this.fmtName(name)}`;
+      `[${id}]-${this.state.data.name}-${(name)}`;
     window.access(filePath, (err) => {
       if (err) {
         console.log(err);
         this.mpv.command(
           "loadfile",
-          `http://localhost:9001/stream?id=${id}&episodeName=${this.fmtName(
+          `http://localhost:9001/stream?id=${id}&episodeName=${(
             name
           )}&serieName=${this.state.data.name}`
         );
@@ -430,17 +413,6 @@ class Player extends React.Component {
     store.set(`history.${episode.id}`, episode);
   }
 
-  fmtName(s) {
-    return s
-      .replace(`${this.state.data.name}`, "")
-      .replace(/\[(.+?)\]/g, "")
-      .replace(/\((.+?)\)/g, "")
-      .replace("Copy of ", "")
-      .replace(" - ", " ")
-      .replace(".mkv", "")
-      .trim();
-  }
-
   valueLabelFormat(value) {
     return this.toHHMMSS(value);
   }
@@ -460,7 +432,7 @@ class Player extends React.Component {
           <h1 className="anime-title">{this.state.data.name}</h1>
           <h2 className="anime-episode">
             {this.state.currentEpisode
-              ? this.fmtName(this.state.currentEpisode.ep)
+              ? (this.state.currentEpisode.ep)
               : ""}
           </h2>
         </div>
@@ -478,8 +450,14 @@ class Player extends React.Component {
               crossOrigin={"anonymous"}
               ref={this.bannerRef}
               src={
-                "http://localhost:9001/img/?url=" +
-                window.data[this.props.match.params.id].banner
+                window.directory +
+                "/server/img/" +
+                stringHash(window.data[this.props.match.params.id].banner)
+              }
+              onError={(e) =>
+                (e.target.src =
+                  "http://localhost:9001/img/?url=" +
+                  window.data[this.props.match.params.id].banner)
               }
               alt={this.state.data.title + "-banner"}
               className="banner"
@@ -500,7 +478,7 @@ class Player extends React.Component {
                 onPropertyChange={this.handlePropertyChange}
                 onMouseDown={this.togglePause}
                 className={classes.unclickable}
-                hidden={true}
+                style={{ opacity: this.state.currentEpisode ? 1 : 0 }}
               />
             </Grow>
             <div className="loader" hidden={!this.state.loading}>
@@ -613,9 +591,9 @@ class Player extends React.Component {
                 ListboxComponent={ListboxComponent}
                 value={this.state.value}
                 onChange={this.handleSearch}
-                options={this.state.episodes.map((e, i) => ({
+                options={this.state.data.episodes.map((e, i) => ({
                   index: i,
-                  name: e.name.replace("Copy of ", ""),
+                  name: e.name,
                 }))}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => (
@@ -625,7 +603,6 @@ class Player extends React.Component {
                     margin="normal"
                     color="primary"
                     size="small"
-                    variant="filled"
                   />
                 )}
                 renderOption={(option, { inputValue }) => {
@@ -651,13 +628,13 @@ class Player extends React.Component {
               />
 
               <GridList cellHeight={190} className={classes.gridList} cols={5}>
-                {this.state.epList.slice(0, 5).map((tile, index) => (
+                {this.state.episodes.map((tile, index) => (
                   <Grow
                     in={this.state.checked}
                     timeout={300 + index * 50}
                     key={tile.id}
                   >
-                    <GridListTile>
+                    <GridListTile classes={{ tile: classes.listTile }}>
                       <img
                         src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
                         alt={tile.name}
@@ -669,7 +646,7 @@ class Player extends React.Component {
                       />
                       <GridListTileBar
                         title={this.state.data.name}
-                        subtitle={<span>{this.fmtName(tile.name)}</span>}
+                        subtitle={<span>{tile.name}</span>}
                         actionIcon={
                           <>
                             <IconButton
@@ -723,14 +700,14 @@ class Player extends React.Component {
                 </Fab>
               </div>
               <Pagination
-                count={Math.ceil(this.state.episodes.length / 5)}
+                count={Math.ceil(this.state.data.episodes.length / 5)}
                 page={this.state.page}
                 onChange={(e, nv) => {
                   var end = 5 * nv;
                   var start = end - 5;
                   this.setState({ page: nv });
                   this.setState({
-                    epList: this.state.episodes.slice(start, end),
+                    episodes: this.state.data.episodes.slice(start, end),
                   });
                 }}
               />

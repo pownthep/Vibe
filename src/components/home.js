@@ -77,6 +77,7 @@ export default function Home() {
 
   useEffect(() => {
     if (value) {
+      console.log(value);
       const result = anime.filter((item) => item.id === value.id);
       setAnime(result);
     } else {
@@ -107,6 +108,15 @@ export default function Home() {
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
+          }}
+          onInputChange={(e, v) => {
+            if (v.length > 0) {
+              const result = anime.filter((item) =>
+                item.name.toLowerCase().includes(v.toLowerCase())
+              );
+              setAnime(result);
+            }
+            else setAnime(window.data);
           }}
           options={anime}
           getOptionLabel={(option) => option.name}

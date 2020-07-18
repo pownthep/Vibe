@@ -9,9 +9,8 @@ import "./index.css";
 if (window.store) {
   (async () => {
     try {
-      // render(<Loader />, document.getElementById("root"));
       nprogress.start();
-      const seriesRes = await fetch("http://localhost:9001/reduced_series");
+      const seriesRes = await fetch("http://localhost:9001/full-json");
       const json = await seriesRes.json();
       window.data = json;
       nprogress.done();

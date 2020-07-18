@@ -10,6 +10,7 @@ import Loader from "./loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import stringHash from "string-hash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,7 +99,16 @@ export default function History() {
                 <img
                   alt={rowItem.title}
                   className={classes.thumbnail}
-                  src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`}
+                  src={
+                    window.directory +
+                    "/server/img/" +
+                    stringHash(
+                      `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`
+                    )
+                  }
+                  onError={(e) =>
+                    (e.target.src = `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`)
+                  }
                   style={{ borderRadius: "5px" }}
                 />
                 <div className={classes.playBtn}>
@@ -125,7 +135,7 @@ export default function History() {
                 <h2 style={{ margin: 0 }}>
                   {rowItem.title +
                     " - " +
-                    ` Episode: ${fmtName(rowItem.ep)} - ${toHHMMSS(
+                    ` Episode: ${(rowItem.ep)} - ${toHHMMSS(
                       rowItem.timePos
                     )}`}
                 </h2>
@@ -187,14 +197,4 @@ function toHHMMSS(s) {
 function toDate(s) {
   var t = new Date(s);
   return t.toLocaleString();
-}
-
-function fmtName(s) {
-  return s
-    .replace(/\[(.+?)\]/g, "")
-    .replace(/\((.+?)\)/g, "")
-    .replace("Copy of ", "")
-    .replace(" - ", " ")
-    .replace(".mkv", "")
-    .trim();
 }
