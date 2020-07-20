@@ -343,7 +343,7 @@ function startLocalServer(oauth2Client) {
   app.get("/full-json", async (req, res) => {
     try {
       const resp = await axios(
-        "https://boring-northcutt-5fd361.netlify.app/full.json"
+        "https://data.pownthep.vercel.app/merged.json"
       );
       res.json(resp.data);
     } catch (error) {

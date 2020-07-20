@@ -5,6 +5,7 @@ import DesktopWindowsIcon from "@material-ui/icons/DesktopWindows";
 import { makeStyles } from "@material-ui/core/styles";
 import AppleIcon from "@material-ui/icons/Apple";
 import ComputerIcon from "@material-ui/icons/Computer";
+import AndroidIcon from "@material-ui/icons/Android";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -53,6 +54,7 @@ export default function Landing() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            flexWrap: "wrap",
             marginBottom: 10,
             marginTop: 10,
           }}
@@ -60,7 +62,13 @@ export default function Landing() {
           <img
             src="./capture.PNG"
             alt="app screenshot"
-            style={{ width: "60%", borderRadius: 5 }}
+            style={{ maxHeight: "50vh", maxWidth:"100%", borderRadius: 5, margin: 50 }}
+            className="box"
+          />
+          <img
+            src="./android.jpg"
+            alt="app screenshot"
+            style={{ maxHeight: "50vh", maxWidth:"100%", borderRadius: 5, margin: 50 }}
             className="box"
           />
         </div>
@@ -92,6 +100,26 @@ export default function Landing() {
           >
             Linux
           </Button>
+          <a href="https://github.com/pownthep/Vibe-Mobile/releases/download/v1.0-alpha/app-x86_64-debug.apk">
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              startIcon={<AndroidIcon />}
+            >
+              Android 64bit
+            </Button>
+          </a>
+          <a href="https://github.com/pownthep/Vibe-Mobile/releases/download/v1.0-alpha/app-x86-debug.apk">
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              startIcon={<AndroidIcon />}
+            >
+              Android 32bit
+            </Button>
+          </a>
         </div>
       </div>
     </div>
