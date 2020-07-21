@@ -100,24 +100,14 @@ export default function Landing() {
           >
             Linux
           </Button>
-          <a href="https://github.com/pownthep/Vibe-Mobile/releases/download/v1.0-alpha/app-x86_64-debug.apk">
+          <a href="https://github.com/pownthep/Vibe-Mobile/releases/download/v1.0-alpha/app-arm64-v8a-debug.apk">
             <Button
               variant="contained"
               color="secondary"
               className={classes.button}
               startIcon={<AndroidIcon />}
             >
-              Android 64bit
-            </Button>
-          </a>
-          <a href="https://github.com/pownthep/Vibe-Mobile/releases/download/v1.0-alpha/app-x86-debug.apk">
-            <Button
-              variant="contained"
-              color="secondary"
-              className={classes.button}
-              startIcon={<AndroidIcon />}
-            >
-              Android 32bit
+              Android
             </Button>
           </a>
         </div>
