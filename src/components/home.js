@@ -15,6 +15,15 @@ import { FixedSizeList as List } from "react-window";
 import { useHistory } from "react-router-dom";
 import Poster from "./poster";
 import RowList from "./row";
+import { makeStyles } from "@material-ui/core/styles";
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    outline: "none"
+  }
+}));
 
 export default function Home() {
   const [anime, setAnime] = useState([]);
@@ -26,6 +35,7 @@ export default function Home() {
     viewMode: 1,
   });
   let itemsPerRow = 1;
+  const classes = useStyles();
 
   const history = useHistory();
 
@@ -49,7 +59,7 @@ export default function Home() {
         <div
           style={{
             display: "flex",
-            justifyContent: "start",
+            justifyContent: "center",
             alignItems: "center",
           }}
         >
@@ -79,7 +89,7 @@ export default function Home() {
     if (value) {
       console.log(value);
       const result = anime.filter((item) => item.id === value.id);
-      setAnime(result);
+      if (result.length > 0) setAnime(result);
     } else {
       setAnime(window.data);
     }
@@ -98,10 +108,10 @@ export default function Home() {
         <Autocomplete
           id="virtualize-demo"
           style={{
-            width: "100%",
-            //margin: "0 auto",
+            width: "30%",
+            margin: "0 auto",
             marginBottom: 0,
-            marginTop: 0,
+            marginTop: 20,
           }}
           disableListWrap
           ListboxComponent={ListboxComponent}
@@ -110,18 +120,20 @@ export default function Home() {
             setValue(newValue);
           }}
           onInputChange={(e, v) => {
-            if (v.length > 0) {
+            if (v.trim().length > 0) {
               const result = anime.filter((item) =>
                 item.name.toLowerCase().includes(v.toLowerCase())
               );
-              setAnime(result);
-            }
-            else setAnime(window.data);
+              if (result.length > 0) setAnime(result);
+              else setAnime(window.data);
+            } else setAnime(window.data);
           }}
           options={anime}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField {...params} size="small" label="Search" />
+            <TextField {...params} size="small" label="Search..." variant="outlined" classes={{
+              root: classes.root
+            }}/>
           )}
           renderOption={(option, { inputValue }) => {
             const matches = match(option.name, inputValue);

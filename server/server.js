@@ -343,7 +343,18 @@ function startLocalServer(oauth2Client) {
   app.get("/full-json", async (req, res) => {
     try {
       const resp = await axios(
-        "https://data.pownthep.vercel.app/merged.json"
+        "https://data.pownthep.vercel.app/trimmed-desktop.json"
+      );
+      res.json(resp.data);
+    } catch (error) {
+      res.json([]);
+    }
+  });
+
+  app.get("/shows/:id", async (req, res) => {
+    try {
+      const resp = await axios(
+        "https://data.pownthep.vercel.app/shows/"+req.params.id+".json"
       );
       res.json(resp.data);
     } catch (error) {

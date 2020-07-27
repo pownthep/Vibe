@@ -50,7 +50,7 @@ const styles = (theme) => ({
   },
   gridList: {
     width: "100%",
-    height: 200,
+    height: "auto",
   },
   listTile: {
     borderRadius: 5,
@@ -144,6 +144,7 @@ class Player extends React.Component {
       favourited: true,
       snackOpen: false,
       snackMessage: "Test message",
+      loadingData: true
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleMPVReady = this.handleMPVReady.bind(this);
@@ -197,27 +198,30 @@ class Player extends React.Component {
   async componentDidMount() {
     // Setup
     this._isMounted = true;
-    const id = this.props.match.params.id;
     const user = await AuthenticateUser();
+    const id = this.props.match.params.id;
+    const res = await fetch("http://localhost:9001/shows/" + id);
+    const data = await res.json();
 
     // Set state if the component is mounted
     if (this._isMounted) {
       this.setState({
-        data: window.data[id],
+        data: data,
         auth: user,
-        episodes: window.data[id].episodes.slice(0, 5),
+        episodes: data.episodes.slice(0, 5),
         showProgress: false,
         favourited: store.get(`favourites.${id}`),
+        loadingData: false
       });
       nprogress.done();
     }
+
     // Setting current episode
     if (this.props.match.params.epId && this._isMounted) {
       const epId = this.props.match.params.epId;
       const episode = store.get(`history.${epId}`);
       this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
     }
-    console.log(window.data[id].episodes);
   }
 
   componentWillUnmount() {
@@ -231,7 +235,7 @@ class Player extends React.Component {
     });
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     nprogress.start();
   }
 
@@ -340,15 +344,13 @@ class Player extends React.Component {
     var filePath =
       window.directory +
       "/server/downloaded/" +
-      `[${id}]-${this.state.data.name}-${(name)}`;
+      `[${id}]-${this.state.data.name}-${name}`;
     window.access(filePath, (err) => {
       if (err) {
         console.log(err);
         this.mpv.command(
           "loadfile",
-          `http://localhost:9001/stream?id=${id}&episodeName=${(
-            name
-          )}&serieName=${this.state.data.name}`
+          `http://localhost:9001/stream?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
         );
       } else {
         this.mpv.command("loadfile", filePath);
@@ -428,321 +430,333 @@ class Player extends React.Component {
     const { classes } = this.props;
     return (
       <>
-        <div className="title-container">
-          <h1 className="anime-title">{this.state.data.name}</h1>
-          <h2 className="anime-episode">
-            {this.state.currentEpisode
-              ? (this.state.currentEpisode.ep)
-              : ""}
-          </h2>
-        </div>
-        <Fade in={this.state.checked} timeout={600}>
-          <div
-            className="overlay"
-            style={{
-              background: `linear-gradient(to top, rgba(${this.state.palette1}),rgba(${this.state.palette2}))`,
-            }}
-          ></div>
-        </Fade>
-        <div className="container">
-          <Fade in={this.state.checked} timeout={600}>
-            <img
-              crossOrigin={"anonymous"}
-              ref={this.bannerRef}
-              src={
-                window.directory +
-                "/server/img/" +
-                stringHash(window.data[this.props.match.params.id].banner)
-              }
-              onError={(e) =>
-                (e.target.src =
-                  "http://localhost:9001/img/?url=" +
-                  window.data[this.props.match.params.id].banner)
-              }
-              alt={this.state.data.title + "-banner"}
-              className="banner"
-              onLoad={(e) => {
-                let img = e.currentTarget;
-                let color = colorThief.getColor(img);
-                this.setState({
-                  palette1: `${color[0]},${color[1]},${color[2]},0`,
-                  palette2: `${color[0]},${color[1]},${color[2]},1`,
-                });
-              }}
-            />
-          </Fade>
-          <div ref={this.myRef} className="player">
-            <Grow in={this.state.checked} timeout={1500}>
-              <ReactMPV
-                onReady={this.handleMPVReady}
-                onPropertyChange={this.handlePropertyChange}
-                onMouseDown={this.togglePause}
-                className={classes.unclickable}
-                style={{ opacity: this.state.currentEpisode ? 1 : 0 }}
-              />
-            </Grow>
-            <div className="loader" hidden={!this.state.loading}>
-              <CircularIndeterminate />
+        {this.state.loadingData ? (
+          <></>
+        ) : (
+          <>
+            <div className="title-container">
+              <h1 className="anime-title">{this.state.data.name}</h1>
+              <h2 className="anime-episode">
+                {this.state.currentEpisode ? this.state.currentEpisode.ep : ""}
+              </h2>
             </div>
-            <div className="controls">
-              <Slider
-                min={0}
-                step={0.1}
-                max={this.state.duration}
-                value={this.state["time-pos"]}
-                onChange={this.handleSeek}
-                aria-labelledby="continuous-slider"
-                onMouseDown={this.handleSeekMouseDown}
-                onMouseUp={this.handleSeekMouseUp}
-                ValueLabelComponent={ValueLabelComponent}
-              />
+            <Fade in={this.state.checked} timeout={600}>
+              <div
+                className="overlay"
+                style={{
+                  background: `linear-gradient(to top, rgba(${this.state.palette1}),rgba(${this.state.palette2}))`,
+                }}
+              ></div>
+            </Fade>
+            <div className="container">
+              <Fade in={this.state.checked} timeout={600}>
+                <img
+                  crossOrigin={"anonymous"}
+                  ref={this.bannerRef}
+                  src={
+                    window.directory +
+                    "/server/img/" +
+                    stringHash(this.state.data.banner)
+                  }
+                  onError={(e) =>
+                    (e.target.src =
+                      "http://localhost:9001/img/?url=" +
+                      this.state.data.banner)
+                  }
+                  alt={this.state.data.title + "-banner"}
+                  className="banner"
+                  onLoad={(e) => {
+                    let img = e.currentTarget;
+                    let color = colorThief.getColor(img);
+                    this.setState({
+                      palette1: `${color[0]},${color[1]},${color[2]},0`,
+                      palette2: `${color[0]},${color[1]},${color[2]},1`,
+                    });
+                  }}
+                />
+              </Fade>
+              <div ref={this.myRef} className="player">
+                <Grow in={this.state.checked} timeout={1500}>
+                  <ReactMPV
+                    onReady={this.handleMPVReady}
+                    onPropertyChange={this.handlePropertyChange}
+                    onMouseDown={this.togglePause}
+                    className={classes.unclickable}
+                    // style={{ opacity: this.state.currentEpisode ? 1 : 0 }}
+                  />
+                </Grow>
+                <div className="loader" hidden={!this.state.loading}>
+                  <CircularIndeterminate />
+                </div>
+                <div className="controls">
+                  <Slider
+                    min={0}
+                    step={0.1}
+                    max={this.state.duration}
+                    value={this.state["time-pos"]}
+                    onChange={this.handleSeek}
+                    aria-labelledby="continuous-slider"
+                    onMouseDown={this.handleSeekMouseDown}
+                    onMouseUp={this.handleSeekMouseUp}
+                    ValueLabelComponent={ValueLabelComponent}
+                  />
 
-              <div className={classes.controlContainer}>
-                <Grid
-                  container
-                  direction="row"
-                  justify="space-evenly"
-                  alignItems="center"
-                >
-                  <div className={classes.inline}>
-                    <Tooltip title="Toggle play/pause">
-                      <IconButton
-                        aria-label="toggle play and pause"
-                        onClick={this.togglePause}
-                        size="medium"
-                      >
-                        {this.state.pause ? (
-                          <PlayArrowOutlinedIcon fontSize="inherit" />
-                        ) : (
-                          <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <div className={classes.inline}>
-                    <p className="video-time">
-                      {this.toHHMMSS(this.state["time-pos"])} /{" "}
-                      {this.toHHMMSS(this.state.duration)}
-                    </p>
-                  </div>
+                  <div className={classes.controlContainer}>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="space-evenly"
+                      alignItems="center"
+                    >
+                      <div className={classes.inline}>
+                        <Tooltip title="Toggle play/pause">
+                          <IconButton
+                            aria-label="toggle play and pause"
+                            onClick={this.togglePause}
+                            size="medium"
+                          >
+                            {this.state.pause ? (
+                              <PlayArrowOutlinedIcon fontSize="inherit" />
+                            ) : (
+                              <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
+                            )}
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                      <div className={classes.inline}>
+                        <p className="video-time">
+                          {this.toHHMMSS(this.state["time-pos"])} /{" "}
+                          {this.toHHMMSS(this.state.duration)}
+                        </p>
+                      </div>
 
-                  <div className={classes.slider}>
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <VolumeDown />
-                      </Grid>
-                      <Grid item xs>
-                        <Slider
-                          value={this.state.volume_value}
-                          onChange={this.handleVolumeChange}
-                          aria-labelledby="discrete-slider-custom"
-                          step={10}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <VolumeUp />
-                      </Grid>
+                      <div className={classes.slider}>
+                        <Grid container spacing={2}>
+                          <Grid item>
+                            <VolumeDown />
+                          </Grid>
+                          <Grid item xs>
+                            <Slider
+                              value={this.state.volume_value}
+                              onChange={this.handleVolumeChange}
+                              aria-labelledby="discrete-slider-custom"
+                              step={10}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <VolumeUp />
+                          </Grid>
+                        </Grid>
+                      </div>
+                      <div className={classes.audio}>
+                        <Tooltip title="Cycle audio track">
+                          <IconButton
+                            aria-label="cycle audio track"
+                            onClick={this.cycleAudio}
+                          >
+                            <AudiotrackOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                      <div className={classes.sub}>
+                        <Tooltip title="Cycle subtitle track">
+                          <IconButton
+                            aria-label="cycle subtitle track"
+                            onClick={this.cycleSub}
+                          >
+                            <SubtitlesOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                      <div className={classes.fullscreen}>
+                        <Tooltip title="Toggle fullscreen">
+                          <IconButton
+                            aria-label="cycle subtitle track"
+                            onClick={this.toggleFullscreen}
+                          >
+                            {this.state.fullscreen ? (
+                              <FullscreenExitOutlinedIcon />
+                            ) : (
+                              <FullscreenOutlinedIcon />
+                            )}
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     </Grid>
                   </div>
-                  <div className={classes.audio}>
-                    <Tooltip title="Cycle audio track">
-                      <IconButton
-                        aria-label="cycle audio track"
-                        onClick={this.cycleAudio}
-                      >
-                        <AudiotrackOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <div className={classes.sub}>
-                    <Tooltip title="Cycle subtitle track">
-                      <IconButton
-                        aria-label="cycle subtitle track"
-                        onClick={this.cycleSub}
-                      >
-                        <SubtitlesOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <div className={classes.fullscreen}>
-                    <Tooltip title="Toggle fullscreen">
-                      <IconButton
-                        aria-label="cycle subtitle track"
-                        onClick={this.toggleFullscreen}
-                      >
-                        {this.state.fullscreen ? (
-                          <FullscreenExitOutlinedIcon />
-                        ) : (
-                          <FullscreenOutlinedIcon />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                </Grid>
-              </div>
-            </div>
+                </div>
 
-            <div className={classes.root}>
-              <Autocomplete
-                id="highlights-demo"
-                style={{ width: "100%" }}
-                size="small"
-                disableListWrap
-                ListboxComponent={ListboxComponent}
-                value={this.state.value}
-                onChange={this.handleSearch}
-                options={this.state.data.episodes.map((e, i) => ({
-                  index: i,
-                  name: e.name,
-                }))}
-                getOptionLabel={(option) => option.name}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Search"
-                    margin="normal"
-                    color="primary"
+                <div className={classes.root}>
+                  <Autocomplete
+                    id="highlights-demo"
+                    style={{ width: "100%" }}
                     size="small"
+                    disableListWrap
+                    ListboxComponent={ListboxComponent}
+                    value={this.state.value}
+                    onChange={this.handleSearch}
+                    options={this.state.data.episodes.map((e, i) => ({
+                      index: i,
+                      name: e.name,
+                    }))}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Search"
+                        margin="normal"
+                        color="primary"
+                        size="small"
+                      />
+                    )}
+                    renderOption={(option, { inputValue }) => {
+                      const matches = match(option.name, inputValue);
+                      const parts = parse(option.name, matches);
+
+                      return (
+                        <div>
+                          {parts.map((part, index) => (
+                            <span
+                              key={index}
+                              style={{
+                                fontWeight: part.highlight ? 700 : 400,
+                                color: part.highlight ? "#f50057" : "inherit",
+                              }}
+                            >
+                              {part.text}
+                            </span>
+                          ))}
+                        </div>
+                      );
+                    }}
                   />
-                )}
-                renderOption={(option, { inputValue }) => {
-                  const matches = match(option.name, inputValue);
-                  const parts = parse(option.name, matches);
 
-                  return (
-                    <div>
-                      {parts.map((part, index) => (
-                        <span
-                          key={index}
-                          style={{
-                            fontWeight: part.highlight ? 700 : 400,
-                            color: part.highlight ? "#f50057" : "inherit",
-                          }}
-                        >
-                          {part.text}
-                        </span>
-                      ))}
-                    </div>
-                  );
-                }}
-              />
-
-              <GridList cellHeight={190} className={classes.gridList} cols={5}>
-                {this.state.episodes.map((tile, index) => (
-                  <Grow
-                    in={this.state.checked}
-                    timeout={300 + index * 50}
-                    key={tile.id}
+                  <GridList
+                    cellHeight={this.state.data.type === "movie" ? 250 : 190}
+                    className={classes.gridList}
+                    cols={this.state.data.type === "movie" ? 1 : 5}
                   >
-                    <GridListTile classes={{ tile: classes.listTile }}>
-                      <img
-                        src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
-                        alt={tile.name}
-                        style={{ maxHeight: 190 }}
-                        onError={(e) =>
-                          (e.target.src =
-                            "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")
-                        }
-                      />
-                      <GridListTileBar
-                        title={this.state.data.name}
-                        subtitle={<span>{tile.name}</span>}
-                        actionIcon={
-                          <>
-                            <IconButton
-                              aria-label={`Play ${tile.name}`}
-                              className={classes.icon}
-                              onClick={(e) =>
-                                this.handleEpisodeChange(tile.id, tile.name)
-                              }
-                              classes={{
-                                root: classes.actionIcons,
-                              }}
-                            >
-                              <PlayCircleFilledIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label={`Play ${tile.name}`}
-                              className={classes.icon}
-                              onClick={(e) =>
-                                this.addToDownload(tile.id, tile.name)
-                              }
-                              classes={{
-                                root: classes.actionIcons,
-                              }}
-                            >
-                              <GetAppIcon />
-                            </IconButton>
-                          </>
-                        }
-                      />
-                    </GridListTile>
-                  </Grow>
-                ))}
-              </GridList>
-              <div
-                style={{
-                  position: "fixed",
-                  bottom: 10,
-                  right: 10,
-                }}
-              >
-                <Fab
-                  aria-label="like"
-                  disabled={this.state.favourited}
-                  color="secondary"
-                  onClick={() => {
-                    store.set(`favourites.${this.state.data.id}`, true);
-                    this.setState({ favourited: true });
-                  }}
-                >
-                  <FavoriteIcon />
-                </Fab>
+                    {this.state.episodes.map((tile, index) => (
+                      <Grow
+                        in={this.state.checked}
+                        timeout={300 + index * 50}
+                        key={tile.id}
+                      >
+                        <GridListTile classes={{ tile: classes.listTile }}>
+                          <img
+                            src={
+                              this.state.data.type === "movie"
+                                ? this.state.data.banner
+                                : `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                            }
+                            alt={tile.name}
+                            style={{ objectFit: "cover" }}
+                            onError={(e) =>
+                              (e.target.src = this.state.data.banner)
+                            }
+                          />
+                          <GridListTileBar
+                            title={this.state.data.name}
+                            subtitle={<span>{tile.name}</span>}
+                            actionIcon={
+                              <>
+                                <IconButton
+                                  aria-label={`Play ${tile.name}`}
+                                  className={classes.icon}
+                                  onClick={(e) =>
+                                    this.handleEpisodeChange(tile.id, tile.name)
+                                  }
+                                  classes={{
+                                    root: classes.actionIcons,
+                                  }}
+                                >
+                                  <PlayCircleFilledIcon />
+                                </IconButton>
+                                <IconButton
+                                  aria-label={`Play ${tile.name}`}
+                                  className={classes.icon}
+                                  onClick={(e) =>
+                                    this.addToDownload(tile.id, tile.name)
+                                  }
+                                  classes={{
+                                    root: classes.actionIcons,
+                                  }}
+                                >
+                                  <GetAppIcon />
+                                </IconButton>
+                              </>
+                            }
+                          />
+                        </GridListTile>
+                      </Grow>
+                    ))}
+                  </GridList>
+                  <div
+                    style={{
+                      position: "fixed",
+                      bottom: 10,
+                      right: 10,
+                      zIndex: -1,
+                    }}
+                  >
+                    <Fab
+                      aria-label="like"
+                      disabled={this.state.favourited}
+                      color="secondary"
+                      onClick={() => {
+                        store.set(`favourites.${this.state.data.id}`, true);
+                        this.setState({ favourited: true });
+                      }}
+                    >
+                      <FavoriteIcon />
+                    </Fab>
+                  </div>
+                  <Pagination
+                    count={Math.ceil(this.state.data.episodes.length / 5)}
+                    page={this.state.page}
+                    onChange={(e, nv) => {
+                      var end = 5 * nv;
+                      var start = end - 5;
+                      this.setState({ page: nv });
+                      this.setState({
+                        episodes: this.state.data.episodes.slice(start, end),
+                      });
+                    }}
+                  />
+                </div>
               </div>
-              <Pagination
-                count={Math.ceil(this.state.data.episodes.length / 5)}
-                page={this.state.page}
-                onChange={(e, nv) => {
-                  var end = 5 * nv;
-                  var start = end - 5;
-                  this.setState({ page: nv });
-                  this.setState({
-                    episodes: this.state.data.episodes.slice(start, end),
-                  });
-                }}
-              />
             </div>
-          </div>
-        </div>
-        <Snackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          open={this.state.snackOpen}
-          autoHideDuration={6000}
-          onClose={this.handlesSnackClose}
-          message={this.state.snackMessage}
-          action={
-            <React.Fragment>
-              <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={this.handlesSnackClose}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </React.Fragment>
-          }
-        />
-        {this.state.auth ? (
-          <AuthenticationDialog
-            open={!this.state.auth.authenticated}
-            url={this.state.auth.url}
-          />
-        ) : (
-          <></>
+            <Snackbar
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              open={this.state.snackOpen}
+              autoHideDuration={6000}
+              onClose={this.handlesSnackClose}
+              message={this.state.snackMessage}
+              action={
+                <React.Fragment>
+                  <IconButton
+                    size="small"
+                    aria-label="close"
+                    color="inherit"
+                    onClick={this.handlesSnackClose}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </React.Fragment>
+              }
+            />
+            {this.state.auth ? (
+              <AuthenticationDialog
+                open={!this.state.auth.authenticated}
+                url={this.state.auth.url}
+              />
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </>
     );

@@ -10,11 +10,22 @@ if (window.store) {
   (async () => {
     try {
       nprogress.start();
-      const seriesRes = await fetch("http://localhost:9001/full-json");
-      const json = await seriesRes.json();
-      window.data = json;
-      nprogress.done();
-      render(<App />, document.getElementById("root"));
+      if (localStorage["data"]) {
+        window.data = JSON.parse(localStorage["data"]);
+        nprogress.done();
+        render(<App />, document.getElementById("root"));
+        const seriesRes = await fetch("http://localhost:9001/full-json");
+        const json = await seriesRes.json();
+        window.data = json;
+        localStorage["data"] = JSON.stringify(json);
+      } else {
+        const seriesRes = await fetch("http://localhost:9001/full-json");
+        const json = await seriesRes.json();
+        window.data = json;
+        localStorage["data"] = JSON.stringify(json);
+        nprogress.done();
+        render(<App />, document.getElementById("root"));
+      }
     } catch (error) {
       console.log(error);
     }
