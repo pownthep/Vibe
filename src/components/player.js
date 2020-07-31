@@ -117,7 +117,7 @@ const styles = (theme) => ({
 const store = window.store ? new window.store({ watch: true }) : false;
 const colorThief = new ColorThief();
 
-class Player extends React.Component {
+class Player extends React.PureComponent {
   _isMounted = false;
   constructor(props) {
     super(props);
@@ -702,7 +702,6 @@ class Player extends React.Component {
                     <Fab
                       aria-label="like"
                       disabled={this.state.favourited}
-                      color="secondary"
                       onClick={() => {
                         store.set(`favourites.${this.state.data.id}`, true);
                         this.setState({ favourited: true });
