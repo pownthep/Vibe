@@ -17,12 +17,11 @@ import Poster from "./poster";
 import RowList from "./row";
 import { makeStyles } from "@material-ui/core/styles";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    outline: "none"
-  }
+    outline: "none",
+  },
 }));
 
 export default function Home() {
@@ -42,6 +41,10 @@ export default function Home() {
   function handleClick(e) {
     history.push("/watch/" + e.currentTarget.id);
   }
+
+  const responseGoogle = (response) => {
+    console.log(response);
+  };
 
   function viewGenerator(props) {
     if (item.viewMode === 0)
@@ -131,9 +134,15 @@ export default function Home() {
           options={anime}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField {...params} size="small" label="Search..." variant="outlined" classes={{
-              root: classes.root
-            }}/>
+            <TextField
+              {...params}
+              size="small"
+              label="Search..."
+              variant="outlined"
+              classes={{
+                root: classes.root,
+              }}
+            />
           )}
           renderOption={(option, { inputValue }) => {
             const matches = match(option.name, inputValue);

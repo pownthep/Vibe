@@ -26,7 +26,7 @@ import Grid from "@material-ui/core/Grid";
 import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import AuthenticationDialog from "./dialog";
-import AuthenticateUser from "../utils/utils";
+import { authenticate } from "../utils/utils";
 import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -174,7 +174,7 @@ class Player extends React.PureComponent {
   async componentDidMount() {
     // Setup
     this._isMounted = true;
-    const user = window.desktop ? await AuthenticateUser() : false;
+    const user = window.desktop ? await authenticate() : false;
     const id = this.props.match.params.id;
     const res = await fetch(
       "https://vibe-three.vercel.app/data/shows/" + id + ".json"
@@ -317,7 +317,7 @@ class Player extends React.PureComponent {
   };
 
   handleEpisodeChange = async (id, name, timePos = 0) => {
-    const user = await AuthenticateUser();
+    const user = await authenticate();
     if (!user.authenticated) {
       this.setState({ auth: user });
       return;
@@ -459,6 +459,7 @@ class Player extends React.PureComponent {
             <div className="container">
               <Fade in={this.state.checked} timeout={600}>
                 <img
+                  crossOrigin={"anonymous"}
                   ref={this.bannerRef}
                   src={
                     window.desktop
@@ -650,9 +651,7 @@ class Player extends React.PureComponent {
                             src={
                               this.state.data.type === "movie"
                                 ? this.state.data.banner
-                                : window.dekstop
-                                ? `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
-                                : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                                : `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
                             }
                             alt={tile.name}
                             style={{ objectFit: "cover" }}

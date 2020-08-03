@@ -2,7 +2,6 @@ require("v8-compile-cache");
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { getPluginEntry } = require("mpv.js");
-const url = require("url");
 
 // Absolute path to the plugin directory.
 const pluginDir = path.join(
@@ -36,22 +35,15 @@ function createWindow() {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
     },
-    //icon: process.platform !== "darwin" ? path.join(__dirname, "assets/icon.ico"):path.join(__dirname, "assets/icon.icns"),
+    icon: process.platform !== "darwin" ? path.join(__dirname, "assets/icon.ico"):path.join(__dirname, "assets/icon.icns"),
   });
 
   if (process.env.DEV) {
-    require(__dirname+"/server/server.js");
-    win.loadURL("http://localhost:3000")
-  }
-  else {
-    require(__dirname+"/server/server.bundle.js");
+    require(__dirname + "/server/server.js");
+    win.loadURL("http://localhost:3000");
+  } else {
+    require(__dirname + "/server/server.bundle.js");
     win.loadFile(path.join(__dirname, "/build/index.html"));
-    //   url.format({
-    //     pathname: path.join(__dirname, "/build/index.html"),
-    //     protocol: "file:",
-    //     slashes: true,
-    //   })
-    // );
   }
 
   win.once("ready-to-show", () => {});

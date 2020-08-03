@@ -10,7 +10,6 @@ import Loader from "./loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import stringHash from "string-hash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
