@@ -27,7 +27,6 @@ import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import AuthenticationDialog from "./dialog";
 import AuthenticateUser from "../utils/utils";
-import stringHash from "string-hash";
 import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -460,7 +459,6 @@ class Player extends React.PureComponent {
             <div className="container">
               <Fade in={this.state.checked} timeout={600}>
                 <img
-                  crossOrigin={"anonymous"}
                   ref={this.bannerRef}
                   src={
                     window.desktop
