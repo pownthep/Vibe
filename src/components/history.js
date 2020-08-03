@@ -99,10 +99,12 @@ export default function History() {
                   alt={rowItem.title}
                   className={classes.thumbnail}
                   src={
-                    window.directory + "/server/img/" + stringHash(rowItem.id)
+                    window.desktop
+                      ? `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`
+                      : `https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`
                   }
                   onError={(e) =>
-                    (e.target.src = `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`)
+                    (e.target.src = `https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`)
                   }
                   style={{ borderRadius: "5px" }}
                 />

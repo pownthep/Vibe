@@ -74,14 +74,16 @@ export default function Favourites() {
                     <Link to={"/watch/" + key}>
                       <img
                         src={
-                          "http://localhost:9001/img/?url=" +
-                          window.data[parseInt(key)]
-                            ? window.data[parseInt(key)].banner
-                            : ""
+                          window.desktop
+                            ? "http://localhost:9001/img/?url=" +
+                              window.data[parseInt(key)]
+                            : window.data[parseInt(key)].banner
                         }
                         alt="cover"
                         className={classes.banner}
-                        onError={(e) => e.target.src = window.data[parseInt(key)].banner}
+                        onError={(e) =>
+                          (e.target.src = window.data[parseInt(key)].banner)
+                        }
                       />
                     </Link>
                     <GridListTileBar

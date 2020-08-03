@@ -15,7 +15,7 @@ export default function ResponsiveDialog(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = (e) => {
-    window.shell.openExternal(props.url);
+    if (window.desktop) window.shell.openExternal(props.url);
     setOpen(false);
   };
 

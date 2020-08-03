@@ -14,12 +14,12 @@ import "./index.css";
       window.data = JSON.parse(localStorage["data"]);
       nprogress.done();
       render(<App />, document.getElementById("root"));
-      const seriesRes = await fetch("http://localhost:9001/full-json");
+      const seriesRes = await fetch("https://vibe-three.vercel.app/data/trimmed-desktop.json");
       const json = await seriesRes.json();
       window.data = json;
       localStorage["data"] = JSON.stringify(json);
     } else {
-      const seriesRes = await fetch("http://localhost:9001/full-json");
+      const seriesRes = await fetch("https://vibe-three.vercel.app/data/trimmed-desktop.json");
       const json = await seriesRes.json();
       window.data = json;
       localStorage["data"] = JSON.stringify(json);

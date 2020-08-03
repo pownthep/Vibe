@@ -175,9 +175,11 @@ class Player extends React.PureComponent {
   async componentDidMount() {
     // Setup
     this._isMounted = true;
-    const user = await AuthenticateUser();
+    const user = window.desktop ? await AuthenticateUser() : false;
     const id = this.props.match.params.id;
-    const res = await fetch("http://localhost:9001/shows/" + id);
+    const res = await fetch(
+      "https://vibe-three.vercel.app/data/shows/" + id + ".json"
+    );
     const data = await res.json();
 
     // Set state if the component is mounted
@@ -486,7 +488,6 @@ class Player extends React.PureComponent {
                     onPropertyChange={this.handlePropertyChange}
                     onMouseDown={this.togglePause}
                     className={classes.unclickable}
-                    // style={{ opacity: this.state.currentEpisode ? 1 : 0 }}
                   />
                 </Grow>
                 <div className="loader" hidden={!this.state.loading}>
@@ -651,12 +652,17 @@ class Player extends React.PureComponent {
                             src={
                               this.state.data.type === "movie"
                                 ? this.state.data.banner
-                                : `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                                : window.dekstop
+                                ? `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                                : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`
                             }
                             alt={tile.name}
                             style={{ objectFit: "cover" }}
                             onError={(e) =>
-                              (e.target.src = this.state.data.banner)
+                              (e.target.src =
+                                this.state.data.type === "movie"
+                                  ? this.state.data.banner
+                                  : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`)
                             }
                           />
                           <GridListTileBar
