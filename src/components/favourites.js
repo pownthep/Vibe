@@ -36,19 +36,24 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: 230,
     objectFit: "cover",
-    borderRadius: 4
+    borderRadius: 4,
   },
 }));
 
 export default function Favourites() {
-  const store = window.store ? new window.store() : false;
+  const localFavourites = localStorage.getItem("favourites")
+    ? JSON.parse(localStorage.getItem("favourites"))
+    : {};
   const classes = useStyles();
-  const [favourites, setFavourites] = useState(store.get("favourites"));
+  const [favourites, setFavourites] = useState(localFavourites);
   const [checked] = React.useState(true);
 
   const deleteFav = (e) => {
-    store.delete(`favourites.${e.currentTarget.id}`);
-    setFavourites(store.get("favourites"));
+    const prev = { ...favourites };
+    if (delete prev[e.currentTarget.id]) {
+      localStorage.setItem(`favourites`, JSON.stringify(prev));
+      setFavourites(prev);
+    }
   };
 
   return (
@@ -70,10 +75,13 @@ export default function Favourites() {
                       <img
                         src={
                           "http://localhost:9001/img/?url=" +
-                          window.data[parseInt(key)] ? window.data[parseInt(key)].banner:""
+                          window.data[parseInt(key)]
+                            ? window.data[parseInt(key)].banner
+                            : ""
                         }
                         alt="cover"
                         className={classes.banner}
+                        onError={(e) => e.target.src = window.data[parseInt(key)].banner}
                       />
                     </Link>
                     <GridListTileBar

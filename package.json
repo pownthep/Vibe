@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
-    "electron-store": "^5.2.0",
     "mpv.js": "^0.3.0",
     "react": "^16.13.1",
     "v8-compile-cache": "^2.1.1"

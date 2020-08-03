@@ -2,7 +2,6 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
 import { makeStyles } from "@material-ui/core/styles";
-import stringHash from "string-hash";
 
 const useStyles = makeStyles({
   media: {
@@ -28,11 +27,11 @@ export default function Poster({ image, name }) {
       <div>
         <img
           className={classes.img}
-          src={window.directory + "/server/img/" + stringHash(image)}
-          alt={name}
-          onError={(e) =>
-            (e.target.src = "http://localhost:9001/img/?url=" + image)
+          src={
+            window.desktop ? "http://localhost:9001/img/?url=" + image : image
           }
+          alt={name}
+          onError={(e) => (e.target.src = image)}
         />
         <Typography variant="button" display="block" gutterBottom noWrap={true}>
           {name}

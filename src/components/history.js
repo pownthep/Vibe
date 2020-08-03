@@ -56,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function History() {
-  const store = new window.store();
   const classes = useStyles();
   const [state, setState] = useState({
     history: [],
@@ -64,28 +63,28 @@ export default function History() {
   });
   const [checked] = useState(true);
   const clearHistory = (e) => {
-    if (state.history) {
-      store.set("history", {});
-      setState({
-        history: store.get("history")
-          ? Object.values(store.get("history")).sort((a, b) =>
-              a.currentTime < b.currentTime ? 1 : -1
-            )
-          : [],
-        loading: false,
-      });
+    if (state.history.length > 0) {
+      localStorage.removeItem("history");
+      setHistory();
     }
   };
 
-  useEffect(() => {
+  const setHistory = () => {
+    const localHistory = localStorage.getItem("history")
+      ? JSON.parse(localStorage.getItem("history"))
+      : null;
     setState({
-      history: store.get("history")
-        ? Object.values(store.get("history")).sort((a, b) =>
+      history: localHistory
+        ? Object.values(localHistory).sort((a, b) =>
             a.currentTime < b.currentTime ? 1 : -1
           )
         : [],
       loading: false,
     });
+  };
+
+  useEffect(() => {
+    setHistory();
   }, []);
 
   const Row = ({ index, style }) => {
@@ -100,11 +99,7 @@ export default function History() {
                   alt={rowItem.title}
                   className={classes.thumbnail}
                   src={
-                    window.directory +
-                    "/server/img/" +
-                    stringHash(
-                      `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`
-                    )
+                    window.directory + "/server/img/" + stringHash(rowItem.id)
                   }
                   onError={(e) =>
                     (e.target.src = `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`)
@@ -135,9 +130,7 @@ export default function History() {
                 <h2 style={{ margin: 0 }}>
                   {rowItem.title +
                     " - " +
-                    ` Episode: ${(rowItem.ep)} - ${toHHMMSS(
-                      rowItem.timePos
-                    )}`}
+                    ` Episode: ${rowItem.ep} - ${toHHMMSS(rowItem.timePos)}`}
                 </h2>
                 {toDate(rowItem.currentTime)}
               </div>
@@ -163,7 +156,7 @@ export default function History() {
           <ClearAllIcon />
         </IconButton>
       </Tooltip>
-      {state.history ? (
+      {state.history.length > 0 ? (
         <div className={classes.root}>
           <AutoSizer>
             {({ height, width }) => {

@@ -136,7 +136,7 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {window.store ? (
+          {window.desktop ? (
             <Titlebar title="" backgroundColor="inherit" />
           ) : (
             <></>

@@ -114,11 +114,9 @@ const styles = (theme) => ({
   },
 });
 
-const store = window.store ? new window.store({ watch: true }) : false;
 const colorThief = new ColorThief();
 
 class Player extends React.PureComponent {
-  _isMounted = false;
   constructor(props) {
     super(props);
     this.mpv = null;
@@ -144,36 +142,15 @@ class Player extends React.PureComponent {
       favourited: true,
       snackOpen: false,
       snackMessage: "Test message",
-      loadingData: true
+      loadingData: true,
     };
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleMPVReady = this.handleMPVReady.bind(this);
-    this.handlePropertyChange = this.handlePropertyChange.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
-    this.togglePause = this.togglePause.bind(this);
-    this.handleStop = this.handleStop.bind(this);
-    this.handleSeek = this.handleSeek.bind(this);
-    this.handleSeekMouseDown = this.handleSeekMouseDown.bind(this);
-    this.handleSeekMouseUp = this.handleSeekMouseUp.bind(this);
-    this.handlePlay = this.handlePlay.bind(this);
-    this.handleEpisodeChange = this.handleEpisodeChange.bind(this);
     this.myRef = React.createRef();
-    this.window = window.remote ? window.remote.getCurrentWindow() : false;
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleVolumeChange = this.handleVolumeChange.bind(this);
-    this.cycleSub = this.cycleSub.bind(this);
-    this.cycleAudio = this.cycleAudio.bind(this);
-    this.togglePause = this.togglePause.bind(this);
-    this.addToHistory = this.addToHistory.bind(this);
-    this.valueLabelFormat = this.valueLabelFormat.bind(this);
+    this.window = window.desktop ? window.remote.getCurrentWindow() : window;
     this.bannerRef = React.createRef();
-    this.handleMenu = this.handleMenu.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.addToDownload = this.addToDownload.bind(this);
-    this.handlesSnackClose = this.handlesSnackClose.bind(this);
+    this._isMounted = false;
   }
 
-  async addToDownload(id, name) {
+  addToDownload = async (id, name) => {
     const res = await fetch(
       `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
     );
@@ -189,11 +166,11 @@ class Player extends React.PureComponent {
         snackMessage: "You've already downloaded this",
       });
     else this.setState({ snackOpen: true, snackMessage: "Added to download" });
-  }
+  };
 
-  handleMenu(e) {
+  handleMenu = (e) => {
     this.setState({ anchorEl: e.currentTarget });
-  }
+  };
 
   async componentDidMount() {
     // Setup
@@ -204,14 +181,17 @@ class Player extends React.PureComponent {
     const data = await res.json();
 
     // Set state if the component is mounted
+    const favourites = localStorage.getItem(`favourites`)
+      ? JSON.parse(localStorage.getItem(`favourites`))
+      : {};
     if (this._isMounted) {
       this.setState({
         data: data,
         auth: user,
         episodes: data.episodes.slice(0, 5),
         showProgress: false,
-        favourited: store.get(`favourites.${id}`),
-        loadingData: false
+        favourited: favourites[id] ? true : false,
+        loadingData: false,
       });
       nprogress.done();
     }
@@ -219,7 +199,7 @@ class Player extends React.PureComponent {
     // Setting current episode
     if (this.props.match.params.epId && this._isMounted) {
       const epId = this.props.match.params.epId;
-      const episode = store.get(`history.${epId}`);
+      const episode = JSON.parse(localStorage.getItem(`history`))[epId];
       this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
     }
   }
@@ -239,29 +219,29 @@ class Player extends React.PureComponent {
     nprogress.start();
   }
 
-  togglePause(e) {
+  togglePause = (e) => {
     e.target.blur();
     if (!this.state.duration) return;
     this.setState({ pause: !this.state.pause });
     this.mpv.property("pause", !this.state.pause);
-  }
+  };
 
-  handleKeyDown(e) {
+  handleKeyDown = (e) => {
     e.preventDefault();
     if (e.key === "f" || (e.key === "Escape" && this.state.fullscreen)) {
       this.toggleFullscreen();
     } else if (this.state.duration) {
       this.mpv.keypress(e);
     }
-  }
-  handleMPVReady(mpv) {
+  };
+  handleMPVReady = (mpv) => {
     this.mpv = mpv;
     const observe = mpv.observe.bind(mpv);
     ["pause", "time-pos", "duration", "eof-reached"].forEach(observe);
     this.mpv.property("hwdec", "auto");
     this.mpv.command("set", "ao-volume", this.state.volume_value);
-  }
-  handlePropertyChange(name, value) {
+  };
+  handlePropertyChange = (name, value) => {
     if (name === "time-pos" && this.seeking) {
       return;
     } else if (name === "eof-reached" && value) {
@@ -288,8 +268,8 @@ class Player extends React.PureComponent {
       }
       this.setState({ [name]: value });
     }
-  }
-  toggleFullscreen() {
+  };
+  toggleFullscreen = () => {
     if (!this.window) return;
     const node = this.myRef.current;
     if (this.state.fullscreen) {
@@ -300,42 +280,42 @@ class Player extends React.PureComponent {
       this.window.setFullScreen(true);
     }
     this.setState({ fullscreen: !this.state.fullscreen });
-  }
-  handleStop(e) {
+  };
+  handleStop = (e) => {
     e.target.blur();
     this.mpv.property("pause", true);
     this.mpv.command("stop");
     this.setState({ "time-pos": 0, duration: 0 });
-  }
-  handleSeekMouseDown() {
+  };
+  handleSeekMouseDown = () => {
     this.seeking = true;
-  }
-  handleSeek(e, newValue) {
+  };
+  handleSeek = (e, newValue) => {
     e.target.blur();
     const timePos = +newValue;
     this.setState({ "time-pos": timePos });
     this.mpv.property("time-pos", timePos);
-  }
-  handleSeekMouseUp() {
+  };
+  handleSeekMouseUp = () => {
     this.seeking = false;
-  }
+  };
 
-  toHHMMSS(s) {
+  toHHMMSS = (s) => {
     var date = new Date(0);
     date.setSeconds(s);
     return date.toISOString().substr(11, 8);
-  }
+  };
 
-  handleClose() {
+  handleClose = () => {
     this.setState({ anchorEl: null });
-  }
+  };
 
-  handlePlay(e) {
+  handlePlay = (e) => {
     var id = e.currentTarget.id;
     this.mpv.command("loadfile", "http://localhost:9001/" + id);
-  }
+  };
 
-  async handleEpisodeChange(id, name, timePos = 0) {
+  handleEpisodeChange = async (id, name, timePos = 0) => {
     const user = await AuthenticateUser();
     if (!user.authenticated) {
       this.setState({ auth: user });
@@ -347,7 +327,6 @@ class Player extends React.PureComponent {
       `[${id}]-${this.state.data.name}-${name}`;
     window.access(filePath, (err) => {
       if (err) {
-        console.log(err);
         this.mpv.command(
           "loadfile",
           `http://localhost:9001/stream?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
@@ -378,9 +357,9 @@ class Player extends React.PureComponent {
       this.setState({ currentEpisode: episode });
     }
     this.setState({ anchorEl: null });
-  }
+  };
 
-  handleSearch(e, nv) {
+  handleSearch = (e, nv) => {
     if (nv) {
       this.setState({ epList: [this.state.episodes[nv.index]] });
       this.setState({ value: nv });
@@ -388,43 +367,71 @@ class Player extends React.PureComponent {
       this.setState({ epList: this.state.episodes });
       this.setState({ value: nv });
     }
-  }
+  };
 
-  handleVolumeChange(e, nv) {
+  handleVolumeChange = (e, nv) => {
     this.setState({ volume_value: nv });
     this.mpv.command("set", "ao-volume", nv);
-  }
+  };
 
-  cycleSub(e) {
+  cycleSub = (e) => {
     e.target.blur();
     if (!this.state.duration) return;
     this.mpv.command("keypress", "j");
-  }
+  };
 
-  cycleAudio(e) {
+  cycleAudio = (e) => {
     e.target.blur();
     if (!this.state.duration) return;
     this.mpv.command("keypress", "#");
-  }
+  };
 
-  addToHistory(episode) {
-    if (!store.get("history") || store.get("history").length === 0) {
-      store.set("history", { [episode.id]: episode });
-      return;
-    }
-    store.set(`history.${episode.id}`, episode);
-  }
+  addToHistory = (episode) => {
+    const history = localStorage.getItem("history")
+      ? JSON.parse(localStorage.getItem("history"))
+      : {};
+    localStorage.setItem(
+      `history`,
+      JSON.stringify({
+        ...history,
+        [episode.id]: episode,
+      })
+    );
+  };
 
-  valueLabelFormat(value) {
+  valueLabelFormat = (value) => {
     return this.toHHMMSS(value);
-  }
+  };
 
-  handlesSnackClose(event, reason) {
+  handlesSnackClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
     this.setState({ snackOpen: false });
-  }
+  };
+
+  addToFavourites = (e) => {
+    const favourites = localStorage.getItem("favourites")
+      ? JSON.parse(localStorage.getItem("favourites"))
+      : {};
+    localStorage.setItem(
+      `favourites`,
+      JSON.stringify({
+        ...favourites,
+        [this.state.data.id]: true,
+      })
+    );
+    this.setState({ favourited: true });
+  };
+
+  changePage = (e, nv) => {
+    var end = 5 * nv;
+    var start = end - 5;
+    this.setState({ page: nv });
+    this.setState({
+      episodes: this.state.data.episodes.slice(start, end),
+    });
+  };
 
   render() {
     const { classes } = this.props;
@@ -454,15 +461,12 @@ class Player extends React.PureComponent {
                   crossOrigin={"anonymous"}
                   ref={this.bannerRef}
                   src={
-                    window.directory +
-                    "/server/img/" +
-                    stringHash(this.state.data.banner)
+                    window.desktop
+                      ? "http://localhost:9001/img/?url=" +
+                        this.state.data.banner
+                      : this.state.data.banner
                   }
-                  onError={(e) =>
-                    (e.target.src =
-                      "http://localhost:9001/img/?url=" +
-                      this.state.data.banner)
-                  }
+                  onError={(e) => (e.target.src = this.state.data.banner)}
                   alt={this.state.data.title + "-banner"}
                   className="banner"
                   onLoad={(e) => {
@@ -702,10 +706,7 @@ class Player extends React.PureComponent {
                     <Fab
                       aria-label="like"
                       disabled={this.state.favourited}
-                      onClick={() => {
-                        store.set(`favourites.${this.state.data.id}`, true);
-                        this.setState({ favourited: true });
-                      }}
+                      onClick={this.addToFavourites}
                     >
                       <FavoriteIcon />
                     </Fab>
@@ -713,14 +714,7 @@ class Player extends React.PureComponent {
                   <Pagination
                     count={Math.ceil(this.state.data.episodes.length / 5)}
                     page={this.state.page}
-                    onChange={(e, nv) => {
-                      var end = 5 * nv;
-                      var start = end - 5;
-                      this.setState({ page: nv });
-                      this.setState({
-                        episodes: this.state.data.episodes.slice(start, end),
-                      });
-                    }}
+                    onChange={this.changePage}
                   />
                 </div>
               </div>

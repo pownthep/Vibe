@@ -3,7 +3,6 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Grow from "@material-ui/core/Grow";
 import Chip from "@material-ui/core/Chip";
-import stringHash from "string-hash";
 
 const useStyles = makeStyles({
   media: {
@@ -37,10 +36,10 @@ export default function Row({ poster, name, keywords, rating }) {
         >
           <img
             className={classes.img}
-            src={window.directory + "/server/img/" + stringHash(poster)}
+            src={window.desktop ? "http://localhost:9001/img/?url=" + poster:poster}
             alt={name}
             onError={(e) =>
-              (e.target.src = "http://localhost:9001/img/?url=" + poster)
+              (e.target.src = poster)
             }
           />
           <div
