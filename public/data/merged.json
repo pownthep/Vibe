@@ -26009,5 +26009,192 @@
       }
     ],
     "type": "tv show"
+  },
+  {
+    "id": 230,
+    "name": "Ant-Man and the Wasp",
+    "banner": "https://images5.alphacoders.com/917/thumb-1920-917817.jpg",
+    "rating": 7.1,
+    "desc": "As Scott Lang balances being both a superhero and a father, Hope van Dyne and Dr. Hank Pym present an urgent new mission that finds the Ant-Man fighting alongside The Wasp to uncover secrets from their past.",
+    "keywords": "Action,Adventure,Comedy",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SY1000_CR0,0,675,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1hA5XaGlsaN81cIalfgUiCEUUzsdP0wAc",
+        "name": "Ant-Man and the Wasp",
+        "size": "1974882385"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 231,
+    "name": "Captain America: The Winter Soldier",
+    "banner": "https://www.ankit2world.com/wp-content/uploads/2019/03/Captain-America-The-Winter-Soldier-Ankit2World.jpg",
+    "rating": 7.7,
+    "desc": "As Steve Rogers struggles to embrace his role in the modern world, he teams up with a fellow Avenger and S.H.I.E.L.D agent, Black Widow, to battle a new threat from history: an assassin known as the Winter Soldier.",
+    "keywords": "Action,Adventure,Sci-Fi",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMzA2NDkwODAwM15BMl5BanBnXkFtZTgwODk5MTgzMTE@._V1_SY1000_CR0,0,685,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1VhcF4imGJaK2-Pwt3rrQB8tQKq58adeZ",
+        "name": "Captain America: The Winter Soldier",
+        "size": "2274572864"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 232,
+    "name": "Casino Royale",
+    "banner": "https://hxkyx44ph6g3vhzqosgkpy30-wpengine.netdna-ssl.com/wp-content/uploads/2016/11/Gallery4.jpg",
+    "rating": 8.0,
+    "desc": "After earning 00 status and a licence to kill, Secret Agent James Bond sets out on his first mission as 007. Bond must defeat a private banker funding terrorists in a high-stakes game of poker at Casino Royale, Montenegro.",
+    "keywords": "Action,Adventure,Thriller",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDI5ZWJhOWItYTlhOC00YWNhLTlkNzctNDU5YTI1M2E1MWZhXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_SY1000_CR0,0,672,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "17sp5tgkSMp0RzSCvJayzK7ouzeYkJAkW",
+        "name": "Casino Royale",
+        "size": "2418792863"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 233,
+    "name": "Hacksaw Ridge",
+    "banner": "https://images-eu.ssl-images-amazon.com/images/S/sgp-catalog-images/region_GB/lionsgate-LGIIUK95410-Full-Image_GalleryCover-en-GB-1553677288334._UR1920,1080_RI_.jpg",
+    "rating": 8.1,
+    "desc": "World War II American Army Medic Desmond T. Doss, who served during the Battle of Okinawa, refuses to kill people, and becomes the first man in American history to receive the Medal of Honor without firing a shot.",
+    "keywords": " Biography, Drama, History ",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjQ1NjM3MTUxNV5BMl5BanBnXkFtZTgwMDc5MTY5OTE@._V1_SY1000_CR0,0,647,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1g1J2jJHldW4oKD6ZspWcA04wh38Qh0ha",
+        "name": "Hacksaw Ridge",
+        "size": "2324844150"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 234,
+    "name": "Iron Man 2",
+    "banner": "https://s2.best-wallpaper.net/wallpaper/1920x1080/1106/Iron-Man-2_1920x1080.jpg",
+    "rating": 7.0,
+    "desc": "With the world now aware of his identity as Iron Man, Tony Stark must contend with both his declining health and a vengeful mad man with ties to his father's legacy.",
+    "keywords": "Action, Adventure, Sci-Fi ",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTM0MDgwNjMyMl5BMl5BanBnXkFtZTcwNTg3NzAzMw@@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "14JgdTdgXIXHFKkIxvteOobGWEi86ZTx_",
+        "name": "Iron Man 2",
+        "size": "2084967324"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 235,
+    "name": "Iron Man",
+    "banner": "https://i.pinimg.com/originals/3b/ff/39/3bff39de5fd823cc4c5fb2664147ac74.jpg",
+    "rating": 7.9,
+    "desc": "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.",
+    "keywords": "Action, Adventure, Sci-Fi ",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_SY1000_CR0,0,674,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1_GD8xG761Ot6hdddo1RM2Mgpr5yQngek",
+        "name": "Iron Man",
+        "size": "2108623557"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 236,
+    "name": "Jurassic World",
+    "banner": "https://cdn.hipwallpaper.com/i/22/24/wAObQ2.jpg",
+    "rating": 7.0,
+    "desc": "A new theme park, built on the original site of Jurassic Park, creates a genetically modified hybrid dinosaur, the Indominus Rex, which escapes containment and goes on a killing spree.",
+    "keywords": "Action, Adventure, Sci-Fi ",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzQ3OTY4NjAtNzM5OS00N2ZhLWJlOWUtYzYwZjNmOWRiMzcyXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SY1000_CR0,0,631,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1oqhbkJimNqfTxJ88gaHLFBSlPTDzMFUE",
+        "name": "Jurassic World",
+        "size": "2075089787"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 237,
+    "name": "Shrek 2",
+    "banner": "https://images5.alphacoders.com/813/813519.jpg",
+    "rating": 7.2,
+    "desc": "Shrek and Fiona travel to the Kingdom of Far Far Away, where Fiona's parents are King and Queen, to celebrate their marriage. When they arrive, they find they are not as welcome as they thought they would be.",
+    "keywords": " Animation, Adventure, Comedy",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDJhMGRjN2QtNDUxYy00NGM3LThjNGQtMmZiZTRhNjM4YzUxL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SY1000_SX677_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1EPCqDfs-d8iyE9ejoi74nYNbhQExAw5C",
+        "name": "Shrek 2",
+        "size": "1544243118"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 238,
+    "name": "Spider-Man: Homecoming",
+    "banner": "https://i0.wp.com/nicksvolos.com/wp-content/uploads/2017/08/bg_spiderman.png?resize=1920%2C1080",
+    "rating": 7.4,
+    "desc": "Peter Parker balances his life as an ordinary high school student in Queens with his superhero alter-ego Spider-Man, and finds himself on the trail of a new menace prowling the skies of New York City.",
+    "keywords": "Action, Adventure, Sci-Fi ",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNTk4ODQ1MzgzNl5BMl5BanBnXkFtZTgwMTMyMzM4MTI@._V1_SY1000_CR0,0,658,1000_AL_.jpg",
+    "episodes": [
+      {
+        "id": "1aq_4Gp7Q_Naal_kf2T3fRoefVRMAnohg",
+        "name": "Spider-Man: Homecoming",
+        "size": "2233199599"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 239,
+    "name": "The Departed",
+    "banner": "https://sellersays.files.wordpress.com/2016/01/the-departed-3.jpg?w=1920&h=1080&crop=1",
+    "rating": 8.5,
+    "desc": "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.",
+    "keywords": "Crime, Drama, Thriller",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTI1MTY2OTIxNV5BMl5BanBnXkFtZTYwNjQ4NjY3._V1_.jpg",
+    "episodes": [
+      {
+        "id": "11Ommb1xegTKr6sTqgzusOHAbIDHM-4Tk",
+        "name": "The Departed",
+        "size": "2532123531"
+      }
+    ],
+    "type": "movie"
+  },
+  {
+    "id": 240,
+    "name": "The Princess and the Frog",
+    "banner": "https://springfieldmuseums.org/wp-content/uploads/2017/06/princess-and-the-frog-cast.jpg",
+    "rating": 7.1,
+    "desc": "A waitress, desperate to fulfill her dreams as a restaurant owner, is set on a journey to turn a frog prince back into a human being, but she has to face the same problem after she kisses him.",
+    "keywords": " Animation, Adventure, Comedy",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjEyOTQ5NzAzNl5BMl5BanBnXkFtZTcwMTcyNTU1Mg@@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "1Bw0bSQC6uubK3W9Oq5-Xo296t4Qxm76r",
+        "name": "The Princess and the Frog",
+        "size": "1631523663"
+      }
+    ],
+    "type": "movie"
   }
 ]
