@@ -9,6 +9,8 @@ const prettyBytes = require("pretty-bytes");
 const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
+const fetch = require("node-fetch");
+const Path = require("path");
 
 // Express setup
 app.use(cors());
@@ -16,6 +18,7 @@ app.use(express.static("img"));
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static("chunks"));
 
 // If modifying these scopes, delete your previously saved credentials
 var SCOPES = ["https://www.googleapis.com/auth/drive"];
@@ -171,6 +174,45 @@ function startLocalServer(oauth2Client) {
       res.json({ size: prettyBytes(bytes) });
     });
   });
+
+  app.get("/dash", async (req, res) => {
+    try {
+      const dl = await downloadFile(req.query.id, res);
+    } catch (error) {
+      console.log(error);
+    }
+    // try {
+    //   const path = Path.resolve(__dirname, "chunks", req.query.id + ".ts");
+    //   fs.access(path, fs.constants.R_OK, async (err) => {
+    //     if (err) {
+    //       //res.sendFile(path);
+    //     } else res.sendFile(path);
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  });
+
+  async function downloadFile(id, res) {
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var auth = "Bearer ".concat(access_token);
+      const url = "https://www.googleapis.com" + "/drive/v3/files/" + id + "?alt=media";
+      const response = await axios({
+        url,
+        method: "GET",
+        headers: {
+          Authorization: auth
+        },
+        responseType: "stream",
+      });
+      response.data.pipe(res);
+      return new Promise((resolve, reject) => {
+        res.on("finish", resolve);
+        res.on("error", reject);
+      });
+    });
+  }
 
   app.get("/clearcache", (req, res) => {
     fs.rmdir(TEMP_DIR, { recursive: true }, (err) => {
@@ -354,7 +396,7 @@ function startLocalServer(oauth2Client) {
   app.get("/shows/:id", async (req, res) => {
     try {
       const resp = await axios(
-        "https://data.pownthep.vercel.app/shows/"+req.params.id+".json"
+        "https://data.pownthep.vercel.app/shows/" + req.params.id + ".json"
       );
       res.json(resp.data);
     } catch (error) {
@@ -579,8 +621,6 @@ function startLocalServer(oauth2Client) {
   app.listen(PORT);
   console.log("Server started at port: " + PORT);
 }
-
-
 
 function performRequest_default(req, res, access_token, fileInfo) {
   var fileSize = fileInfo.size;

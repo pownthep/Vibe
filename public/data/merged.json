@@ -25633,5 +25633,127 @@
       }
     ],
     "type": "movie"
+  },
+  {
+    "id": 227,
+    "name": "Brooklyn Nine-Nine Season 1",
+    "banner": "https://i2.wp.com/honknews.com/wp-content/uploads/2020/03/Spoilers-of-Brooklyn-Nine-Nine-Season-7-Episode-9-06.jpeg?fit=1920%2C1080&ssl=1",
+    "rating": 8.4,
+    "desc": "Brooklyn Nine-Nine follows the exploits of hilarious Det. Jake Peralta and his diverse, lovable colleagues as they police the NYPD's 99th Precinct.    ",
+    "keywords": "Comedy,Crime",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzVkYWY4NzYtMWFlZi00YzkwLThhZDItZjcxYTU4ZTMzMDZmXkEyXkFqcGdeQXVyODUxOTU0OTg@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "1XHzGfdczT_GSTzY56eBflsndcRuf9kQO",
+        "name": "1. Pilot.mkv",
+        "size": "967446564"
+       },
+       {
+        "id": "10Qe4XemJgfG-EwoJ7WNhh5DTN_cGQKLU",
+        "name": "2. The Tagger.mkv",
+        "size": "837787457"
+       },
+       {
+        "id": "1JhxcKLNWwXsQO1-Px-Exud93tNyhaGPS",
+        "name": "3. The Slump.mkv",
+        "size": "916381230"
+       },
+       {
+        "id": "1NmcfzWw0wjJpIUOOcBFqjjwty2K76szj",
+        "name": "4. M.E. Time.mkv",
+        "size": "906128455"
+       },
+       {
+        "id": "1Zxobbw6oc8306tzLdjnP0TetOHNv1iWP",
+        "name": "5. The Vulture.mkv",
+        "size": "921957217"
+       },
+       {
+        "id": "1USFXSsXz_bfxVgxQ0Fsqh0LCQUx3aYz-",
+        "name": "6. Halloween.mkv",
+        "size": "869254639"
+       },
+       {
+        "id": "142hu2N7h_zKXi2Qr3cdVmOP9Uv2nezzZ",
+        "name": "7. 48 Hours.mkv",
+        "size": "914173621"
+       },
+       {
+        "id": "1nPDLVe-_2tmu5bGLusnkAgwVUltVC24V",
+        "name": "8. Old School.mkv",
+        "size": "939232124"
+       },
+       {
+        "id": "1TQx3QTjCJVFmtECarG5eWg5B8Kvjf1Jf",
+        "name": "9. Sal's Pizza.mkv",
+        "size": "866561124"
+       },
+       {
+        "id": "1e9wUMveLfcQh0STz2eid3zTOua5N2wIB",
+        "name": "10. Thanksgiving.mkv",
+        "size": "866138975"
+       },
+       {
+        "id": "1N5QNSA3OQB4R2h0w7dkx8wAAj2nHoIge",
+        "name": "11. Christmas.mkv",
+        "size": "870824010"
+       },
+       {
+        "id": "1-y9UHCxINgeYvKmhZCXSRSwDgrcpKyyX",
+        "name": "12. Pontiac Bandit.mkv",
+        "size": "863666842"
+       },
+       {
+        "id": "1scn5neSgnR9TvgeRxNIrIKu34ziPtVPk",
+        "name": "13. The Bet.mkv",
+        "size": "865041280"
+       },
+       {
+        "id": "1_qSR-Q3EMS3MLtUzGHnioKul6cKHHSL-",
+        "name": "14. The Ebony Falcon.mkv",
+        "size": "868945849"
+       },
+       {
+        "id": "1MPJm0ExBPO0JFNv9VgqqgSXSv2TRa1CU",
+        "name": "15. Operation Broken Feather.mkv",
+        "size": "884838298"
+       },
+       {
+        "id": "12nSyawG9Lx19MK6oqe6MAa0JbP-S5iPw",
+        "name": "16. The Party.mkv",
+        "size": "867446099"
+       },
+       {
+        "id": "1w4uaAzlIqZNSXBZH0_5ak-kBJisp8vxT",
+        "name": "17. Full Boyle.mkv",
+        "size": "879205517"
+       },
+       {
+        "id": "1biHz9Erq_WNe7JQySTA7olOXfFHdpIUV",
+        "name": "18. The Apartment.mkv",
+        "size": "855096681"
+       },
+       {
+        "id": "1GHi1Cx5YHX4gzXqZ7dpga2A_dSzXtYiN",
+        "name": "19. Tactical Village.mkv",
+        "size": "841194206"
+       },
+       {
+        "id": "1no1b1KxSNyo695bdeEVtcCvFeTzg8BGV",
+        "name": "20. Fancy Brudgom.mkv",
+        "size": "833782569"
+       },
+       {
+        "id": "1YLB_vINU5c3J3WMuLfxII8qQ8u46TI4k",
+        "name": "21. Unsolvable.mkv",
+        "size": "847923564"
+       },
+       {
+        "id": "16qzeGGri3Sdc5UuEP5d77u2i3i_uS5bO",
+        "name": "22. Charges and Specs.mkv",
+        "size": "827361172"
+       }
+    ],
+    "type": "tv show"
   }
 ]
