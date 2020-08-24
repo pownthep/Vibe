@@ -37,8 +37,7 @@ export default function Settings() {
   };
 
   return (
-    <div>
-      <h1 style={{textAlign: 'center', marginTop: 48}}>Settings</h1>
+    <div style={{ marginTop: 55 }}>
       <h2>Cache size</h2>
       {size}
       <Button

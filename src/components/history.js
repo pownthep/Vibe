@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "80vh",
-    //backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
   },
   inline: {
     display: "inline",
@@ -145,9 +145,8 @@ export default function History() {
   };
 
   return (
-    <>
+    <div style={{ marginTop: 55 }}>
       {state.loading ? <Loader /> : <></>}
-      <h1 style={{textAlign: 'center', marginTop: 48}}>History</h1>
       <Tooltip title="Clear history" placement="right-start">
         <IconButton
           edge="end"
@@ -178,7 +177,7 @@ export default function History() {
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 }
 

@@ -57,8 +57,7 @@ export default function Favourites() {
   };
 
   return (
-    <>
-      <h1 style={{textAlign: 'center', marginTop: 48}}>My Favourites</h1>
+    <div style={{marginTop: 55}}>
       {favourites ? (
         <>
           <div className={classes.root}>
@@ -74,10 +73,8 @@ export default function Favourites() {
                     <Link to={"/watch/" + key}>
                       <img
                         src={
-                          window.desktop
-                            ? "http://localhost:9001/img/?url=" +
-                              window.data[parseInt(key)]
-                            : window.data[parseInt(key)].banner
+                          "http://localhost:9001/img/?url=" +
+                          window.data[parseInt(key)].banner
                         }
                         alt="cover"
                         className={classes.banner}
@@ -127,6 +124,6 @@ export default function Favourites() {
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 }

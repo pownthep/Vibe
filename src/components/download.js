@@ -73,9 +73,8 @@ export default function Download() {
     };
   }, []);
   return (
-    <>
+    <div style={{ marginTop: 55 }}>
       {loading ? <Loader /> : <></>}
-      <h1 style={{textAlign: 'center', marginTop: 48}}>Downloads</h1>
       <IconButton
         edge="end"
         aria-label="pause button"
@@ -137,7 +136,7 @@ export default function Download() {
             </div>
           ))}
       </List>
-    </>
+    </div>
   );
 }
 

@@ -2,7 +2,6 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
 import { makeStyles } from "@material-ui/core/styles";
-import { toDataURL } from "../utils/utils";
 
 const useStyles = makeStyles({
   media: {

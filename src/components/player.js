@@ -27,7 +27,6 @@ import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import AuthenticationDialog from "./dialog";
 import { authenticate } from "../utils/utils";
-import ColorThief from "colorthief";
 import ListboxComponent from "./listbox";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -87,7 +86,7 @@ const styles = (theme) => ({
   },
   slider: {
     width: 150,
-    paddingTop: 5,
+    paddingTop: 0,
   },
   controlContainer: {
     width: "100%",
@@ -111,9 +110,13 @@ const styles = (theme) => ({
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
   },
+  seekBar: {
+    padding: "0px",
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
 });
-
-const colorThief = new ColorThief();
 
 class Player extends React.PureComponent {
   constructor(props) {
@@ -189,7 +192,7 @@ class Player extends React.PureComponent {
       this.setState({
         data: data,
         auth: user,
-        episodes: [...data.episodes.slice(0, 5)],
+        episodes: [...data.episodes.slice(0, 2)],
         showProgress: false,
         favourited: favourites[id] ? true : false,
         loadingData: false,
@@ -366,7 +369,7 @@ class Player extends React.PureComponent {
       this.setState({ value: nv });
     } else {
       console.log(nv);
-      this.setState({ episodes: [...this.state.data.episodes.slice(0, 5)] });
+      this.setState({ episodes: [...this.state.data.episodes.slice(0, 2)] });
       this.setState({ value: nv });
     }
   };
@@ -427,8 +430,8 @@ class Player extends React.PureComponent {
   };
 
   changePage = (e, nv) => {
-    var end = 5 * nv;
-    var start = end - 5;
+    var end = 2 * nv;
+    var start = end - 2;
     this.setState({ page: nv });
     this.setState({
       episodes: this.state.data.episodes.slice(start, end),
@@ -444,7 +447,7 @@ class Player extends React.PureComponent {
         ) : (
           <div style={{ marginTop: 48 }}>
             <div className="title-container">
-              <h1 className="anime-title">{this.state.data.name}</h1>
+              {/* <h1 className="anime-title">{this.state.data.name}</h1> */}
               <h2 className="anime-episode">
                 {this.state.currentEpisode ? this.state.currentEpisode.ep : ""}
               </h2>
@@ -452,9 +455,9 @@ class Player extends React.PureComponent {
             <Fade in={this.state.checked} timeout={600}>
               <div
                 className="overlay"
-                // style={{
-                //   background: `linear-gradient(to top, rgba(${this.state.palette1}),black 98%)`,
-                // }}
+                style={{
+                  background: `linear-gradient(to bottom, rgba(0,0,0,0), black)`,
+                }}
               ></div>
             </Fade>
             <div className="container">
@@ -471,14 +474,6 @@ class Player extends React.PureComponent {
                   onError={(e) => (e.target.src = this.state.data.banner)}
                   alt={this.state.data.title + "-banner"}
                   className="banner"
-                  onLoad={(e) => {
-                    let img = e.currentTarget;
-                    let color = colorThief.getColor(img);
-                    this.setState({
-                      palette1: `${color[0]},${color[1]},${color[2]},0.0`,
-                      palette2: `${color[0]},${color[1]},${color[2]},1`,
-                    });
-                  }}
                 />
               </Fade>
               <div ref={this.myRef} className="player">
@@ -490,10 +485,49 @@ class Player extends React.PureComponent {
                     className={classes.unclickable}
                   />
                 </Grow>
+                {!this.state.currentEpisode ? (
+                  <>
+                    <img
+                      src={
+                        "http://localhost:9001/img/?url=" +
+                        this.state.data.banner
+                      }
+                      alt="poster"
+                      style={{
+                        display: this.state.data.trailer ? "none" : "block",
+                        position: "absolute",
+                        top: 0,
+                        height: "540px",
+                        width: "960px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <iframe
+                      title="trailer"
+                      style={{
+                        display: this.state.data.trailer ? "block" : "none",
+                        position: "absolute",
+                        top: 0,
+                        height: "540px",
+                        width: "960px",
+                        objectFit: "cover",
+                      }}
+                      src={`https://www.youtube.com/embed/${this.state.data.trailer}?&autoplay=1`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </>
+                ) : null}
                 <div className="loader" hidden={!this.state.loading}>
                   <CircularIndeterminate />
                 </div>
-                <div className="controls">
+                <div
+                  className="controls"
+                  style={{
+                    display: this.state.currentEpisode ? "block" : "none",
+                  }}
+                >
                   <Slider
                     min={0}
                     step={0.1}
@@ -504,6 +538,7 @@ class Player extends React.PureComponent {
                     onMouseDown={this.handleSeekMouseDown}
                     onMouseUp={this.handleSeekMouseUp}
                     ValueLabelComponent={ValueLabelComponent}
+                    classes={{ root: classes.seekBar }}
                   />
 
                   <div className={classes.controlContainer}>
@@ -637,9 +672,9 @@ class Player extends React.PureComponent {
                   />
 
                   <GridList
-                    cellHeight={this.state.data.type === "movie" ? 250 : 190}
+                    cellHeight={230}
                     className={classes.gridList}
-                    cols={this.state.data.type === "movie" ? 1 : 5}
+                    cols={this.state.episodes.length}
                   >
                     {this.state.episodes.map((tile, index) => (
                       <Grow
@@ -649,11 +684,7 @@ class Player extends React.PureComponent {
                       >
                         <GridListTile classes={{ tile: classes.listTile }}>
                           <img
-                            src={
-                              this.state.data.type === "movie"
-                                ? this.state.data.banner
-                                : `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
-                            }
+                            src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
                             alt={tile.name}
                             style={{ objectFit: "cover" }}
                             onError={(e) =>
@@ -666,7 +697,7 @@ class Player extends React.PureComponent {
                           <GridListTileBar
                             //title={tile.name}
                             subtitle={<span>{tile.name}</span>}
-                            actionPosition="left"
+                            actionPosition="right"
                             actionIcon={
                               <>
                                 <IconButton
@@ -681,7 +712,6 @@ class Player extends React.PureComponent {
                                 >
                                   <PlayCircleFilledIcon />
                                 </IconButton>
-                                <br />
                                 <IconButton
                                   aria-label={`Download ${tile.name}`}
                                   className={classes.icon}
@@ -713,12 +743,14 @@ class Player extends React.PureComponent {
                       aria-label="like"
                       disabled={this.state.favourited}
                       onClick={this.addToFavourites}
+                      variant="extended"
                     >
-                      <FavoriteIcon />
+                      <FavoriteIcon className={classes.extendedIcon} />
+                      ADD TO FAVORITES
                     </Fab>
                   </div>
                   <Pagination
-                    count={Math.ceil(this.state.data.episodes.length / 5)}
+                    count={Math.ceil(this.state.data.episodes.length / 2)}
                     page={this.state.page}
                     onChange={this.changePage}
                   />

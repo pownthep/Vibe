@@ -1,50 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MediaCard from "./mediacard";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
-import ListboxComponent from "./listbox";
-import ViewListRoundedIcon from "@material-ui/icons/ViewListRounded";
-import ViewModuleRoundedIcon from "@material-ui/icons/ViewModuleRounded";
-import ViewComfyRoundedIcon from "@material-ui/icons/ViewComfyRounded";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+// import TextField from "@material-ui/core/TextField";
+// import Autocomplete from "@material-ui/lab/Autocomplete";
+// import parse from "autosuggest-highlight/parse";
+// import match from "autosuggest-highlight/match";
+// import ListboxComponent from "./listbox";
+// import ViewListRoundedIcon from "@material-ui/icons/ViewListRounded";
+// import ViewModuleRoundedIcon from "@material-ui/icons/ViewModuleRounded";
+// import ViewComfyRoundedIcon from "@material-ui/icons/ViewComfyRounded";
+// import IconButton from "@material-ui/core/IconButton";
+// import Tooltip from "@material-ui/core/Tooltip";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { useHistory } from "react-router-dom";
 import Poster from "./poster";
 import RowList from "./row";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    outline: "none",
-  },
-}));
 
 export default function Home() {
-  const [anime, setAnime] = useState([]);
-  const [value, setValue] = useState(null);
-  const [item, setItem] = useState({
+  const [anime] = useState(window.data);
+  // const [value] = useState(null);
+  const item = {
     width: 185,
     height: 265,
     rowHeight: 310,
     viewMode: 1,
-  });
+  };
   let itemsPerRow = 1;
-  const classes = useStyles();
 
   const history = useHistory();
 
   function handleClick(e) {
     history.push("/watch/" + e.currentTarget.id);
   }
-
-  const responseGoogle = (response) => {
-    console.log(response);
-  };
 
   function viewGenerator(props) {
     if (item.viewMode === 0)
@@ -88,16 +75,16 @@ export default function Home() {
     );
   };
 
-  useEffect(() => {
-    if (value) {
-      console.log(value);
-      const result = anime.filter((item) => item.id === value.id);
-      if (result.length > 0) setAnime(result);
-    } else {
-      setAnime(window.data);
-    }
-    return () => {};
-  }, [value]);
+  // useEffect(() => {
+  //   if (value) {
+  //     console.log(value);
+  //     const result = anime.filter((item) => item.id === value.id);
+  //     if (result.length > 0) setAnime(result);
+  //   } else {
+  //     setAnime(window.data);
+  //   }
+  //   return () => {};
+  // }, [value]);
 
   return (
     <>
@@ -214,7 +201,7 @@ export default function Home() {
         </Tooltip>
       </div> */}
       {anime ? (
-        <div style={{ width: "100%", height: "92vh", marginTop: 30 }}>
+        <div style={{ width: "100%", height: "90vh", marginTop: "5vh" }}>
           <AutoSizer>
             {({ height, width }) => {
               if (item.viewMode === 0) itemsPerRow = 3;

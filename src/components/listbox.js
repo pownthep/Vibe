@@ -1,6 +1,6 @@
 import React from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import ListSubheader from "@material-ui/core/ListSubheader";
+// import ListSubheader from "@material-ui/core/ListSubheader";
 import { useTheme } from "@material-ui/core/styles";
 import { VariableSizeList } from "react-window";
 import PropTypes from "prop-types";
@@ -47,11 +47,12 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   const itemSize = smUp ? 36 : 48;
 
   const getChildSize = (child) => {
-    if (React.isValidElement(child) && child.type === ListSubheader) {
-      return 48;
-    }
+    return 100;
+    // if (React.isValidElement(child) && child.type === ListSubheader) {
+    //   return 48;
+    // }
 
-    return itemSize;
+    // return itemSize;
   };
 
   const getHeight = () => {

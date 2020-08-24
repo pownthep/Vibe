@@ -30,14 +30,16 @@ a {
 
 .controls {
   box-sizing: border-box;
-  padding: 15px;
+  padding-bottom: 0px;
+  padding-left: 6px;
+  padding-right: 6px;
   position: absolute;
   bottom: 0px;
   width: inherit;
   opacity: 0;
   transition: opacity 300ms ease-in-out;
   color: white;
-  background-color: rgba(0, 0, 0, 0.705);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), black);
 }
 
 .controls:hover {
@@ -70,6 +72,7 @@ button {
   margin: 0 auto;
   width: 960px;
   background-color: transparent;
+  border-radius: 5px;
 }
 
 .banner {
@@ -80,6 +83,8 @@ button {
   top: 0px;
   z-index: -3;
   object-fit: cover;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
 }
 
 .overlay {

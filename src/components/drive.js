@@ -74,10 +74,7 @@ export default function Drive() {
   }, []);
 
   return (
-    <>
-      <h1 style={{textAlign: 'center', marginTop: 48}}>
-        {state.info.user ? state.info.user.displayName + " - " : ""}Google Drive
-      </h1>
+    <div style={{ marginTop: 55 }}>
       <div className={classes.root}>
         {`Used: ${state.info.usedString}/${state.info.totalString}`}
         <LinearProgress
@@ -120,6 +117,6 @@ export default function Drive() {
           }}
         />
       </Grow>
-    </>
+    </div>
   );
 }

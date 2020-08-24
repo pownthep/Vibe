@@ -17,11 +17,18 @@ import match from "autosuggest-highlight/match";
 import ListboxComponent from "./listbox";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import Chip from "@material-ui/core/Chip";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     outline: "none",
+  },
+  nav: {
+    width: "100%",
+    backgroundColor: "inherit",
   },
 }));
 
@@ -31,8 +38,9 @@ export default function Titlebar({ backgroundColor, routes }) {
   const [isMaximized, setMaximized] = React.useState(
     currentWindow.isMaximized()
   );
-  const [anime, setAnime] = React.useState(window.data);
-  const [value, setValue] = React.useState(null);
+  const [anime] = React.useState(window.data);
+  const [value] = React.useState(null);
+  const [link, setLink] = React.useState(0);
   const classes = useStyles();
 
   const isWindows = window.clientInformation.platform === "Win32";
@@ -172,17 +180,29 @@ export default function Titlebar({ backgroundColor, routes }) {
 
   return (
     <Container isWin={isWindows} backgroundColor={backgroundColor}>
-      <div style={{ WebkitAppRegion: "no-drag", width: "30%", display: "flex", justifyContent: "space-evenly"}}>
-        <img src="https://vibe-three.vercel.app/icon.ico" alt="" width="40" height="40" style={{
-          marginTop:5
-        }}/>
-        {routes.map((route, index) => (
-          <Link to={route.path} key={index}>
-            <IconButton aria-label={route.label} color="primary">
-              {route.icon}
-            </IconButton>
-          </Link>
-        ))}
+      <div
+        style={{
+          WebkitAppRegion: "no-drag",
+          width: "30%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <BottomNavigation
+          value={link}
+          onChange={(event, newValue) => {
+            setLink(newValue);
+          }}
+          className={classes.nav}
+          showLabels
+        >
+          {routes.map((route, index) => (
+            <BottomNavigationAction label={route.label} icon={route.icon} key={index} onClick={
+              e => history.push(route.path)
+            }/>
+          ))}
+        </BottomNavigation>
       </div>
       <Autocomplete
         id="virtualize-demo"
@@ -217,18 +237,29 @@ export default function Titlebar({ backgroundColor, routes }) {
           const matches = match(option.name, inputValue);
           const parts = parse(option.name, matches);
           return (
-            <div>
-              {parts.map((part, index) => (
-                <span
-                  key={index}
-                  style={{
-                    fontWeight: part.highlight ? 700 : 400,
-                    color: part.highlight ? "#11cb5f" : "inherit",
-                  }}
-                >
-                  {part.text}
-                </span>
-              ))}
+            <div style={{ display: "grid", gridTemplateColumns: "60px auto" }}>
+              <img src={option.poster} alt="poster" height="90" width="60" />
+              <div style={{ marginLeft: "10px" }}>
+                {parts.map((part, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      fontWeight: part.highlight ? 700 : 400,
+                      color: part.highlight ? "#11cb5f" : "inherit",
+                    }}
+                  >
+                    {part.text}
+                  </span>
+                ))}
+                <br />
+                {option.keywords.split(",").map((word) => (
+                  <Chip
+                    key={word}
+                    label={word}
+                    style={{ marginRight: 2, marginTop: 2 }}
+                  />
+                ))}
+              </div>
             </div>
           );
         }}
