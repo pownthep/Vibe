@@ -38,7 +38,7 @@ export default function Settings() {
 
   return (
     <div>
-      <h1>Settings</h1>
+      <h1 style={{textAlign: 'center', marginTop: 48}}>Settings</h1>
       <h2>Cache size</h2>
       {size}
       <Button

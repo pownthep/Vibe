@@ -75,7 +75,7 @@ export default function Download() {
   return (
     <>
       {loading ? <Loader /> : <></>}
-      <h1>Download</h1>
+      <h1 style={{textAlign: 'center', marginTop: 48}}>Downloads</h1>
       <IconButton
         edge="end"
         aria-label="pause button"

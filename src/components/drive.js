@@ -75,7 +75,7 @@ export default function Drive() {
 
   return (
     <>
-      <h1>
+      <h1 style={{textAlign: 'center', marginTop: 48}}>
         {state.info.user ? state.info.user.displayName + " - " : ""}Google Drive
       </h1>
       <div className={classes.root}>

@@ -1,8 +1,6 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import {
   Container,
-  Text,
   Controls,
   ButtonMacMaximize,
   ButtonMacClose,
@@ -10,97 +8,64 @@ import {
   ButtonWindows,
   CloseButtonWindows,
 } from "../utils/styles";
+import { Link } from "react-router-dom";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import parse from "autosuggest-highlight/parse";
+import match from "autosuggest-highlight/match";
+import ListboxComponent from "./listbox";
+import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 
-const KEY_ALT = 18;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    outline: "none",
+  },
+}));
 
 const currentWindow = window.remote.getCurrentWindow();
 
-class Titlebar extends PureComponent {
-  state = {
-    keyAltDown: false,
-    isMaximized: currentWindow.isMaximized(),
-  };
+export default function Titlebar({ backgroundColor, routes }) {
+  const [isMaximized, setMaximized] = React.useState(
+    currentWindow.isMaximized()
+  );
+  const [anime, setAnime] = React.useState(window.data);
+  const [value, setValue] = React.useState(null);
+  const classes = useStyles();
 
-  isWindows = window.clientInformation.platform === "Win32";
+  const isWindows = window.clientInformation.platform === "Win32";
+  const history = useHistory();
 
-  componentDidMount() {
-    if (!this.isWindows) {
-      document.body.addEventListener("keydown", this.handleKeyDown);
-      document.body.addEventListener("keyup", this.handleKeyUp);
-    }
-  }
-
-  componentWillUnmount() {
-    if (!this.isWindows) {
-      document.body.removeEventListener("keydown", this.handleKeyDown);
-      document.body.removeEventListener("keyup", this.handleKeyUp);
-    }
-  }
-
-  handleClose = () => {
+  const handleClose = () => {
     currentWindow.close();
   };
 
-  handleKeyDown = (e) => {
-    if (e.keyCode === KEY_ALT) {
-      this.setState({
-        keyAltDown: true,
-      });
-    }
-  };
-
-  handleKeyUp = (e) => {
-    if (e.keyCode === KEY_ALT) {
-      this.setState({
-        keyAltDown: false,
-      });
-    }
-  };
-
-  handleMinimize = () => {
+  const handleMinimize = () => {
     currentWindow.minimize();
   };
 
-  handleMaximize = () => {
-    if (this.isWindows) {
+  const handleMaximize = () => {
+    if (isWindows) {
       if (currentWindow.isMaximizable()) {
         if (currentWindow.isMaximized()) {
           currentWindow.unmaximize();
-
-          this.setState({
-            isMaximized: false,
-          });
+          setMaximized(false);
         } else {
           currentWindow.maximize();
-
-          this.setState({
-            isMaximized: true,
-          });
+          setMaximized(true);
         }
       }
     } else {
-      const { keyAltDown } = this.state;
-
-      if (keyAltDown) {
-        if (currentWindow.isMaximizable()) {
-          if (currentWindow.isMaximized()) {
-            currentWindow.unmaximize();
-          } else {
-            currentWindow.maximize();
-          }
-        }
-      } else {
-        currentWindow.setFullScreen(!currentWindow.isFullScreen());
-      }
+      currentWindow.setFullScreen(!currentWindow.isFullScreen());
     }
   };
 
-  renderMac() {
-    const { keyAltDown } = this.state;
-
+  const renderMac = () => {
     return (
       <Controls key="title-controls">
-        <ButtonMacClose tabIndex="-1" onClick={this.handleClose}>
+        <ButtonMacClose tabIndex="-1" onClick={handleClose}>
           <svg x="0px" y="0px" viewBox="0 0 6.4 6.4">
             <polygon
               fill="#4d0000"
@@ -108,16 +73,12 @@ class Titlebar extends PureComponent {
             ></polygon>
           </svg>
         </ButtonMacClose>
-        <ButtonMacMinimize tabIndex="-1" onClick={this.handleMinimize}>
+        <ButtonMacMinimize tabIndex="-1" onClick={handleMinimize}>
           <svg x="0px" y="0px" viewBox="0 0 8 1.1">
             <rect fill="#995700" width="8" height="1.1"></rect>
           </svg>
         </ButtonMacMinimize>
-        <ButtonMacMaximize
-          showMaximize={keyAltDown}
-          tabIndex="-1"
-          onClick={this.handleMaximize}
-        >
+        <ButtonMacMaximize tabIndex="-1" onClick={handleMaximize}>
           <svg className="fullscreen-svg" x="0px" y="0px" viewBox="0 0 6 5.9">
             <path
               fill="#006400"
@@ -137,17 +98,15 @@ class Titlebar extends PureComponent {
         </ButtonMacMaximize>
       </Controls>
     );
-  }
+  };
 
-  renderWindows() {
-    const { isMaximized } = this.state;
-
+  const renderWindows = () => {
     return (
       <Controls key="title-controls">
         <ButtonWindows
           aria-label="minimize"
           tabIndex="-1"
-          onClick={this.handleMinimize}
+          onClick={handleMinimize}
         >
           <svg version="1.1" aria-hidden="true" width="10" height="10">
             <path d="M 0,5 10,5 10,6 0,6 Z" />
@@ -157,7 +116,7 @@ class Titlebar extends PureComponent {
         <ButtonWindows
           aria-label="maximize"
           tabIndex="-1"
-          onClick={this.handleMaximize}
+          onClick={handleMaximize}
         >
           {isMaximized ? (
             <svg version="1.1" aria-hidden="true" width="10" height="10">
@@ -172,7 +131,7 @@ class Titlebar extends PureComponent {
         <CloseButtonWindows
           aria-label="close"
           tabIndex="-1"
-          onClick={this.handleClose}
+          onClick={handleClose}
         >
           <svg aria-hidden="true" version="1.1" width="10" height="10">
             <path d="M 0,0 0,0.7 4.3,5 0,9.3 0,10 0.7,10 5,5.7 9.3,10 10,10 10,9.3 5.7,5 10,0.7 10,0 9.3,0 5,4.3 0.7,0 Z" />
@@ -180,44 +139,101 @@ class Titlebar extends PureComponent {
         </CloseButtonWindows>
       </Controls>
     );
-  }
+  };
+  const elements = [];
 
-  render() {
-    const { backgroundColor, title } = this.props;
-    const elements = [];
-
-    if (this.isWindows) {
-      elements.push(
-        <Text key="title-text" isWin={this.isWindows}>
-          {title}
-        </Text>
-      );
-      elements.push(this.renderWindows());
-    } else {
-      elements.push(this.renderMac());
-      elements.push(
-        <Text key="title-text" isWin={this.isWindows}>
-          {title}
-        </Text>
-      );
-    }
-
-    return (
-      <Container isWin={this.isWindows} backgroundColor={backgroundColor}>
-        {elements}
-      </Container>
+  if (isWindows) {
+    elements.push(
+      <div key={"item"}>
+        {routes.map((route, index) => (
+          <Link to={route.path} key={index}>
+            <IconButton aria-label={route.label} color="primary">
+              {route.icon}
+            </IconButton>
+          </Link>
+        ))}
+      </div>
+    );
+    elements.push(renderWindows());
+  } else {
+    elements.push(renderMac());
+    elements.push(
+      <div key={"item"}>
+        {routes.map((route, index) => (
+          <Link to={route.path} key={index}>
+            <IconButton aria-label={route.label} color="primary">
+              {route.icon}
+            </IconButton>
+          </Link>
+        ))}
+      </div>
     );
   }
+
+  return (
+    <Container isWin={isWindows} backgroundColor={backgroundColor}>
+      <div style={{ WebkitAppRegion: "no-drag", width: "30%", display: "flex", justifyContent: "space-evenly"}}>
+        <img src="https://vibe-three.vercel.app/icon.ico" alt="" width="40" height="40" style={{
+          marginTop:5
+        }}/>
+        {routes.map((route, index) => (
+          <Link to={route.path} key={index}>
+            <IconButton aria-label={route.label} color="primary">
+              {route.icon}
+            </IconButton>
+          </Link>
+        ))}
+      </div>
+      <Autocomplete
+        id="virtualize-demo"
+        style={{
+          width: "30%",
+          WebkitAppRegion: "no-drag",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+        disableListWrap
+        ListboxComponent={ListboxComponent}
+        value={value}
+        onChange={(e, v) => {
+          history.replace("/watch/" + v.id);
+        }}
+        options={anime}
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            size="small"
+            label="Search..."
+            variant="outlined"
+            classes={{
+              root: classes.root,
+            }}
+          />
+        )}
+        renderOption={(option, { inputValue }) => {
+          const matches = match(option.name, inputValue);
+          const parts = parse(option.name, matches);
+          return (
+            <div>
+              {parts.map((part, index) => (
+                <span
+                  key={index}
+                  style={{
+                    fontWeight: part.highlight ? 700 : 400,
+                    color: part.highlight ? "#11cb5f" : "inherit",
+                  }}
+                >
+                  {part.text}
+                </span>
+              ))}
+            </div>
+          );
+        }}
+      />
+      {renderWindows()}
+    </Container>
+  );
 }
-
-Titlebar.defaultProps = {
-  title: null,
-  backgroundColor: "#000000",
-};
-
-Titlebar.propTypes = {
-  title: PropTypes.string,
-  backgroundColor: PropTypes.string,
-};
-
-export default Titlebar;

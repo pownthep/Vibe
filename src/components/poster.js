@@ -6,10 +6,9 @@ import { toDataURL } from "../utils/utils";
 
 const useStyles = makeStyles({
   media: {
-    width: 185,
+    width: 180,
     height: 265,
     borderRadius: 4,
-    marginRight: 10,
     cursor: "pointer",
   },
   img: {
@@ -34,7 +33,7 @@ export default function Poster({ image, name }) {
           alt={name}
           onError={(e) => (e.target.src = image)}
         />
-        <Typography variant="button" display="block" gutterBottom noWrap={true}>
+        <Typography variant="button" display="block" gutterBottom noWrap={true} >
           {name}
         </Typography>
       </div>

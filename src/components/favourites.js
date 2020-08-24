@@ -58,7 +58,7 @@ export default function Favourites() {
 
   return (
     <>
-      <h1>My Favourites</h1>
+      <h1 style={{textAlign: 'center', marginTop: 48}}>My Favourites</h1>
       {favourites ? (
         <>
           <div className={classes.root}>

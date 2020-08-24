@@ -62,7 +62,7 @@ export default function Home() {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
           }}
         >
@@ -101,9 +101,9 @@ export default function Home() {
 
   return (
     <>
-      <div
+      {/* <div
         style={{
-          //margin: "0 auto",
+          marginTop: 25,
           width: "100%",
           textAlign: "center",
         }}
@@ -212,9 +212,9 @@ export default function Home() {
             <ViewModuleRoundedIcon />
           </IconButton>
         </Tooltip>
-      </div>
+      </div> */}
       {anime ? (
-        <div style={{ width: "100%", height: "85vh", borderRadius: 4 }}>
+        <div style={{ width: "100%", height: "92vh", marginTop: 30 }}>
           <AutoSizer>
             {({ height, width }) => {
               if (item.viewMode === 0) itemsPerRow = 3;

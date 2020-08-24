@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  height: ${props => props.isWin ? '28px' : '24px'};
+  height: ${props => props.isWin ? '50px' : '50px'};
   display: flex;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -14,7 +14,7 @@ export const Container = styled.div`
   flex-direction: row;
   position: fixed;
   z-index:5;
-  margin-bottom: ${props => props.isWin ? '28px' : '24px'};
+  margin-bottom: ${props => props.isWin ? '50px' : '50px'};
 `;
 
 export const Text = styled.div`

@@ -116,7 +116,7 @@ button {
 
 .anime-title {
   text-align: center;
-  font-size: 46px;
+  font-size: 30px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
   margin-bottom: 0;
   margin-top: 0;
@@ -173,7 +173,7 @@ button {
 
 #nprogress .bar {
   background: #11cb5f;
-  height: 5px;
+  height: 3px;
 }
 
 #nprogress .peg {

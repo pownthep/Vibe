@@ -147,7 +147,7 @@ export default function History() {
   return (
     <>
       {state.loading ? <Loader /> : <></>}
-      <h1>History</h1>
+      <h1 style={{textAlign: 'center', marginTop: 48}}>History</h1>
       <Tooltip title="Clear history" placement="right-start">
         <IconButton
           edge="end"

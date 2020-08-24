@@ -20,7 +20,7 @@ const readFile = util.promisify(fs.readFile);
       name: i.name,
       poster: i.poster
     }))
-    fs.writeFile("trimmed.json", JSON.stringify(trimmed), () =>{});
+    fs.writeFile("trimmed.json", JSON.stringify(trimmed.sort((a, b) => a.name.localeCompare(b.name))), () =>{});
     const trimmedDesktop = data.map(i => ({
       id: i.id,
       name: i.name,
@@ -28,6 +28,6 @@ const readFile = util.promisify(fs.readFile);
       banner: i.banner,
       keywords: i.keywords
     }))
-    fs.writeFile("trimmed-desktop.json", JSON.stringify(trimmedDesktop), () =>{});
+    fs.writeFile("trimmed-desktop.json", JSON.stringify(trimmedDesktop.sort((a, b) => a.name.localeCompare(b.name))), () =>{});
   } catch (error) {}
 })();

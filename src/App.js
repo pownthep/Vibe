@@ -28,6 +28,12 @@ import SettingsPage from "./components/settings";
 import DrivePage from "./components/drive";
 import DownloadPage from "./components/download";
 import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
+import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
+import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
+import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
+import CloudRoundedIcon from '@material-ui/icons/CloudRounded';
+import HistoryRoundedIcon from '@material-ui/icons/HistoryRounded';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 
 const drawerWidth = 55;
 
@@ -40,7 +46,7 @@ const theme = createMuiTheme({
     },
     secondary: {
       // This is green.A700 as hex.
-      main: "#e91e63",
+      main: "#ffffff",
     },
   },
 });
@@ -66,8 +72,8 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     width: "100%",
-    paddingLeft: theme.spacing(3),
-    paddingRight: theme.spacing(3),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     marginTop: 28,
   },
   titlebar: theme.palette.background.paper,
@@ -90,43 +96,43 @@ export default function PermanentDrawerLeft() {
       path: "/",
       exact: true,
       component: Home,
-      label: "Search",
-      icon: <SearchIcon />,
+      label: "Home",
+      icon: <HomeRoundedIcon />,
     },
     {
       path: "/favourites",
       exact: true,
       component: FavouritePage,
       label: "Favourites",
-      icon: <FavoriteBorderIcon />,
+      icon: <FavoriteRoundedIcon />,
     },
     {
       path: "/downloader",
       exact: true,
       component: DownloadPage,
       label: "Downloader",
-      icon: <SystemUpdateAltIcon />,
+      icon: <GetAppRoundedIcon />,
     },
     {
       path: "/drive",
       exact: true,
       component: DrivePage,
       label: "G Drive",
-      icon: <CloudQueueIcon />,
+      icon: <CloudRoundedIcon />,
     },
     {
       path: "/history",
       exact: true,
       component: HistoryPage,
       label: "History",
-      icon: <HistoryIcon />,
+      icon: <HistoryRoundedIcon />,
     },
     {
       path: "/settings",
       exact: true,
       component: SettingsPage,
       label: "Settings",
-      icon: <TuneIcon />,
+      icon: <SettingsRoundedIcon />,
     },
   ];
 
@@ -136,39 +142,14 @@ export default function PermanentDrawerLeft() {
     <>
       <Router>
         <React.Suspense fallback={<Loader />}>
-          {window.desktop ? (
-            <Titlebar title="" backgroundColor="inherit" />
-          ) : (
-            <></>
-          )}
           <ThemeProvider theme={theme}>
             <div className={classes.root}>
               <CssBaseline />
-              <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                classes={{
-                  paper: classes.drawerPaper,
-                  root: classes.drawerBg,
-                  paperAnchorDockedLeft: classes.noBorder,
-                }}
-                anchor="left"
-              >
-                {" "}
-                <div className={classes.padding}></div>
-                <List dense={false}>
-                  <div style={{ height: 12 }}></div>
-                  {routes.map((route, index) => (
-                    <Link to={route.path} key={index}>
-                      <ListItem button>
-                        <ListItemIcon classes={{ root: classes.navIcon }}>
-                          {route.icon}
-                        </ListItemIcon>
-                      </ListItem>
-                    </Link>
-                  ))}
-                </List>
-              </Drawer>
+              {window.desktop ? (
+                <Titlebar routes={routes} backgroundColor="black" />
+              ) : (
+                <></>
+              )}
               <main className={classes.content}>
                 <Switch>
                   {routes.map((route) => (

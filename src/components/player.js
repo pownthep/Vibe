@@ -189,7 +189,7 @@ class Player extends React.PureComponent {
       this.setState({
         data: data,
         auth: user,
-        episodes: data.episodes.slice(0, 5),
+        episodes: [...data.episodes.slice(0, 5)],
         showProgress: false,
         favourited: favourites[id] ? true : false,
         loadingData: false,
@@ -362,10 +362,11 @@ class Player extends React.PureComponent {
 
   handleSearch = (e, nv) => {
     if (nv) {
-      this.setState({ epList: [this.state.episodes[nv.index]] });
+      this.setState({ episodes: [this.state.data.episodes[nv.index]] });
       this.setState({ value: nv });
     } else {
-      this.setState({ epList: this.state.episodes });
+      console.log(nv);
+      this.setState({ episodes: [...this.state.data.episodes.slice(0, 5)] });
       this.setState({ value: nv });
     }
   };
@@ -441,7 +442,7 @@ class Player extends React.PureComponent {
         {this.state.loadingData ? (
           <></>
         ) : (
-          <>
+          <div style={{ marginTop: 48 }}>
             <div className="title-container">
               <h1 className="anime-title">{this.state.data.name}</h1>
               <h2 className="anime-episode">
@@ -451,9 +452,9 @@ class Player extends React.PureComponent {
             <Fade in={this.state.checked} timeout={600}>
               <div
                 className="overlay"
-                style={{
-                  background: `linear-gradient(to top, rgba(${this.state.palette1}),rgba(${this.state.palette2}))`,
-                }}
+                // style={{
+                //   background: `linear-gradient(to top, rgba(${this.state.palette1}),black 98%)`,
+                // }}
               ></div>
             </Fade>
             <div className="container">
@@ -474,7 +475,7 @@ class Player extends React.PureComponent {
                     let img = e.currentTarget;
                     let color = colorThief.getColor(img);
                     this.setState({
-                      palette1: `${color[0]},${color[1]},${color[2]},0`,
+                      palette1: `${color[0]},${color[1]},${color[2]},0.0`,
                       palette2: `${color[0]},${color[1]},${color[2]},1`,
                     });
                   }}
@@ -663,8 +664,9 @@ class Player extends React.PureComponent {
                             }
                           />
                           <GridListTileBar
-                            title={this.state.data.name}
+                            //title={tile.name}
                             subtitle={<span>{tile.name}</span>}
+                            actionPosition="left"
                             actionIcon={
                               <>
                                 <IconButton
@@ -679,8 +681,9 @@ class Player extends React.PureComponent {
                                 >
                                   <PlayCircleFilledIcon />
                                 </IconButton>
+                                <br />
                                 <IconButton
-                                  aria-label={`Play ${tile.name}`}
+                                  aria-label={`Download ${tile.name}`}
                                   className={classes.icon}
                                   onClick={(e) =>
                                     this.addToDownload(tile.id, tile.name)
@@ -752,7 +755,7 @@ class Player extends React.PureComponent {
             ) : (
               <></>
             )}
-          </>
+          </div>
         )}
       </>
     );

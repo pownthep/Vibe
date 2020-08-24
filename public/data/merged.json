@@ -26196,5 +26196,423 @@
       }
     ],
     "type": "movie"
+  },
+  {
+    "id": 241,
+    "name": "Brooklyn Nine-Nine Season 4",
+    "banner": "https://i2.wp.com/honknews.com/wp-content/uploads/2020/03/Spoilers-of-Brooklyn-Nine-Nine-Season-7-Episode-9-06.jpeg?fit=1920%2C1080&ssl=1",
+    "rating": 8.4,
+    "desc": "Brooklyn Nine-Nine follows the exploits of hilarious Det. Jake Peralta and his diverse, lovable colleagues as they police the NYPD's 99th Precinct.    ",
+    "keywords": "Comedy,Crime",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzVkYWY4NzYtMWFlZi00YzkwLThhZDItZjcxYTU4ZTMzMDZmXkEyXkFqcGdeQXVyODUxOTU0OTg@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "1fw6iF-JLCZjcUIY0_08aU24oX9vqRA1i",
+        "name": "1. Coral Palms Part 1.mkv",
+        "size": "1717608229"
+      },
+      {
+        "id": "1y-mn754aWbVP0EQseoBmkjEbRfj4Gj7u",
+        "name": "2. Coral Palms Part 2.mkv",
+        "size": "1764542849"
+      },
+      {
+        "id": "1j4bssb-KxpIPtfusHdA5PsGxeW6wdpxJ",
+        "name": "3. Coral Palms Part 3.mkv",
+        "size": "1985123365"
+      },
+      {
+        "id": "13ehhMINEPYIaOS9bQHvn9Wn0gWZo6svG",
+        "name": "4. The Night Shift.mkv",
+        "size": "1887067150"
+      },
+      {
+        "id": "1yQ2Y6us60ijd3i71fpLqrkaoxbt2K6cg",
+        "name": "5. Halloween IV.mkv",
+        "size": "2073680229"
+      },
+      {
+        "id": "15--PGHSwACleJWa0Du-Jlg002rnxgngw",
+        "name": "6. Monster in the Closet.mkv",
+        "size": "1724919308"
+      },
+      {
+        "id": "1ZS_EW4nx9Igr4ZquIHmP2BWT2uCyV1YS",
+        "name": "7. Mr. Santiago.mkv",
+        "size": "1849925043"
+      },
+      {
+        "id": "1Jf0h6sZSoOYiZl62nWHPhJ7s5JyKlsvi",
+        "name": "8. Skyfire Cycle.mkv",
+        "size": "1777959608"
+      },
+      {
+        "id": "1wl8JQdZW0W-XgWpWxkycEnaJ2lpHlcYL",
+        "name": "9. The Overmining.mkv",
+        "size": "1760063234"
+      },
+      {
+        "id": "15UFQaxQk2xgTa1DLtz0PNjb8j5tA9WmX",
+        "name": "10. Captain Latvia.mkv",
+        "size": "2087404870"
+      },
+      {
+        "id": "1XOz2Ma5RRInoxKbDZF-EPmznrMV1ONiC",
+        "name": "11. The Fugitive.mkv",
+        "size": "3562963051"
+      },
+      {
+        "id": "1sAITxbsCYLPBym9r0fUEt8wZ2Qh0yYZF",
+        "name": "13. The Audit.mkv",
+        "size": "1860908869"
+      },
+      {
+        "id": "1-71hoS_EjPrQ_PqT4SPcewK-Ps-0SOJc",
+        "name": "14. Serve & Protect.mkv",
+        "size": "1954162809"
+      },
+      {
+        "id": "156U0Z5cezMgz6qudci2Ea9Qauar1OSx2",
+        "name": "15. The Last Ride.mkv",
+        "size": "1854927979"
+      },
+      {
+        "id": "1tad5okdupjWYriVeVCRuVh8Mi86DsVB6",
+        "name": "16. Moo Moo.mkv",
+        "size": "1937165386"
+      },
+      {
+        "id": "1Rlc_yhlGzgYDDX7XaV-W1Clqh6TP6n3D",
+        "name": "17. Cop-Con.mkv",
+        "size": "2196381324"
+      },
+      {
+        "id": "1SnGhdBeB5n6dEwVb3nVFt5bHTnUtmefW",
+        "name": "18. Chasing Amy.mkv",
+        "size": "1787625320"
+      },
+      {
+        "id": "1-RrUTn70m74BTMQmEHzhntNY3t9E6FzW",
+        "name": "19. Your Honor.mkv",
+        "size": "1972869228"
+      },
+      {
+        "id": "1jnIfz39nSG3xcuiezs_jkH7f4HwPnE8q",
+        "name": "20. The Slaughterhouse.mkv",
+        "size": "1644488673"
+      },
+      {
+        "id": "1YUJ0SusODGe1Ju0SfZbnpMUjVIyR-zES",
+        "name": "21. The Bank Job.mkv",
+        "size": "1898180663"
+      },
+      {
+        "id": "1y7WXt80iDd8-a2PCyQ7bKLdWLLPCqwND",
+        "name": "22. Crime & Punishment.mkv",
+        "size": "1872374698"
+      }
+    ],
+    "type": "tv show"
+  },
+  {
+    "id": 242,
+    "name": "Brooklyn Nine-Nine Season 5",
+    "banner": "https://i2.wp.com/honknews.com/wp-content/uploads/2020/03/Spoilers-of-Brooklyn-Nine-Nine-Season-7-Episode-9-06.jpeg?fit=1920%2C1080&ssl=1",
+    "rating": 8.4,
+    "desc": "Brooklyn Nine-Nine follows the exploits of hilarious Det. Jake Peralta and his diverse, lovable colleagues as they police the NYPD's 99th Precinct.    ",
+    "keywords": "Comedy,Crime",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzVkYWY4NzYtMWFlZi00YzkwLThhZDItZjcxYTU4ZTMzMDZmXkEyXkFqcGdeQXVyODUxOTU0OTg@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "1xrFkI0fhCBimCZUIwpwU77W4Mk6PiIDD",
+        "name": "1. The Big House, Pt. 1.mkv",
+        "size": "1555704371"
+      },
+      {
+        "id": "1lpFEd7hnLkYiYy0wcdZHZXmVeQ8ozIe_",
+        "name": "2. The Big House, Pt. 2.mkv",
+        "size": "1514756311"
+      },
+      {
+        "id": "1KXkSx3xYYO-J7c0YVMjufCirK8FMw1vp",
+        "name": "3. Kicks.mkv",
+        "size": "1403482690"
+      },
+      {
+        "id": "1EJUog-15oRMFa5u_Hg-7g3myIfKfX_Cv",
+        "name": "4. HalloVeen.mkv",
+        "size": "1747657463"
+      },
+      {
+        "id": "1FMFmZNeoahCbqt8VcQN1JpHANZkGWVCj",
+        "name": "5. Bad Beat.mkv",
+        "size": "1887431915"
+      },
+      {
+        "id": "1Ncn35MKXmj6NNv3JFRgAmp_erpR1jRJa",
+        "name": "6. The Venue.mkv",
+        "size": "1665055216"
+      },
+      {
+        "id": "146-DbFKPCRkCfJxKuH_NZua4690x1yEl",
+        "name": "7. Two Turkeys.mkv",
+        "size": "1475988623"
+      },
+      {
+        "id": "1RKaLt0hHe2YkkJAX_qD3CH2b8qqLJ_lJ",
+        "name": "8. Return to Skyfire.mkv",
+        "size": "1579002358"
+      },
+      {
+        "id": "1erXcH3ndtjkNFHIlfxGhzKB-RukRw0C7",
+        "name": "9. 99.mkv",
+        "size": "1390224329"
+      },
+      {
+        "id": "14k3qZYBIPEA1YMpTWt_rkXmOD0h1yhEk",
+        "name": "10. Game Night.mkv",
+        "size": "1509850538"
+      },
+      {
+        "id": "1qRW4kj6lWTUpBv_oLE1ahSz_rPWX6caE",
+        "name": "11. The Favor.mkv",
+        "size": "1465022493"
+      },
+      {
+        "id": "1G5roHEt9IWYFSjFkm8_ootO7MoqrsxZv",
+        "name": "12. Safe House.mkv",
+        "size": "1364987358"
+      },
+      {
+        "id": "1OAAyVuH8R_x_IhyqvNUFAbJC7uvsAida",
+        "name": "13. The Negotiation.mkv",
+        "size": "1224490090"
+      },
+      {
+        "id": "1Aefj6BJKrrFYhnRr8E_ylogmLeCCG3IM",
+        "name": "14. The Box.mkv",
+        "size": "1382196114"
+      },
+      {
+        "id": "1Lq0Qsk7I9X4WblyT05e8EBii23saqVpK",
+        "name": "15. The Puzzle Master.mkv",
+        "size": "1440018503"
+      },
+      {
+        "id": "1sK8qoquDVG49bRHAHxjKP1LE3WN4ZAGa",
+        "name": "16. NutriBoom.mkv",
+        "size": "1551299005"
+      },
+      {
+        "id": "19HxfYaaj9Vg-ClDbx3Lpktl34S4El-kS",
+        "name": "17. DFW.mkv",
+        "size": "1476587359"
+      },
+      {
+        "id": "1PaJaEvQ6S7Tw8rDo170UM0JBalzcirrZ",
+        "name": "18. Gray Star Mutual.mkv",
+        "size": "1380522220"
+      },
+      {
+        "id": "1MMG4evGzgJIyIL0-_voXqf34cAe2KL3F",
+        "name": "19. Bachelorette Party.mkv",
+        "size": "1662702998"
+      },
+      {
+        "id": "1eUk3RAsErhNILB_FGdrSX1ra19fN40Hg",
+        "name": "20. Show Me Going.mkv",
+        "size": "1642374189"
+      },
+      {
+        "id": "1XwAEflNNY1plchPEcEMC96F4mL3CXqS8",
+        "name": "21. White Whale.mkv",
+        "size": "1542274638"
+      },
+      {
+        "id": "1V4zHNVSWbRmQKNzyP-JEGPya2e5UD6W0",
+        "name": "22. Jake & Amy.mkv",
+        "size": "1591322087"
+      }
+    ],
+    "type": "tv show"
+  },
+  {
+    "id": 243,
+    "name": "Brooklyn Nine-Nine Season 6",
+    "banner": "https://i2.wp.com/honknews.com/wp-content/uploads/2020/03/Spoilers-of-Brooklyn-Nine-Nine-Season-7-Episode-9-06.jpeg?fit=1920%2C1080&ssl=1",
+    "rating": 8.4,
+    "desc": "Brooklyn Nine-Nine follows the exploits of hilarious Det. Jake Peralta and his diverse, lovable colleagues as they police the NYPD's 99th Precinct.    ",
+    "keywords": "Comedy,Crime",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzVkYWY4NzYtMWFlZi00YzkwLThhZDItZjcxYTU4ZTMzMDZmXkEyXkFqcGdeQXVyODUxOTU0OTg@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "1z2YumjHuKbHpwTe93cIDOSSmkA_Nm8B_",
+        "name": "1. Honeymoon.mkv",
+        "size": "1060068854"
+      },
+      {
+        "id": "15WcDi6lOStj0Z3bNOJV6Y9sad6cI_ZGz",
+        "name": "2. Hitchcock & Scully.mkv",
+        "size": "1339805166"
+      },
+      {
+        "id": "1wmSXdCr_ki7AylgltS47aOe_6EeFSGO4",
+        "name": "3. The Tattler.mkv",
+        "size": "1629579578"
+      },
+      {
+        "id": "187dexHoy1vgt3vBkeL5m9subPjWb_xAy",
+        "name": "4. Four Movements.mkv",
+        "size": "1651664605"
+      },
+      {
+        "id": "13DJ7BMeOyCbvQPBU0mPUViw6365SrP69",
+        "name": "5. A Tale of Two Bandits.mkv",
+        "size": "1633777210"
+      },
+      {
+        "id": "1PLPHYV2Am0NMHzdGcP0s0CqlfjyXgHWN",
+        "name": "6. The Crime Scene.mkv",
+        "size": "1668153344"
+      },
+      {
+        "id": "1cx7WmsPZlbJBv5A8MuZM7KsiYhtrlMX6",
+        "name": "7. The Honeypot.mkv",
+        "size": "1634481606"
+      },
+      {
+        "id": "1fehjWUrfAe9IUWviMy74d79f1FAbOWrs",
+        "name": "8. He Said, She Said.mkv",
+        "size": "1653613257"
+      },
+      {
+        "id": "1fC7cUnWZsJS-QJhIPcv6tD8YbWXpDAvL",
+        "name": "9. The Golden Child.mkv",
+        "size": "1710292409"
+      },
+      {
+        "id": "1rmgvLvIgTPBn2wLEtTFnS4kBeiPHMf7z",
+        "name": "10. Gintars.mkv",
+        "size": "1662376815"
+      },
+      {
+        "id": "1mBPjz99UWQYC-oAh2bDoxGiTnlF50EIY",
+        "name": "11. The Therapist.mkv",
+        "size": "1652096353"
+      },
+      {
+        "id": "1uHjIICKY-Ld6qxWFaxZ5MWlVJPSRUCRf",
+        "name": "12. Casecation.mkv",
+        "size": "1678968196"
+      },
+      {
+        "id": "1GRZ2u-jitTbEFM0aqHPlDV1VFMV1G-Wq",
+        "name": "13. The Bimbo.mkv",
+        "size": "1605586953"
+      },
+      {
+        "id": "1OkUbJhSkAHllTG_QgX9urTIEZPfb__wy",
+        "name": "14. Ticking Clocks.mkv",
+        "size": "1607765764"
+      },
+      {
+        "id": "1LVrMlcwChKekYXGHgFmu5pe7kqyc6k_Q",
+        "name": "15. Return of the King.mkv",
+        "size": "1655087928"
+      },
+      {
+        "id": "19dYf3Hh6ns9d9vnVqwJHoFCKnUPWl1Et",
+        "name": "16. Cinco de Mayo.mkv",
+        "size": "1660476162"
+      },
+      {
+        "id": "1-31ophM3BemO1M2191Fb7t7SwEb6kvde",
+        "name": "17. Sicko.mkv",
+        "size": "1662460197"
+      },
+      {
+        "id": "1-h-jUEgqu3kWD6p8XYpWeY2dsSjPnplL",
+        "name": "18. The Suicide Squad.mkv",
+        "size": "1647028398"
+      }
+    ],
+    "type": "tv show"
+  },
+  {
+    "id": 244,
+    "name": "Brooklyn Nine-Nine Season 7",
+    "banner": "https://i2.wp.com/honknews.com/wp-content/uploads/2020/03/Spoilers-of-Brooklyn-Nine-Nine-Season-7-Episode-9-06.jpeg?fit=1920%2C1080&ssl=1",
+    "rating": 8.4,
+    "desc": "Brooklyn Nine-Nine follows the exploits of hilarious Det. Jake Peralta and his diverse, lovable colleagues as they police the NYPD's 99th Precinct.    ",
+    "keywords": "Comedy,Crime",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzVkYWY4NzYtMWFlZi00YzkwLThhZDItZjcxYTU4ZTMzMDZmXkEyXkFqcGdeQXVyODUxOTU0OTg@._V1_.jpg",
+    "episodes": [
+      {
+        "id": "1_bT0X1NT1nqvjB4ILmebNjXwl90K3X1f",
+        "name": "1. Manhunter.mkv",
+        "size": "1661122837"
+      },
+      {
+        "id": "1oXMrWvamSm_K6-AarzdShKcNYsMheduf",
+        "name": "2. Captain Kim.mkv",
+        "size": "1602585996"
+      },
+      {
+        "id": "1SpY6_0DU8ZNTtqBbjI3bthqNwLdeHX5n",
+        "name": "3. Pimemento.mkv",
+        "size": "1651686071"
+      },
+      {
+        "id": "1nyJZo_L8FGIGIB-VFOlWA5Bbsh8NYiRs",
+        "name": "4. The Jimmy Jab Games II.mkv",
+        "size": "1656789192"
+      },
+      {
+        "id": "1z32fG6q4h-oZScJtawUSowHFXy4LiT2I",
+        "name": "5. Debbie.mkv",
+        "size": "1666723518"
+      },
+      {
+        "id": "1y35ZOmpRuH9bSSiw6SbB9STwcrN9VOac",
+        "name": "6. Trying.mkv",
+        "size": "1652169256"
+      },
+      {
+        "id": "1ii-mP7Mbw4jCkLU5DRPcYqay2YhqebWi",
+        "name": "7. Ding Dong.mkv",
+        "size": "1632805860"
+      },
+      {
+        "id": "1GkCnuLKIiQU2sFPPfgNa18_6nPOarEb0",
+        "name": "8. The Takeback.mkv",
+        "size": "1664037588"
+      },
+      {
+        "id": "1wLug6jHwatI_s_lzW9LVm_ALWWJkiIIL",
+        "name": "9. Dillman.mkv",
+        "size": "1603225162"
+      },
+      {
+        "id": "17EpT7GO8EHkFQCoaJZO8fWxMrkseorct",
+        "name": "10. Admiral Peralta.mkv",
+        "size": "1663005272"
+      },
+      {
+        "id": "1OrMA5uXjVLEVylIvu0EwR5GQD0unt6B0",
+        "name": "11. Valloweaster.mkv",
+        "size": "1543982506"
+      },
+      {
+        "id": "1ryVtG9Y9hzz04FJVMJIyifhzx1jxyjU3",
+        "name": "12. Ransom.mkv",
+        "size": "1662711726"
+      },
+      {
+        "id": "1Y0mnit8trIYNTlqGQs6Fx-hg2oh91SNi",
+        "name": "13. Lights Out.mkv",
+        "size": "1642707989"
+      }
+    ],
+    "type": "tv show"
   }
 ]
