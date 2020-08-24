@@ -7,7 +7,12 @@ const readFile = util.promisify(fs.readFile);
 (async () => {
   try {
     const json = await readFile("merged.json");
-    const data = JSON.parse(json);
+    const data = JSON.parse(json)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((i, index) => ({
+        ...i,
+        id: index,
+      }));
     for (const item of data) {
       fs.writeFile(
         __dirname + "/shows/" + item.id + ".json",
@@ -15,19 +20,23 @@ const readFile = util.promisify(fs.readFile);
         () => {}
       );
     }
-    const trimmed = data.map(i => ({
+    const trimmed = data.map((i) => ({
       id: i.id,
       name: i.name,
-      poster: i.poster
-    }))
-    fs.writeFile("trimmed.json", JSON.stringify(trimmed.sort((a, b) => a.name.localeCompare(b.name))), () =>{});
-    const trimmedDesktop = data.map(i => ({
+      poster: i.poster,
+    }));
+    fs.writeFile("trimmed.json", JSON.stringify(trimmed), () => {});
+    const trimmedDesktop = data.map((i) => ({
       id: i.id,
       name: i.name,
       poster: i.poster,
       banner: i.banner,
-      keywords: i.keywords
-    }))
-    fs.writeFile("trimmed-desktop.json", JSON.stringify(trimmedDesktop.sort((a, b) => a.name.localeCompare(b.name))), () =>{});
+      keywords: i.keywords,
+    }));
+    fs.writeFile(
+      "trimmed-desktop.json",
+      JSON.stringify(trimmedDesktop),
+      () => {}
+    );
   } catch (error) {}
 })();
