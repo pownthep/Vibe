@@ -183,6 +183,7 @@ class Player extends React.PureComponent {
       "https://vibe-three.vercel.app/data/shows/" + id + ".json"
     );
     const data = await res.json();
+    const filtered = {...data, episodes: data.episodes.filter(i => i.size > 0)};
 
     // Set state if the component is mounted
     const favourites = localStorage.getItem(`favourites`)
@@ -190,9 +191,9 @@ class Player extends React.PureComponent {
       : {};
     if (this._isMounted) {
       this.setState({
-        data: data,
+        data: filtered,
         auth: user,
-        episodes: [...data.episodes.slice(0, 2)],
+        episodes: [...filtered.episodes.slice(0, 2)],
         showProgress: false,
         favourited: favourites[id] ? true : false,
         loadingData: false,
