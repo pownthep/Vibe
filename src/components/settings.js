@@ -21,7 +21,7 @@ export default function Settings() {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("http://localhost:9001/cachesize");
+      const res = await fetch(window.API + "cachesize");
       const json = await res.json();
       setSize(json.size);
     })();
@@ -30,7 +30,7 @@ export default function Settings() {
   const clearCache = async () => {
     if (size === "0 B") return;
     setLoading(true)
-    const res = await fetch("http://localhost:9001/clearcache");
+    const res = await fetch(window.API + "clearcache");
     const json = await res.json();
     if (!json.error) setSize("0 B");
     setLoading(false)

@@ -154,7 +154,7 @@ class Player extends React.PureComponent {
 
   addToDownload = async (id, name) => {
     const res = await fetch(
-      `http://localhost:9001/add_to_download_queue?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
+      `${window.API}add_to_download_queue?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
     );
     const data = await res.json();
     if (data.error) {
@@ -183,7 +183,10 @@ class Player extends React.PureComponent {
       "https://vibe-three.vercel.app/data/shows/" + id + ".json"
     );
     const data = await res.json();
-    const filtered = {...data, episodes: data.episodes.filter(i => i.size > 0)};
+    const filtered = {
+      ...data,
+      episodes: data.episodes.filter((i) => i.size > 0),
+    };
 
     // Set state if the component is mounted
     const favourites = localStorage.getItem(`favourites`)
@@ -317,7 +320,7 @@ class Player extends React.PureComponent {
 
   handlePlay = (e) => {
     var id = e.currentTarget.id;
-    this.mpv.command("loadfile", "http://localhost:9001/" + id);
+    this.mpv.command("loadfile", window.API + id);
   };
 
   handleEpisodeChange = async (id, name, timePos = 0) => {
@@ -334,7 +337,7 @@ class Player extends React.PureComponent {
       if (err) {
         this.mpv.command(
           "loadfile",
-          `http://localhost:9001/stream?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
+          `${window.API}stream?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
         );
       } else {
         this.mpv.command("loadfile", filePath);
@@ -464,16 +467,12 @@ class Player extends React.PureComponent {
             <div className="container">
               <Fade in={this.state.checked} timeout={600}>
                 <img
-                  crossOrigin={"anonymous"}
-                  ref={this.bannerRef}
                   src={
-                    window.desktop
-                      ? "http://localhost:9001/img/?url=" +
-                        this.state.data.banner
-                      : this.state.data.banner
+                    window.API +
+                    "img/?url=" +
+                    this.state.data.banner
                   }
-                  onError={(e) => (e.target.src = this.state.data.banner)}
-                  alt={this.state.data.title + "-banner"}
+                  alt={this.state.data.name + "-banner"}
                   className="banner"
                 />
               </Fade>
@@ -489,10 +488,7 @@ class Player extends React.PureComponent {
                 {!this.state.currentEpisode ? (
                   <>
                     <img
-                      src={
-                        "http://localhost:9001/img/?url=" +
-                        this.state.data.banner
-                      }
+                      src={window.API + "img/?url=" + this.state.data.banner}
                       alt="poster"
                       style={{
                         display: this.state.data.trailer ? "none" : "block",
@@ -685,20 +681,12 @@ class Player extends React.PureComponent {
                       >
                         <GridListTile classes={{ tile: classes.listTile }}>
                           <img
-                            src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
+                            src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
                             alt={tile.name}
                             style={{ objectFit: "cover" }}
-                            onError={(e) =>
-                              (e.target.src =
-                                this.state.data.type === "movie"
-                                  ? this.state.data.banner
-                                  : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`)
-                            }
                           />
                           <GridListTileBar
-                            //title={tile.name}
-                            subtitle={<span>{tile.name}</span>}
-                            actionPosition="right"
+                            title={tile.name}
                             actionIcon={
                               <>
                                 <IconButton

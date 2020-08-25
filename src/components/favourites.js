@@ -57,7 +57,7 @@ export default function Favourites() {
   };
 
   return (
-    <div style={{marginTop: 55}}>
+    <div style={{ marginTop: 55 }}>
       {favourites ? (
         <>
           <div className={classes.root}>
@@ -73,14 +73,12 @@ export default function Favourites() {
                     <Link to={"/watch/" + key}>
                       <img
                         src={
-                          "http://localhost:9001/img/?url=" +
+                          window.API +
+                          "img/?url=" +
                           window.data[parseInt(key)].banner
                         }
                         alt="cover"
                         className={classes.banner}
-                        onError={(e) =>
-                          (e.target.src = window.data[parseInt(key)].banner)
-                        }
                       />
                     </Link>
                     <GridListTileBar

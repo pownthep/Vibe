@@ -26,13 +26,10 @@ export default function Poster({ image, name }) {
       <div>
         <img
           className={classes.img}
-          src={
-            window.desktop ? "http://localhost:9001/img/?url=" + image : image
-          }
+          src={window.API + "img/?url=" + image}
           alt={name}
-          onError={(e) => (e.target.src = image)}
         />
-        <Typography variant="button" display="block" gutterBottom noWrap={true} >
+        <Typography variant="button" display="block" gutterBottom noWrap={true}>
           {name}
         </Typography>
       </div>

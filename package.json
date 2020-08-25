@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
+    "get-port": "^5.1.1",
     "mpv.js": "^0.3.0",
     "react": "^16.13.1",
     "v8-compile-cache": "^2.1.1"

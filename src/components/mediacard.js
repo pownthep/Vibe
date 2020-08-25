@@ -28,11 +28,8 @@ export default function MediaCard({ image, name }) {
       <Paper elevation={3}>
         <img
           className={classes.img}
-          src={
-            window.desktop ? "http://localhost:9001/img/?url=" + image : image
-          }
+          src={window.API + "img/?url=" + image}
           alt={name}
-          onError={(e) => (e.target.src = image)}
         />
       </Paper>
     </Grow>

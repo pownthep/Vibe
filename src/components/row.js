@@ -36,11 +36,8 @@ export default function Row({ poster, name, keywords, rating }) {
         >
           <img
             className={classes.img}
-            src={window.desktop ? "http://localhost:9001/img/?url=" + poster:poster}
+            src={window.API + "img/?url=" + poster}
             alt={name}
-            onError={(e) =>
-              (e.target.src = poster)
-            }
           />
           <div
             style={{

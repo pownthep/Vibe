@@ -97,14 +97,7 @@ export default function History() {
                 <img
                   alt={rowItem.title}
                   className={classes.thumbnail}
-                  src={
-                    window.desktop
-                      ? `http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`
-                      : `https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`
-                  }
-                  onError={(e) =>
-                    (e.target.src = `https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`)
-                  }
+                  src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`}
                   style={{ borderRadius: "5px" }}
                 />
                 <div className={classes.playBtn}>

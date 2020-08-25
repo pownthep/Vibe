@@ -1,5 +1,5 @@
 export const authenticate = async () => {
-  const res = await fetch("http://localhost:9001/authenticate");
+  const res = await fetch(window.API + "authenticate");
   const data = await res.json();
   return data;
 };

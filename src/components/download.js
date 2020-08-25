@@ -62,7 +62,7 @@ export default function Download() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    let eventSource = new EventSource("http://localhost:9001/downloading");
+    let eventSource = new EventSource(window.API + "downloading");
     eventSource.onmessage = (e) => {
       let json = JSON.parse(e.data);
       setLoading(false);
@@ -94,7 +94,7 @@ export default function Download() {
               <ListItem alignItems="flex-start">
                 <ListItemAvatar>
                   <Avatar
-                    src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${key}=w200-h190-p-k-nu-iv1`}
+                    src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${key}=w200-h190-p-k-nu-iv1`}
                     alt="thumbnail"
                   />
                 </ListItemAvatar>

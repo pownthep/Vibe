@@ -9,8 +9,6 @@ const prettyBytes = require("pretty-bytes");
 const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
-const fetch = require("node-fetch");
-const Path = require("path");
 
 // Express setup
 app.use(cors());
@@ -26,7 +24,7 @@ var TOKEN_DIR = __dirname + "/.credentials/";
 var TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 var TEMP_DIR = __dirname + "/.temp/";
 var CHUNK_SIZE = 20000000;
-var PORT = 9001;
+var PORT = 80;
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 const DL_DIR = __dirname + "/downloaded/";
@@ -49,16 +47,27 @@ fs.access(DL_DIR, fs.constants.F_OK, (err) => {
 });
 
 const credentials = {
+  // web: {
+  //   client_id:
+  //     "880830326274-85ckm42lhoiec3jofmcbdohl8q6rrnlf.apps.googleusercontent.com",
+  //   project_id: "drivestreaming",
+  //   auth_uri: "https://accounts.google.com/o/oauth2/auth",
+  //   token_uri: "https://oauth2.googleapis.com/token",
+  //   auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+  //   client_secret: "sBXvKT72bohos7VBMYKqU5i2",
+  //   redirect_uris: ["http://127.0.0.1:9001/code"],
+  //   javascript_origins: ["http://127.0.0.1:9001"],
+  // },
   web: {
     client_id:
-      "880830326274-85ckm42lhoiec3jofmcbdohl8q6rrnlf.apps.googleusercontent.com",
-    project_id: "drivestreaming",
+      "511377925028-ar09unh2rtfs8h0vh2u08p8nn4i9plqm.apps.googleusercontent.com",
+    project_id: "elevated-summer-538",
     auth_uri: "https://accounts.google.com/o/oauth2/auth",
     token_uri: "https://oauth2.googleapis.com/token",
     auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-    client_secret: "sBXvKT72bohos7VBMYKqU5i2",
-    redirect_uris: ["http://127.0.0.1:9001/code"],
-    javascript_origins: ["http://127.0.0.1:9001"],
+    client_secret: "QlADgLswq3Syw3e44OwNS4oa",
+    redirect_uris: ["http://127.0.0.1/code"],
+    javascript_origins: ["http://127.0.0.1"],
   },
 };
 
@@ -181,28 +190,19 @@ function startLocalServer(oauth2Client) {
     } catch (error) {
       console.log(error);
     }
-    // try {
-    //   const path = Path.resolve(__dirname, "chunks", req.query.id + ".ts");
-    //   fs.access(path, fs.constants.R_OK, async (err) => {
-    //     if (err) {
-    //       //res.sendFile(path);
-    //     } else res.sendFile(path);
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
   });
 
   async function downloadFile(id, res) {
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       var auth = "Bearer ".concat(access_token);
-      const url = "https://www.googleapis.com" + "/drive/v3/files/" + id + "?alt=media";
+      const url =
+        "https://www.googleapis.com" + "/drive/v3/files/" + id + "?alt=media";
       const response = await axios({
         url,
         method: "GET",
         headers: {
-          Authorization: auth
+          Authorization: auth,
         },
         responseType: "stream",
       });
@@ -223,69 +223,6 @@ function startLocalServer(oauth2Client) {
       }
       res.json({ error: false });
     });
-  });
-
-  app.get("/list/:id", async (req, res) => {
-    try {
-      if (store.get(`series.${req.params.id}`)) {
-        res.json(store.get(`series.${req.params.id}`));
-        return;
-      }
-      let resp = await axios.get(
-        "https://drive.google.com/drive/folders/" + req.params.id
-      );
-      let data = await resp.data;
-      let start = data.indexOf(`window['_DRIVE_ivd'] = '`);
-      let sm = data.substring(start);
-      let end = sm.indexOf("';");
-      let assignment = sm.substring(0, end + 1);
-      let code = assignment.replace(
-        `window['_DRIVE_ivd'] =`,
-        "var driveData ="
-      );
-      eval(code);
-      let json = JSON.parse(driveData);
-      let final = json[0].map((item) => {
-        return {
-          id: item[0],
-          name: item[2],
-        };
-      });
-      res.json(final);
-
-      store.set(`series.${req.params.id}`, final);
-    } catch (error) {
-      console.log(error);
-      console.log("https://drive.google.com/drive/folders/" + req.params.id);
-    }
-  });
-
-  app.get("/listfolder/:id", async (req, res) => {
-    try {
-      if (store.get(req.params.id)) {
-        res.json(store.get(req.params.id));
-        return;
-      }
-      let resp = await axios.get(
-        "https://drive.google.com/drive/folders/" + req.params.id
-      );
-      let data = await resp.data;
-      let start = data.indexOf(`window['_DRIVE_ivd'] = '`);
-      let sm = data.substring(start);
-      let end = sm.indexOf(";");
-      let assignment = sm.substring(0, end + 1);
-      let code = assignment.replace(`window['_DRIVE_ivd']`, "var driveData");
-      eval(code);
-      let json = JSON.parse(driveData);
-      let final = json[0].map((item) => {
-        return item[0];
-      });
-      res.json(final);
-      store.set(req.params.id, final);
-    } catch (error) {
-      console.log(error);
-      console.log("https://drive.google.com/drive/folders/" + req.params.id);
-    }
   });
 
   app.get("/quota", (req, res) => {
@@ -347,61 +284,6 @@ function startLocalServer(oauth2Client) {
 
       https.request(options, callback).end();
     });
-  });
-
-  app.get("/all_series", async (req, res) => {
-    try {
-      const resp = await axios(
-        "https://boring-northcutt-5fd361.netlify.app/completed-series.json"
-      );
-      res.json(resp.data);
-    } catch (error) {
-      res.json([]);
-    }
-  });
-
-  app.get("/filtered_series", async (req, res) => {
-    try {
-      const resp = await axios(
-        "https://boring-northcutt-5fd361.netlify.app/filtered.json"
-      );
-      res.json(resp.data);
-    } catch (error) {
-      res.json([]);
-    }
-  });
-
-  app.get("/reduced_series", async (req, res) => {
-    try {
-      const resp = await axios(
-        "https://boring-northcutt-5fd361.netlify.app/reduced.json"
-      );
-      res.json(resp.data);
-    } catch (error) {
-      res.json([]);
-    }
-  });
-
-  app.get("/full-json", async (req, res) => {
-    try {
-      const resp = await axios(
-        "https://data.pownthep.vercel.app/trimmed-desktop.json"
-      );
-      res.json(resp.data);
-    } catch (error) {
-      res.json([]);
-    }
-  });
-
-  app.get("/shows/:id", async (req, res) => {
-    try {
-      const resp = await axios(
-        "https://data.pownthep.vercel.app/shows/" + req.params.id + ".json"
-      );
-      res.json(resp.data);
-    } catch (error) {
-      res.json([]);
-    }
   });
 
   app.get("/delete/:id", (req, res) => {

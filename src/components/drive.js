@@ -26,16 +26,13 @@ export default function Drive() {
       field: "thumbnail",
       render: (rowData) => (
         <img
-          src={`http://localhost:9001/img/?url=https://lh3.googleusercontent.com/u/0/d/${rowData.name
+          src={`${
+            window.API
+          }img/?url=https://lh3.googleusercontent.com/u/0/d/${rowData.name
             .split("]")[0]
             .replace("[", "")}`}
           alt={rowData.name}
           style={{ maxHeight: 50 }}
-          onError={(e) =>
-            (e.target.src =
-              "http://localhost:9001/img/?url=" +
-              "https://drive-thirdparty.googleusercontent.com/128/type/video/x-matroska")
-          }
         />
       ),
     },
@@ -54,8 +51,8 @@ export default function Drive() {
   useEffect(() => {
     let mounted = true;
     const getState = async () => {
-      const res1 = await fetch("http://127.0.0.1:9001/drive");
-      const res2 = await fetch("http://127.0.0.1:9001/quota");
+      const res1 = await fetch(window.API + "drive");
+      const res2 = await fetch(window.API + "quota");
       const data = await res1.json();
       const info = await res2.json();
       console.log("setting state");
@@ -94,10 +91,8 @@ export default function Drive() {
           editable={{
             onRowDelete: (oldData) =>
               new Promise(async (resolve, reject) => {
-                const res = await fetch(
-                  "http://127.0.0.1:9001/delete/" + oldData.id
-                );
-                const res2 = await fetch("http://127.0.0.1:9001/quota");
+                const res = await fetch(window.API + "delete/" + oldData.id);
+                const res2 = await fetch(window.API + "quota");
                 const info = await res2.json();
                 const json = await res.json();
                 if (json.deleted) {
