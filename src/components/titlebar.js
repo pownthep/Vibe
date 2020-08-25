@@ -246,6 +246,7 @@ export default function Titlebar({ backgroundColor, routes }) {
                     style={{
                       fontWeight: part.highlight ? 700 : 400,
                       color: part.highlight ? "#11cb5f" : "inherit",
+                      textDecoration: part.highlight ? "underline" : "none"
                     }}
                   >
                     {part.text}
