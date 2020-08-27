@@ -73,9 +73,11 @@ export default function Favourites() {
                     <Link to={"/watch/" + key}>
                       <img
                         src={
-                          window.API +
-                          "img/?url=" +
-                          window.data[parseInt(key)].banner
+                          window.API
+                            ? window.API +
+                              "img/?url=" +
+                              window.data[parseInt(key)].banner
+                            : window.data[parseInt(key)].banner
                         }
                         alt="cover"
                         className={classes.banner}

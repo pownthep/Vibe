@@ -24,7 +24,6 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    outline: "none",
   },
   nav: {
     width: "100%",
@@ -32,29 +31,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const currentWindow = window.remote.getCurrentWindow();
-
 export default function Titlebar({ backgroundColor, routes }) {
-  const [isMaximized, setMaximized] = React.useState(
-    currentWindow.isMaximized()
-  );
   const [anime] = React.useState(window.data);
   const [value] = React.useState(null);
   const [link, setLink] = React.useState(0);
   const classes = useStyles();
 
-  const isWindows = window.clientInformation.platform === "Win32";
   const history = useHistory();
 
+  const isWindows = window.clientInformation.platform === "Win32";
+  const currentWindow = window.remote ? window.remote.getCurrentWindow() : null;
+  const [isMaximized, setMaximized] = React.useState(
+    window.remote ? currentWindow.isMaximized() : null
+  );
   const handleClose = () => {
-    currentWindow.close();
+    if (currentWindow) currentWindow.close();
   };
 
   const handleMinimize = () => {
-    currentWindow.minimize();
+    if (currentWindow) currentWindow.minimize();
   };
 
   const handleMaximize = () => {
+    if (!currentWindow) return;
     if (isWindows) {
       if (currentWindow.isMaximizable()) {
         if (currentWindow.isMaximized()) {
@@ -148,45 +147,16 @@ export default function Titlebar({ backgroundColor, routes }) {
       </Controls>
     );
   };
-  const elements = [];
-
-  if (isWindows) {
-    elements.push(
-      <div key={"item"}>
-        {routes.map((route, index) => (
-          <Link to={route.path} key={index}>
-            <IconButton aria-label={route.label} color="primary">
-              {route.icon}
-            </IconButton>
-          </Link>
-        ))}
-      </div>
-    );
-    elements.push(renderWindows());
-  } else {
-    elements.push(renderMac());
-    elements.push(
-      <div key={"item"}>
-        {routes.map((route, index) => (
-          <Link to={route.path} key={index}>
-            <IconButton aria-label={route.label} color="primary">
-              {route.icon}
-            </IconButton>
-          </Link>
-        ))}
-      </div>
-    );
-  }
 
   return (
-    <Container isWin={isWindows} backgroundColor={backgroundColor}>
+    <Container backgroundColor={backgroundColor}>
       <div
         style={{
           WebkitAppRegion: "no-drag",
-          width: "30%",
+          width: "auto",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <BottomNavigation
@@ -195,12 +165,15 @@ export default function Titlebar({ backgroundColor, routes }) {
             setLink(newValue);
           }}
           className={classes.nav}
-          showLabels
         >
           {routes.map((route, index) => (
-            <BottomNavigationAction label={route.label} icon={route.icon} key={index} onClick={
-              e => history.push(route.path)
-            }/>
+            <BottomNavigationAction
+              label={route.label}
+              icon={route.icon}
+              key={index}
+              onClick={(e) => history.push(route.path)}
+              style={{ fontWeight: "bold"}}
+            />
           ))}
         </BottomNavigation>
       </div>
@@ -246,7 +219,7 @@ export default function Titlebar({ backgroundColor, routes }) {
                     style={{
                       fontWeight: part.highlight ? 700 : 400,
                       color: part.highlight ? "#11cb5f" : "inherit",
-                      textDecoration: part.highlight ? "underline" : "none"
+                      textDecoration: part.highlight ? "underline" : "none",
                     }}
                   >
                     {part.text}
@@ -265,7 +238,7 @@ export default function Titlebar({ backgroundColor, routes }) {
           );
         }}
       />
-      {renderWindows()}
+      {window.remote ? renderWindows() : null}
     </Container>
   );
 }

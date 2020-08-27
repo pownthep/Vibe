@@ -26,7 +26,7 @@ export default function Poster({ image, name }) {
       <div>
         <img
           className={classes.img}
-          src={window.API + "img/?url=" + image}
+          src={window.API ? window.API + "img/?url=" + image : image}
           alt={name}
         />
         <Typography variant="button" display="block" gutterBottom noWrap={true}>

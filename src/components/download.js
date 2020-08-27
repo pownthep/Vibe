@@ -62,6 +62,10 @@ export default function Download() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
+    if (!window.remote) {
+      setLoading(false);
+      return;
+    }
     let eventSource = new EventSource(window.API + "downloading");
     eventSource.onmessage = (e) => {
       let json = JSON.parse(e.data);
@@ -72,72 +76,80 @@ export default function Download() {
       eventSource.close();
     };
   }, []);
-  return (
-    <div style={{ marginTop: 55 }}>
-      {loading ? <Loader /> : <></>}
-      <IconButton
-        edge="end"
-        aria-label="pause button"
-        onClick={(e) => {
-          window.shell.openPath(window.directory + "/server/downloaded/");
-        }}
-      >
-        <Tooltip title="Open folder">
-          <FolderOpenIcon />
-        </Tooltip>
-      </IconButton>
-      <List className={classes.root}>
-        {Object.entries(progress)
-          .reverse()
-          .map(([key, value]) => (
-            <div key={value.id}>
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar
-                    src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${key}=w200-h190-p-k-nu-iv1`}
-                    alt="thumbnail"
-                  />
-                </ListItemAvatar>
-                <ListItemText primary={fmtName(value.name)} />
-                {(value.progress / Number(value.size)) * 100 !== 100 ? (
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="pause button">
-                      <Tooltip title="Pause download">
-                        <PauseCircleFilledIcon />
-                      </Tooltip>
-                    </IconButton>
-                  </ListItemSecondaryAction>
+  if (window.remote) {
+    return (
+      <div style={{ marginTop: 55 }}>
+        {loading ? <Loader /> : <></>}
+        <IconButton
+          edge="end"
+          aria-label="pause button"
+          onClick={(e) => {
+            window.shell.openPath(window.directory + "/server/downloaded/");
+          }}
+        >
+          <Tooltip title="Open folder">
+            <FolderOpenIcon />
+          </Tooltip>
+        </IconButton>
+        <List className={classes.root}>
+          {Object.entries(progress)
+            .reverse()
+            .map(([key, value]) => (
+              <div key={value.id}>
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar
+                      src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${key}=w200-h190-p-k-nu-iv1`}
+                      alt="thumbnail"
+                    />
+                  </ListItemAvatar>
+                  <ListItemText primary={fmtName(value.name)} />
+                  {(value.progress / Number(value.size)) * 100 !== 100 ? (
+                    <ListItemSecondaryAction>
+                      <IconButton edge="end" aria-label="pause button">
+                        <Tooltip title="Pause download">
+                          <PauseCircleFilledIcon />
+                        </Tooltip>
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  ) : (
+                    <Tooltip title="Play download">
+                      <IconButton
+                        edge="end"
+                        aria-label="play button"
+                        onClick={(e) => {
+                          window.shell.openPath(
+                            window.directory +
+                              "/server/downloaded/" +
+                              value.name
+                          );
+                        }}
+                      >
+                        <PlayCircleOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </ListItem>
+                {(value.progress / Number(value.size)) * 100 === 100 ? (
+                  <></>
                 ) : (
-                  <Tooltip title="Play download">
-                    <IconButton
-                      edge="end"
-                      aria-label="play button"
-                      onClick={(e) => {
-                        window.shell.openPath(
-                          window.directory + "/server/downloaded/" + value.name
-                        );
-                      }}
-                    >
-                      <PlayCircleOutlineIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <div className={classes.root}>
+                    <LinearProgressWithLabel
+                      value={(value.progress / Number(value.size)) * 100}
+                    />
+                  </div>
                 )}
-              </ListItem>
-              {(value.progress / Number(value.size)) * 100 === 100 ? (
-                <></>
-              ) : (
-                <div className={classes.root}>
-                  <LinearProgressWithLabel
-                    value={(value.progress / Number(value.size)) * 100}
-                  />
-                </div>
-              )}
-              <Divider />
-            </div>
-          ))}
-      </List>
-    </div>
-  );
+                <Divider />
+              </div>
+            ))}
+        </List>
+      </div>
+    );
+  } else {
+    return (
+      <h1 style={{textAlign: 'center', marginTop: 100}}>Only available on Desktop App</h1>
+    )
+  }
 }
 
 function fmtName(s) {

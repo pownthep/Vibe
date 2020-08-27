@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    marginTop: 28,
+    marginTop: 10,
   },
   titlebar: theme.palette.background.paper,
   padding: {
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles();
-  
+
   const routes = [
     {
       path: "/",

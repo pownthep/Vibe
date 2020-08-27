@@ -14,7 +14,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import TextField from "@material-ui/core/TextField";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import { Grow, Tooltip, Fade } from "@material-ui/core";
 import AudiotrackOutlinedIcon from "@material-ui/icons/AudiotrackOutlined";
 import SubtitlesOutlinedIcon from "@material-ui/icons/SubtitlesOutlined";
@@ -28,13 +27,14 @@ import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlin
 import AuthenticationDialog from "./dialog";
 import { authenticate } from "../utils/utils";
 import ListboxComponent from "./listbox";
-import GetAppIcon from "@material-ui/icons/GetApp";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Fab from "@material-ui/core/Fab";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
+import { VideoSeekSlider } from "./seekbar";
+import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 
 const styles = (theme) => ({
   root: {
@@ -118,6 +118,8 @@ const styles = (theme) => ({
   },
 });
 
+const itemCount = 4;
+
 class Player extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -125,7 +127,7 @@ class Player extends React.PureComponent {
     this.state = {
       pause: true,
       "time-pos": 0,
-      duration: 0,
+      duration: 10000,
       fullscreen: false,
       data: { episodes: [] },
       episodes: [],
@@ -145,6 +147,9 @@ class Player extends React.PureComponent {
       snackOpen: false,
       snackMessage: "Test message",
       loadingData: true,
+      thumbnailURL: null,
+      embed: null,
+      previewId: null,
     };
     this.myRef = React.createRef();
     this.window = window.desktop ? window.remote.getCurrentWindow() : window;
@@ -179,14 +184,19 @@ class Player extends React.PureComponent {
     this._isMounted = true;
     const user = window.desktop ? await authenticate() : false;
     const id = this.props.match.params.id;
+
     const res = await fetch(
       "https://vibe-three.vercel.app/data/shows/" + id + ".json"
     );
+
+    // const res = await fetch("http://localhost:3000/data/shows/" + id + ".json");
+
     const data = await res.json();
     const filtered = {
       ...data,
       episodes: data.episodes.filter((i) => i.size > 0),
     };
+    console.log(filtered);
 
     // Set state if the component is mounted
     const favourites = localStorage.getItem(`favourites`)
@@ -196,7 +206,7 @@ class Player extends React.PureComponent {
       this.setState({
         data: filtered,
         auth: user,
-        episodes: [...filtered.episodes.slice(0, 2)],
+        episodes: [...filtered.episodes.slice(0, itemCount)],
         showProgress: false,
         favourited: favourites[id] ? true : false,
         loadingData: false,
@@ -209,6 +219,10 @@ class Player extends React.PureComponent {
       const epId = this.props.match.params.epId;
       const episode = JSON.parse(localStorage.getItem(`history`))[epId];
       this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
+    }
+
+    if (!window.remote) {
+      this.setState({ embed: this.state.episodes[0].id });
     }
   }
 
@@ -298,8 +312,8 @@ class Player extends React.PureComponent {
   handleSeekMouseDown = () => {
     this.seeking = true;
   };
-  handleSeek = (e, newValue) => {
-    e.target.blur();
+  handleSeek = (newValue) => {
+    if (!this.state.currentEpisode) return;
     const timePos = +newValue;
     this.setState({ "time-pos": timePos });
     this.mpv.property("time-pos", timePos);
@@ -324,6 +338,12 @@ class Player extends React.PureComponent {
   };
 
   handleEpisodeChange = async (id, name, timePos = 0) => {
+    if (!window.remote) {
+      this.setState({
+        embed: id,
+      });
+      return;
+    }
     const user = await authenticate();
     if (!user.authenticated) {
       this.setState({ auth: user });
@@ -334,13 +354,17 @@ class Player extends React.PureComponent {
       "/server/downloaded/" +
       `[${id}]-${this.state.data.name}-${name}`;
     window.access(filePath, (err) => {
+      const url =
+        // "https://www.googleapis.com/drive/v3/files/" +
+        // id +
+        // "?alt=media&key=AIzaSyAv1WgLGclLIlhKvzIiIVOiqZqDA0EM9TI";
+        `http://localhost/stream?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`;
       if (err) {
-        this.mpv.command(
-          "loadfile",
-          `${window.API}stream?id=${id}&episodeName=${name}&serieName=${this.state.data.name}`
-        );
+        this.mpv.command("loadfile", url);
+        this.setState({ thumbnailURL: url });
       } else {
         this.mpv.command("loadfile", filePath);
+        this.setState({ thumbnailURL: url });
       }
     });
     this.setState({
@@ -373,7 +397,9 @@ class Player extends React.PureComponent {
       this.setState({ value: nv });
     } else {
       console.log(nv);
-      this.setState({ episodes: [...this.state.data.episodes.slice(0, 2)] });
+      this.setState({
+        episodes: [...this.state.data.episodes.slice(0, itemCount)],
+      });
       this.setState({ value: nv });
     }
   };
@@ -434,13 +460,21 @@ class Player extends React.PureComponent {
   };
 
   changePage = (e, nv) => {
-    var end = 2 * nv;
-    var start = end - 2;
+    var end = itemCount * nv;
+    var start = end - itemCount;
     this.setState({ page: nv });
     this.setState({
       episodes: this.state.data.episodes.slice(start, end),
     });
   };
+
+  // playSelectedFile = (event) => {
+  //   var URL = window.URL || window.webkitURL;
+  //   var file = event.currentTarget.files[0];
+  //   var fileURL = URL.createObjectURL(file);
+  //   console.log(event.currentTarget.files);
+  //   this.mpv.command("loadfile", file);
+  // };
 
   render() {
     const { classes } = this.props;
@@ -450,12 +484,6 @@ class Player extends React.PureComponent {
           <></>
         ) : (
           <div style={{ marginTop: 48 }}>
-            <div className="title-container">
-              {/* <h1 className="anime-title">{this.state.data.name}</h1> */}
-              <h2 className="anime-episode">
-                {this.state.currentEpisode ? this.state.currentEpisode.ep : ""}
-              </h2>
-            </div>
             <Fade in={this.state.checked} timeout={600}>
               <div
                 className="overlay"
@@ -468,27 +496,29 @@ class Player extends React.PureComponent {
               <Fade in={this.state.checked} timeout={600}>
                 <img
                   src={
-                    window.API +
-                    "img/?url=" +
-                    this.state.data.banner
+                    window.API
+                      ? window.API + "img/?url=" + this.state.data.banner
+                      : this.state.data.banner
                   }
                   alt={this.state.data.name + "-banner"}
                   className="banner"
                 />
               </Fade>
               <div ref={this.myRef} className="player">
-                <Grow in={this.state.checked} timeout={1500}>
-                  <ReactMPV
-                    onReady={this.handleMPVReady}
-                    onPropertyChange={this.handlePropertyChange}
-                    onMouseDown={this.togglePause}
-                    className={classes.unclickable}
-                  />
-                </Grow>
-                {!this.state.currentEpisode ? (
+                <ReactMPV
+                  onReady={this.handleMPVReady}
+                  onPropertyChange={this.handlePropertyChange}
+                  onMouseDown={this.togglePause}
+                  className={classes.unclickable}
+                />
+                {!this.state.currentEpisode && window.remote ? (
                   <>
                     <img
-                      src={window.API + "img/?url=" + this.state.data.banner}
+                      src={
+                        window.API
+                          ? window.API + "img/?url=" + this.state.data.banner
+                          : this.state.data.banner
+                      }
                       alt="poster"
                       style={{
                         display: this.state.data.trailer ? "none" : "block",
@@ -516,33 +546,44 @@ class Player extends React.PureComponent {
                     ></iframe>
                   </>
                 ) : null}
+                {!window.remote ? (
+                  <iframe
+                    title="trailer"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      height: "540px",
+                      width: "960px",
+                      objectFit: "cover",
+                    }}
+                    src={`https://drive.google.com/file/d/${this.state.embed}/preview`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : null}
                 <div className="loader" hidden={!this.state.loading}>
                   <CircularIndeterminate />
                 </div>
                 <div
                   className="controls"
-                  style={{
-                    display: this.state.currentEpisode ? "block" : "none",
-                  }}
+                  style={{ display: window.remote ? "block" : "none" }}
                 >
-                  <Slider
-                    min={0}
-                    step={0.1}
+                  <VideoSeekSlider
                     max={this.state.duration}
-                    value={this.state["time-pos"]}
+                    currentTime={this.state["time-pos"]}
+                    progress={this.state["time-pos"] + 300}
                     onChange={this.handleSeek}
-                    aria-labelledby="continuous-slider"
-                    onMouseDown={this.handleSeekMouseDown}
-                    onMouseUp={this.handleSeekMouseUp}
-                    ValueLabelComponent={ValueLabelComponent}
-                    classes={{ root: classes.seekBar }}
+                    offset={0}
+                    secondsPrefix="00:00:"
+                    minutesPrefix="00:"
+                    thumbnailURL={this.state.previewId}
                   />
-
                   <div className={classes.controlContainer}>
                     <Grid
                       container
                       direction="row"
-                      justify="space-evenly"
+                      justify="center"
                       alignItems="center"
                     >
                       <div className={classes.inline}>
@@ -560,30 +601,24 @@ class Player extends React.PureComponent {
                           </IconButton>
                         </Tooltip>
                       </div>
-                      <div className={classes.inline}>
-                        <p className="video-time">
+                      <VolumeDown />
+                      <div className="volume-slider">
+                        <Slider
+                          value={this.state.volume_value}
+                          onChange={this.handleVolumeChange}
+                          aria-labelledby="discrete-slider-custom"
+                          step={1}
+                        />
+                      </div>
+                      <div className="video-time">
+                        <p>
                           {this.toHHMMSS(this.state["time-pos"])} /{" "}
                           {this.toHHMMSS(this.state.duration)}
                         </p>
                       </div>
-
-                      <div className={classes.slider}>
-                        <Grid container spacing={2}>
-                          <Grid item>
-                            <VolumeDown />
-                          </Grid>
-                          <Grid item xs>
-                            <Slider
-                              value={this.state.volume_value}
-                              onChange={this.handleVolumeChange}
-                              aria-labelledby="discrete-slider-custom"
-                              step={10}
-                            />
-                          </Grid>
-                          <Grid item>
-                            <VolumeUp />
-                          </Grid>
-                        </Grid>
+                      <div style={{ margin: "0 auto", fontWeight: "bold" }}>
+                        {this.state.currentEpisode &&
+                          this.state.currentEpisode.ep}
                       </div>
                       <div className={classes.audio}>
                         <Tooltip title="Cycle audio track">
@@ -669,7 +704,7 @@ class Player extends React.PureComponent {
                   />
 
                   <GridList
-                    cellHeight={230}
+                    cellHeight={100}
                     className={classes.gridList}
                     cols={this.state.episodes.length}
                   >
@@ -681,37 +716,44 @@ class Player extends React.PureComponent {
                       >
                         <GridListTile classes={{ tile: classes.listTile }}>
                           <img
-                            src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`}
+                            src={
+                              window.API
+                                ? `${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                                : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                            }
                             alt={tile.name}
-                            style={{ objectFit: "cover" }}
+                            style={{ objectFit: "cover", cursor: "pointer" }}
+                            onClick={(e) => {
+                              this.handleEpisodeChange(tile.id, tile.name);
+                              this.setState({
+                                previewId: tile.preview,
+                              });
+                            }}
                           />
                           <GridListTileBar
                             title={tile.name}
                             actionIcon={
                               <>
                                 <IconButton
-                                  aria-label={`Play ${tile.name}`}
                                   className={classes.icon}
-                                  onClick={(e) =>
-                                    this.handleEpisodeChange(tile.id, tile.name)
-                                  }
+                                  aria-label="more"
+                                  aria-controls="long-menu"
+                                  aria-haspopup="true"
+                                  onClick={(e) => {}}
+                                  onClick={(e) => {
+                                    if (window.remote)
+                                      this.addToDownload(tile.id, tile.name);
+                                    else
+                                      window.open(
+                                        `https://drive.google.com/u/0/uc?export=download&confirm=At1O&id=${tile.id}`,
+                                        "_blank"
+                                      );
+                                  }}
                                   classes={{
                                     root: classes.actionIcons,
                                   }}
                                 >
-                                  <PlayCircleFilledIcon />
-                                </IconButton>
-                                <IconButton
-                                  aria-label={`Download ${tile.name}`}
-                                  className={classes.icon}
-                                  onClick={(e) =>
-                                    this.addToDownload(tile.id, tile.name)
-                                  }
-                                  classes={{
-                                    root: classes.actionIcons,
-                                  }}
-                                >
-                                  <GetAppIcon />
+                                  <GetAppRoundedIcon />
                                 </IconButton>
                               </>
                             }
@@ -739,7 +781,9 @@ class Player extends React.PureComponent {
                     </Fab>
                   </div>
                   <Pagination
-                    count={Math.ceil(this.state.data.episodes.length / 2)}
+                    count={Math.ceil(
+                      this.state.data.episodes.length / itemCount
+                    )}
                     page={this.state.page}
                     onChange={this.changePage}
                   />

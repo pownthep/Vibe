@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  height: 55px;
+  height: 65px;
   display: flex;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -13,8 +13,8 @@ export const Container = styled.div`
   -webkit-app-region: drag;
   flex-direction: row;
   position: fixed;
-  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
   z-index:5;
+  border-bottom: 2px solid #11cb5f;
 `;
 
 export const Text = styled.div`
@@ -142,7 +142,7 @@ export const ButtonWindows = styled.button`
   display: inline-block;
   position: relative;
   width: 45px;
-  height: 100%;
+  height: 28px;
   padding: 0;
   margin: 0;
   overflow: hidden;

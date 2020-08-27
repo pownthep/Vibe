@@ -35,7 +35,8 @@ function createWindow() {
     webPreferences: {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     },
     icon:
       process.platform !== "darwin"
