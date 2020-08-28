@@ -46,9 +46,8 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     width: "100%",
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    marginTop: 10,
+    // paddingLeft: theme.spacing(1),
+    // paddingRight: theme.spacing(1),
   },
   titlebar: theme.palette.background.paper,
   padding: {
@@ -72,14 +71,14 @@ export default function App() {
       exact: true,
       component: Home,
       label: "Home",
-      icon: <HomeRoundedIcon />,
+      icon: <HomeRoundedIcon/>,
     },
     {
       path: "/favourites",
       exact: true,
       component: FavouritePage,
       label: "Favourites",
-      icon: <FavoriteRoundedIcon />,
+      icon: <FavoriteRoundedIcon/>,
     },
     {
       path: "/downloader",
@@ -93,7 +92,7 @@ export default function App() {
       exact: true,
       component: DrivePage,
       label: "My Drive",
-      icon: <CloudRoundedIcon />,
+      icon: <CloudRoundedIcon/>,
     },
     {
       path: "/history",

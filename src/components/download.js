@@ -78,7 +78,7 @@ export default function Download() {
   }, []);
   if (window.remote) {
     return (
-      <div style={{ marginTop: 55 }}>
+      <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
         {loading ? <Loader /> : <></>}
         <IconButton
           edge="end"

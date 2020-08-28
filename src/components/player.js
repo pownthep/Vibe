@@ -5,11 +5,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
 import IconButton from "@material-ui/core/IconButton";
-import Pagination from "@material-ui/lab/Pagination";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
@@ -20,7 +16,6 @@ import SubtitlesOutlinedIcon from "@material-ui/icons/SubtitlesOutlined";
 import FullscreenExitOutlinedIcon from "@material-ui/icons/FullscreenExitOutlined";
 import FullscreenOutlinedIcon from "@material-ui/icons/FullscreenOutlined";
 import VolumeDown from "@material-ui/icons/VolumeDown";
-import VolumeUp from "@material-ui/icons/VolumeUp";
 import Grid from "@material-ui/core/Grid";
 import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
@@ -28,58 +23,24 @@ import AuthenticationDialog from "./dialog";
 import { authenticate } from "../utils/utils";
 import ListboxComponent from "./listbox";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import Fab from "@material-ui/core/Fab";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import { VideoSeekSlider } from "./seekbar";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
+import clsx from "clsx";
+import Drawer from "@material-ui/core/Drawer";
+import ViewListIcon from "@material-ui/icons/ViewList";
 
-const styles = (theme) => ({
+const styles = () => ({
   root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflow: "hidden",
-  },
-  gridList: {
-    width: "100%",
-    height: "auto",
-  },
-  listTile: {
-    borderRadius: 5,
-  },
-  icon: {
-    color: "rgba(255, 255, 255, 0.54)",
-  },
-  thumbnail: {
-    width: 200,
-    height: 190,
-  },
-  tile: {
-    width: 200,
-    height: 190,
-  },
-  volumeContainer: {
-    width: 200,
-    display: "inline-block",
-    verticleAlign: "middle",
+    width: "inherit",
+    position: "absolute",
+    top: "65px",
   },
   unclickable: {
     pointerEvents: "none",
-  },
-  audio: {
-    display: "inline-block",
-  },
-  sub: {
-    display: "inline-block",
-  },
-  fullscreen: {
-    display: "inline-block",
   },
   inline: {
     display: "inline-block",
@@ -94,31 +55,18 @@ const styles = (theme) => ({
   progress: {
     width: "100%",
   },
-  playBtn: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
+  list: {
+    width: "40vw",
   },
-  actionIcons: {
-    padding: "5px",
+  drawerPaper: {
+    backgroundColor: "rgba(0,0,0,0.9)",
   },
-  player: {
-    borderRadius: "5px",
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-  seekBar: {
-    padding: "0px",
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
+  drawer: {
+    WebkitAppRegion: "no-drag",
   },
 });
 
-const itemCount = 4;
+const itemCount = 6;
 
 class Player extends React.PureComponent {
   constructor(props) {
@@ -150,12 +98,23 @@ class Player extends React.PureComponent {
       thumbnailURL: null,
       embed: null,
       previewId: null,
+      right: false,
     };
     this.myRef = React.createRef();
     this.window = window.desktop ? window.remote.getCurrentWindow() : window;
     this.bannerRef = React.createRef();
     this._isMounted = false;
   }
+
+  toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    this.setState({ ...this.state, [anchor]: open });
+  };
 
   addToDownload = async (id, name) => {
     const res = await fetch(
@@ -173,6 +132,154 @@ class Player extends React.PureComponent {
         snackMessage: "You've already downloaded this",
       });
     else this.setState({ snackOpen: true, snackMessage: "Added to download" });
+  };
+
+  list = (anchor) => {
+    const { classes } = this.props;
+    return (
+      <div
+        className={clsx(classes.list, {
+          [classes.fullList]: anchor === "top" || anchor === "bottom",
+        })}
+        role="presentation"
+        // onClick={this.toggleDrawer(anchor, false)}
+        // onKeyDown={this.toggleDrawer(anchor, false)}
+      >
+        <Autocomplete
+          id="highlights-demo"
+          style={{
+            width: "100%",
+            paddingLeft: 20,
+            paddingRight: 20,
+            WebkitAppRegion: "no-drag",
+          }}
+          disableListWrap
+          ListboxComponent={ListboxComponent}
+          value={this.state.value}
+          onChange={this.handleSearch}
+          options={this.state.data.episodes.map((e, i) => ({
+            index: i,
+            ...e,
+          }))}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search"
+              margin="normal"
+              color="primary"
+              variant="filled"
+              size="small"
+            />
+          )}
+          renderOption={(option, { inputValue }) => {
+            const matches = match(option.name, inputValue);
+            const parts = parse(option.name, matches);
+
+            return (
+              <div
+                style={{
+                  backgroundImage: `url(${
+                    window.API
+                      ? `${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${option.id}`
+                      : `https://lh3.googleusercontent.com/u/0/d/${option.id}`
+                  })`,
+                  backgroundSize: "cover",
+                  width: "100%",
+                  height: 150,
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: "rgba(0,0,0,0.3)",
+                    padding: 10,
+                  }}
+                >
+                  {parts.map((part, index) => (
+                    <span
+                      key={index}
+                      style={{
+                        fontWeight: "bold",
+                        color: part.highlight ? "#11cb5f" : "inherit",
+                        textDecoration: part.highlight ? "underline" : "none",
+                      }}
+                    >
+                      {part.text}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          }}
+        />
+        {this.state.episodes.map((tile, index) => (
+          <Grow
+            in={this.state.checked}
+            timeout={300 + index * 50}
+            key={tile.id}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "168px auto",
+                height: 94,
+                margin: 20,
+              }}
+            >
+              <div
+                style={{
+                  backgroundImage: `url(${
+                    window.API
+                      ? `${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                      : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`
+                  })`,
+                  backgroundSize: "cover",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  this.handleEpisodeChange(tile.id, tile.name);
+                  this.setState({
+                    previewId: tile.preview,
+                  });
+                }}
+              ></div>
+              <div
+                style={{ paddingLeft: 10, paddingTop: 5, position: "relative" }}
+              >
+                <p style={{ margin: 0, fontSize: 16, fontWeight: "bold" }}>
+                  {tile.name}
+                </p>
+                <p style={{ marginBottom: 0, fontSize: 12 }}>
+                  {this.state.data.name}
+                </p>
+                <div style={{ position: "absolute", right: 0, bottom: 0 }}>
+                  <IconButton
+                    className={classes.icon}
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={(e) => {
+                      if (window.remote) this.addToDownload(tile.id, tile.name);
+                      else
+                        window.open(
+                          `https://drive.google.com/u/0/uc?export=download&confirm=At1O&id=${tile.id}`,
+                          "_blank"
+                        );
+                    }}
+                    classes={{
+                      root: classes.actionIcons,
+                    }}
+                  >
+                    <GetAppRoundedIcon />
+                  </IconButton>
+                </div>
+              </div>
+            </div>
+          </Grow>
+        ))}
+      </div>
+    );
   };
 
   handleMenu = (e) => {
@@ -393,7 +500,11 @@ class Player extends React.PureComponent {
 
   handleSearch = (e, nv) => {
     if (nv) {
-      this.setState({ episodes: [this.state.data.episodes[nv.index]] });
+      this.setState({
+        episodes: [
+          ...this.state.data.episodes.slice(nv.index, nv.index + itemCount),
+        ],
+      });
       this.setState({ value: nv });
     } else {
       console.log(nv);
@@ -468,14 +579,6 @@ class Player extends React.PureComponent {
     });
   };
 
-  // playSelectedFile = (event) => {
-  //   var URL = window.URL || window.webkitURL;
-  //   var file = event.currentTarget.files[0];
-  //   var fileURL = URL.createObjectURL(file);
-  //   console.log(event.currentTarget.files);
-  //   this.mpv.command("loadfile", file);
-  // };
-
   render() {
     const { classes } = this.props;
     return (
@@ -483,7 +586,7 @@ class Player extends React.PureComponent {
         {this.state.loadingData ? (
           <></>
         ) : (
-          <div style={{ marginTop: 48 }}>
+          <div>
             <Fade in={this.state.checked} timeout={600}>
               <div
                 className="overlay"
@@ -493,59 +596,7 @@ class Player extends React.PureComponent {
               ></div>
             </Fade>
             <div className="container">
-              <Fade in={this.state.checked} timeout={600}>
-                <img
-                  src={
-                    window.API
-                      ? window.API + "img/?url=" + this.state.data.banner
-                      : this.state.data.banner
-                  }
-                  alt={this.state.data.name + "-banner"}
-                  className="banner"
-                />
-              </Fade>
               <div ref={this.myRef} className="player">
-                <ReactMPV
-                  onReady={this.handleMPVReady}
-                  onPropertyChange={this.handlePropertyChange}
-                  onMouseDown={this.togglePause}
-                  className={classes.unclickable}
-                />
-                {!this.state.currentEpisode && window.remote ? (
-                  <>
-                    <img
-                      src={
-                        window.API
-                          ? window.API + "img/?url=" + this.state.data.banner
-                          : this.state.data.banner
-                      }
-                      alt="poster"
-                      style={{
-                        display: this.state.data.trailer ? "none" : "block",
-                        position: "absolute",
-                        top: 0,
-                        height: "540px",
-                        width: "960px",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <iframe
-                      title="trailer"
-                      style={{
-                        display: this.state.data.trailer ? "block" : "none",
-                        position: "absolute",
-                        top: 0,
-                        height: "540px",
-                        width: "960px",
-                        objectFit: "cover",
-                      }}
-                      src={`https://www.youtube.com/embed/${this.state.data.trailer}?&autoplay=1`}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
-                  </>
-                ) : null}
                 {!window.remote ? (
                   <iframe
                     title="trailer"
@@ -561,233 +612,152 @@ class Player extends React.PureComponent {
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   ></iframe>
-                ) : null}
-                <div className="loader" hidden={!this.state.loading}>
-                  <CircularIndeterminate />
-                </div>
-                <div
-                  className="controls"
-                  style={{ display: window.remote ? "block" : "none" }}
-                >
-                  <VideoSeekSlider
-                    max={this.state.duration}
-                    currentTime={this.state["time-pos"]}
-                    progress={this.state["time-pos"] + 300}
-                    onChange={this.handleSeek}
-                    offset={0}
-                    secondsPrefix="00:00:"
-                    minutesPrefix="00:"
-                    thumbnailURL={this.state.previewId}
-                  />
-                  <div className={classes.controlContainer}>
-                    <Grid
-                      container
-                      direction="row"
-                      justify="center"
-                      alignItems="center"
-                    >
-                      <div className={classes.inline}>
-                        <Tooltip title="Toggle play/pause">
-                          <IconButton
-                            aria-label="toggle play and pause"
-                            onClick={this.togglePause}
-                            size="medium"
-                          >
-                            {this.state.pause ? (
-                              <PlayArrowOutlinedIcon fontSize="inherit" />
-                            ) : (
-                              <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
-                            )}
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <VolumeDown />
-                      <div className="volume-slider">
-                        <Slider
-                          value={this.state.volume_value}
-                          onChange={this.handleVolumeChange}
-                          aria-labelledby="discrete-slider-custom"
-                          step={1}
-                        />
-                      </div>
-                      <div className="video-time">
-                        <p>
-                          {this.toHHMMSS(this.state["time-pos"])} /{" "}
-                          {this.toHHMMSS(this.state.duration)}
-                        </p>
-                      </div>
-                      <div style={{ margin: "0 auto", fontWeight: "bold" }}>
-                        {this.state.currentEpisode &&
-                          this.state.currentEpisode.ep}
-                      </div>
-                      <div className={classes.audio}>
-                        <Tooltip title="Cycle audio track">
-                          <IconButton
-                            aria-label="cycle audio track"
-                            onClick={this.cycleAudio}
-                          >
-                            <AudiotrackOutlinedIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <div className={classes.sub}>
-                        <Tooltip title="Cycle subtitle track">
-                          <IconButton
-                            aria-label="cycle subtitle track"
-                            onClick={this.cycleSub}
-                          >
-                            <SubtitlesOutlinedIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <div className={classes.fullscreen}>
-                        <Tooltip title="Toggle fullscreen">
-                          <IconButton
-                            aria-label="cycle subtitle track"
-                            onClick={this.toggleFullscreen}
-                          >
-                            {this.state.fullscreen ? (
-                              <FullscreenExitOutlinedIcon />
-                            ) : (
-                              <FullscreenOutlinedIcon />
-                            )}
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    </Grid>
-                  </div>
-                </div>
-
-                <div className={classes.root}>
-                  <Autocomplete
-                    id="highlights-demo"
-                    style={{ width: "100%" }}
-                    size="small"
-                    disableListWrap
-                    ListboxComponent={ListboxComponent}
-                    value={this.state.value}
-                    onChange={this.handleSearch}
-                    options={this.state.data.episodes.map((e, i) => ({
-                      index: i,
-                      name: e.name,
-                    }))}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Search"
-                        margin="normal"
-                        color="primary"
-                        size="small"
-                      />
-                    )}
-                    renderOption={(option, { inputValue }) => {
-                      const matches = match(option.name, inputValue);
-                      const parts = parse(option.name, matches);
-
-                      return (
-                        <div>
-                          {parts.map((part, index) => (
-                            <span
-                              key={index}
-                              style={{
-                                fontWeight: part.highlight ? 700 : 400,
-                                color: part.highlight ? "#f50057" : "inherit",
-                              }}
+                ) : (
+                  <div className="mpv-player">
+                    <img
+                      src={
+                        window.API
+                          ? window.API + "img/?url=" + this.state.data.banner
+                          : this.state.data.banner
+                      }
+                      alt={"banner"}
+                      style={{
+                        width: "100%",
+                        height: "inherit",
+                        objectFit: "cover",
+                        position: "absolute",
+                        display: this.state.currentEpisode ? "none" : "block",
+                      }}
+                    />
+                    <ReactMPV
+                      onReady={this.handleMPVReady}
+                      onPropertyChange={this.handlePropertyChange}
+                      onMouseDown={this.togglePause}
+                      className={classes.unclickable}
+                    />
+                    <div className="loader" hidden={!this.state.loading}>
+                      <CircularIndeterminate />
+                    </div>
+                    <div className="controls">
+                      <div className="controls-bot-container">
+                        <div className="controls-bot">
+                          <div style={{ paddingLeft: 60, paddingRight: 60 }}>
+                            <VideoSeekSlider
+                              max={this.state.duration}
+                              currentTime={this.state["time-pos"]}
+                              progress={this.state["time-pos"] + 300}
+                              onChange={this.handleSeek}
+                              offset={0}
+                              secondsPrefix="00:00:"
+                              minutesPrefix="00:"
+                              thumbnailURL={this.state.previewId}
+                            />
+                          </div>
+                          <div className={classes.controlContainer}>
+                            <Grid
+                              container
+                              direction="row"
+                              justify="center"
+                              alignItems="center"
                             >
-                              {part.text}
-                            </span>
-                          ))}
+                              <div className={classes.inline}>
+                                <Tooltip title="Toggle play/pause">
+                                  <IconButton
+                                    aria-label="toggle play and pause"
+                                    onClick={this.togglePause}
+                                    size="medium"
+                                  >
+                                    {this.state.pause ? (
+                                      <PlayArrowOutlinedIcon fontSize="inherit" />
+                                    ) : (
+                                      <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
+                                    )}
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                              <VolumeDown />
+                              <div className="volume-slider">
+                                <Slider
+                                  value={this.state.volume_value}
+                                  onChange={this.handleVolumeChange}
+                                  aria-labelledby="discrete-slider-custom"
+                                  step={1}
+                                />
+                              </div>
+                              <div className="video-time">
+                                <p>
+                                  {this.toHHMMSS(this.state["time-pos"])} /{" "}
+                                  {this.toHHMMSS(this.state.duration)}
+                                </p>
+                              </div>
+                              <div
+                                style={{ margin: "0 auto", fontWeight: "bold" }}
+                              >
+                                {this.state.currentEpisode &&
+                                  this.state.currentEpisode.ep}
+                              </div>
+                              <div className={classes.inline}>
+                                <Tooltip title="View episodes">
+                                  <IconButton
+                                    aria-label="View episodes"
+                                    onClick={this.toggleDrawer("right", true)}
+                                  >
+                                    <ViewListIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                              <div className={classes.inline}>
+                                <Tooltip title="Add to favourites">
+                                  <IconButton
+                                    aria-label="Add to favourites"
+                                    disabled={this.state.favourited}
+                                    onClick={this.addToFavourites}
+                                  >
+                                    <FavoriteIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                              <div className={classes.inline}>
+                                <Tooltip title="Cycle audio track">
+                                  <IconButton
+                                    aria-label="cycle audio track"
+                                    onClick={this.cycleAudio}
+                                  >
+                                    <AudiotrackOutlinedIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                              <div className={classes.inline}>
+                                <Tooltip title="Cycle subtitle track">
+                                  <IconButton
+                                    aria-label="cycle subtitle track"
+                                    onClick={this.cycleSub}
+                                  >
+                                    <SubtitlesOutlinedIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                              <div className={classes.inline}>
+                                <Tooltip title="Toggle fullscreen">
+                                  <IconButton
+                                    aria-label="cycle subtitle track"
+                                    onClick={this.toggleFullscreen}
+                                  >
+                                    {this.state.fullscreen ? (
+                                      <FullscreenExitOutlinedIcon />
+                                    ) : (
+                                      <FullscreenOutlinedIcon />
+                                    )}
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                            </Grid>
+                          </div>
                         </div>
-                      );
-                    }}
-                  />
-
-                  <GridList
-                    cellHeight={100}
-                    className={classes.gridList}
-                    cols={this.state.episodes.length}
-                  >
-                    {this.state.episodes.map((tile, index) => (
-                      <Grow
-                        in={this.state.checked}
-                        timeout={300 + index * 50}
-                        key={tile.id}
-                      >
-                        <GridListTile classes={{ tile: classes.listTile }}>
-                          <img
-                            src={
-                              window.API
-                                ? `${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${tile.id}`
-                                : `https://lh3.googleusercontent.com/u/0/d/${tile.id}`
-                            }
-                            alt={tile.name}
-                            style={{ objectFit: "cover", cursor: "pointer" }}
-                            onClick={(e) => {
-                              this.handleEpisodeChange(tile.id, tile.name);
-                              this.setState({
-                                previewId: tile.preview,
-                              });
-                            }}
-                          />
-                          <GridListTileBar
-                            title={tile.name}
-                            actionIcon={
-                              <>
-                                <IconButton
-                                  className={classes.icon}
-                                  aria-label="more"
-                                  aria-controls="long-menu"
-                                  aria-haspopup="true"
-                                  onClick={(e) => {}}
-                                  onClick={(e) => {
-                                    if (window.remote)
-                                      this.addToDownload(tile.id, tile.name);
-                                    else
-                                      window.open(
-                                        `https://drive.google.com/u/0/uc?export=download&confirm=At1O&id=${tile.id}`,
-                                        "_blank"
-                                      );
-                                  }}
-                                  classes={{
-                                    root: classes.actionIcons,
-                                  }}
-                                >
-                                  <GetAppRoundedIcon />
-                                </IconButton>
-                              </>
-                            }
-                          />
-                        </GridListTile>
-                      </Grow>
-                    ))}
-                  </GridList>
-                  <div
-                    style={{
-                      position: "fixed",
-                      bottom: 10,
-                      right: 10,
-                      zIndex: -1,
-                    }}
-                  >
-                    <Fab
-                      aria-label="like"
-                      disabled={this.state.favourited}
-                      onClick={this.addToFavourites}
-                      variant="extended"
-                    >
-                      <FavoriteIcon className={classes.extendedIcon} />
-                      ADD TO FAVORITES
-                    </Fab>
+                      </div>
+                    </div>
                   </div>
-                  <Pagination
-                    count={Math.ceil(
-                      this.state.data.episodes.length / itemCount
-                    )}
-                    page={this.state.page}
-                    onChange={this.changePage}
-                  />
-                </div>
+                )}
               </div>
             </div>
             <Snackbar
@@ -820,6 +790,23 @@ class Player extends React.PureComponent {
             ) : (
               <></>
             )}
+            <div>
+              {["right"].map((anchor) => (
+                <React.Fragment key={anchor}>
+                  <Drawer
+                    anchor={anchor}
+                    open={this.state[anchor]}
+                    onClose={this.toggleDrawer(anchor, false)}
+                    classes={{
+                      root: classes.drawer,
+                      paper: classes.drawerPaper,
+                    }}
+                  >
+                    {this.list(anchor)}
+                  </Drawer>
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         )}
       </>
@@ -845,21 +832,5 @@ function CircularIndeterminate() {
     <div className={classes.root}>
       <CircularProgress />
     </div>
-  );
-}
-
-function ValueLabelComponent(props) {
-  const { children, open, value } = props;
-  var date = new Date(0);
-  date.setSeconds(value); // specify value for SECONDS here
-  return (
-    <Tooltip
-      open={open}
-      enterTouchDelay={0}
-      placement="top"
-      title={date.toISOString().substr(11, 8)}
-    >
-      {children}
-    </Tooltip>
   );
 }

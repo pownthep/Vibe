@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Settings() {
   const [size, setSize] = useState("0 B");
-  const [loading, setLoading] = useState(false);
   const classes = useStyles();
 
   useEffect(() => {
@@ -30,16 +29,13 @@ export default function Settings() {
 
   const clearCache = async () => {
     if (size === "0 B") return;
-    setLoading(true);
     const res = await fetch(window.API + "clearcache");
     const json = await res.json();
     if (!json.error) setSize("0 B");
-    setLoading(false);
   };
   if (window.remote) {
     return (
       <div style={{ marginTop: 70, diplay: "flex", justifyContent: "center", fontWeight: "bold" }}>
-        {/* <StorageIcon /> */}
         <IconButton
           variant="contained"
           color="secondary"

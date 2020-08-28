@@ -14,7 +14,7 @@ export const Container = styled.div`
   flex-direction: row;
   position: fixed;
   z-index:5;
-  border-bottom: 2px solid #11cb5f;
+  // border-bottom: 2px solid #11cb5f;
 `;
 
 export const Text = styled.div`
@@ -34,7 +34,14 @@ export const Text = styled.div`
   user-select: none;
 `;
 
-export const Controls = styled.div`
+export const ControlsMac = styled.div`
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-right: auto;
+  height: 100%;
+`;
+
+export const ControlsWindows = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   margin-left: auto;

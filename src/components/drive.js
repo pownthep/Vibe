@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import MaterialTable from "material-table";
 import Grow from "@material-ui/core/Grow";
-import { LinearProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import prettyBytes from "pretty-bytes";
 
@@ -13,7 +12,8 @@ const useStyles = makeStyles({
     marginBottom: 20,
     marginTop: 20,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: 20,
   },
 });
 
@@ -31,7 +31,12 @@ export default function Drive() {
             .split("]")[0]
             .replace("[", "")}`}
           alt={rowData.name}
-          style={{ height: 50, width: 50, objectFit: "cover", borderRadius: "50%" }}
+          style={{
+            height: 50,
+            width: 50,
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
         />
       ),
     },
@@ -54,7 +59,7 @@ export default function Drive() {
   });
 
   useEffect(() => {
-    if (!window.remote) return; 
+    if (!window.remote) return;
     let mounted = true;
     const getState = async () => {
       const res1 = await fetch(window.API + "drive");
@@ -77,13 +82,9 @@ export default function Drive() {
   }, []);
   if (window.remote) {
     return (
-      <div style={{ marginTop: 55 }}>
+      <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
         <div className={classes.root}>
           {`${state.info.usedString} / ${state.info.totalString} used`}
-          <LinearProgress
-            variant="determinate"
-            value={(state.info.usedNumber / state.info.totalNumber) * 100}
-          />
         </div>
         <Grow in={true} timeout={300}>
           <MaterialTable

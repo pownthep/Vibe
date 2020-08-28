@@ -5,14 +5,16 @@ import { useTheme } from "@material-ui/core/styles";
 import { VariableSizeList } from "react-window";
 import PropTypes from "prop-types";
 
-const LISTBOX_PADDING = 8; // px
+// const LISTBOX_PADDING = 8; // px
 
 function renderRow(props) {
   const { data, index, style } = props;
   return React.cloneElement(data[index], {
     style: {
       ...style,
-      top: style.top + LISTBOX_PADDING,
+      margin: 0,
+      padding: 0,
+
     },
   });
 }
@@ -47,7 +49,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   const itemSize = smUp ? 36 : 48;
 
   const getChildSize = (child) => {
-    return 100;
+    return 150;
     // if (React.isValidElement(child) && child.type === ListSubheader) {
     //   return 48;
     // }
@@ -69,7 +71,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
       <OuterElementContext.Provider value={other}>
         <VariableSizeList
           itemData={itemData}
-          height={getHeight() + 2 * LISTBOX_PADDING}
+          height={getHeight()}
           width="100%"
           ref={gridRef}
           outerElementType={OuterElementType}

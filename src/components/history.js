@@ -10,7 +10,6 @@ import Loader from "./loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -139,7 +138,7 @@ export default function History() {
   };
 
   return (
-    <div style={{ marginTop: 55 }}>
+    <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
       {state.loading ? <Loader /> : <></>}
       <Tooltip title="Clear history" placement="right-start">
         <IconButton

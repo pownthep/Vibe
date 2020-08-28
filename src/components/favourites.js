@@ -57,7 +57,7 @@ export default function Favourites() {
   };
 
   return (
-    <div style={{ marginTop: 55 }}>
+    <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
       {favourites ? (
         <>
           <div className={classes.root}>

@@ -1,15 +1,14 @@
 import React from "react";
 import {
   Container,
-  Controls,
+  ControlsMac,
+  ControlsWindows,
   ButtonMacMaximize,
   ButtonMacClose,
   ButtonMacMinimize,
   ButtonWindows,
   CloseButtonWindows,
 } from "../utils/styles";
-import { Link } from "react-router-dom";
-import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
@@ -18,8 +17,15 @@ import ListboxComponent from "./listbox";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import clsx from "clsx";
+import MenuIcon from "@material-ui/icons/Menu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,13 +35,46 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: "inherit",
   },
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: "auto",
+  },
+  listItemText: {
+    fontWeight: "bold",
+  },
+  drawerPaper: {
+    backgroundColor: "rgba(0,0,0,0.9)",
+    backdropFilter: "blur(2px)",
+  },
+  drawer: {
+    WebkitAppRegion: "no-drag",
+  },
 }));
 
 export default function Titlebar({ backgroundColor, routes }) {
   const [anime] = React.useState(window.data);
   const [value] = React.useState(null);
-  const [link, setLink] = React.useState(0);
   const classes = useStyles();
+
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
 
   const history = useHistory();
 
@@ -71,7 +110,7 @@ export default function Titlebar({ backgroundColor, routes }) {
 
   const renderMac = () => {
     return (
-      <Controls key="title-controls">
+      <ControlsMac key="title-controls">
         <ButtonMacClose tabIndex="-1" onClick={handleClose}>
           <svg x="0px" y="0px" viewBox="0 0 6.4 6.4">
             <polygon
@@ -103,13 +142,13 @@ export default function Titlebar({ backgroundColor, routes }) {
             ></polygon>
           </svg>
         </ButtonMacMaximize>
-      </Controls>
+      </ControlsMac>
     );
   };
 
   const renderWindows = () => {
     return (
-      <Controls key="title-controls">
+      <ControlsWindows key="title-controls">
         <ButtonWindows
           aria-label="minimize"
           tabIndex="-1"
@@ -144,12 +183,55 @@ export default function Titlebar({ backgroundColor, routes }) {
             <path d="M 0,0 0,0.7 4.3,5 0,9.3 0,10 0.7,10 5,5.7 9.3,10 10,10 10,9.3 5.7,5 10,0.7 10,0 9.3,0 5,4.3 0.7,0 Z" />
           </svg>
         </CloseButtonWindows>
-      </Controls>
+      </ControlsWindows>
     );
   };
 
+  const list = (anchor) => (
+    <div
+      className={clsx(classes.list, {
+        [classes.fullList]: anchor === "top" || anchor === "bottom",
+      })}
+      role="presentation"
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        <ListItem button>
+          <ListItemIcon>
+            <img
+              src="http://vibe-three.vercel.app/icon.ico"
+              alt="logo"
+              width="35"
+            />
+          </ListItemIcon>
+          <ListItemText primary={"Vibe"} />
+        </ListItem>
+        <Divider />
+        {routes.map((r, index) => (
+          <div key={index}>
+            <ListItem
+              button
+              onClick={(e) => {
+                toggleDrawer(anchor, false);
+                history.push(r.path);
+              }}
+            >
+              <ListItemIcon>{r.icon}</ListItemIcon>
+              <ListItemText
+                primary={r.label}
+                classes={{ root: classes.listItemText }}
+              />
+            </ListItem>
+            {index === 4 && <Divider style={{ marginTop: "auto" }} />}
+          </div>
+        ))}
+      </List>
+    </div>
+  );
+
   return (
     <Container backgroundColor={backgroundColor}>
+      {window.remote && !isWindows ? renderMac() : null}
       <div
         style={{
           WebkitAppRegion: "no-drag",
@@ -159,34 +241,35 @@ export default function Titlebar({ backgroundColor, routes }) {
           alignItems: "center",
         }}
       >
-        <BottomNavigation
-          value={link}
-          onChange={(event, newValue) => {
-            setLink(newValue);
-          }}
-          className={classes.nav}
-        >
-          {routes.map((route, index) => (
-            <BottomNavigationAction
-              label={route.label}
-              icon={route.icon}
-              key={index}
-              onClick={(e) => history.push(route.path)}
-              style={{ fontWeight: "bold"}}
-            />
-          ))}
-        </BottomNavigation>
+        {[isWindows ? "left" : "right"].map((anchor) => (
+          <React.Fragment key={anchor}>
+            <IconButton onClick={toggleDrawer(anchor, true)}>
+              <MenuIcon />
+            </IconButton>
+            <Drawer
+              anchor={anchor}
+              open={state[anchor]}
+              onClose={toggleDrawer(anchor, false)}
+              classes={{ root: classes.drawer, paper: classes.drawerPaper }}
+            >
+              {list(anchor)}
+            </Drawer>
+          </React.Fragment>
+        ))}
       </div>
       <Autocomplete
         id="virtualize-demo"
         style={{
-          width: "30%",
+          width: "100%",
+          minWidth: "40vw",
+          maxWidth: "40vw",
           WebkitAppRegion: "no-drag",
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
         }}
+        size="small"
         disableListWrap
         ListboxComponent={ListboxComponent}
         value={value}
@@ -210,8 +293,19 @@ export default function Titlebar({ backgroundColor, routes }) {
           const matches = match(option.name, inputValue);
           const parts = parse(option.name, matches);
           return (
-            <div style={{ display: "grid", gridTemplateColumns: "60px auto" }}>
-              <img src={option.poster} alt="poster" height="90" width="60" />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "100px auto",
+                height: 150,
+              }}
+            >
+              <div
+                style={{
+                  backgroundImage: `url(${option.poster})`,
+                  backgroundSize: "cover",
+                }}
+              ></div>
               <div style={{ marginLeft: "10px" }}>
                 {parts.map((part, index) => (
                   <span
@@ -230,7 +324,7 @@ export default function Titlebar({ backgroundColor, routes }) {
                   <Chip
                     key={word}
                     label={word}
-                    style={{ marginRight: 2, marginTop: 2 }}
+                    style={{ marginRight: 2, marginTop: 5 }}
                   />
                 ))}
               </div>
@@ -238,7 +332,7 @@ export default function Titlebar({ backgroundColor, routes }) {
           );
         }}
       />
-      {window.remote ? renderWindows() : null}
+      {window.remote && isWindows ? renderWindows() : null}
     </Container>
   );
 }

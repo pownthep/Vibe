@@ -201,7 +201,7 @@ export default function Home() {
         </Tooltip>
       </div> */}
       {anime ? (
-        <div style={{ width: "100%", height: "92vh", marginTop: "60px" }}>
+        <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5}}>
           <AutoSizer>
             {({ height, width }) => {
               if (item.viewMode === 0) itemsPerRow = 3;

@@ -1,5 +1,5 @@
 :root {
-  --scroll-thumb-color: #a8a7a7;
+  --scroll-thumb-color: #bdbdbd;
 }
 @import url("https://rsms.me/inter/inter.css");
 * {
@@ -25,22 +25,41 @@ a {
 .container {
   box-sizing: border-box;
   width: 100%;
-  position: relative;
+  height: calc(100vh - 65px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 65px;
 }
 
 .controls {
   box-sizing: border-box;
-  padding-bottom: 0px;
-  padding-left: 6px;
-  padding-right: 6px;
   position: absolute;
   bottom: 0px;
   width: inherit;
   opacity: 0;
-  transition: opacity 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
   color: white;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), black); 
-  backdrop-filter: blur(2px);
+  height: inherit;
+}
+
+.controls-bot-container {
+  width: 100%;
+  height: inherit;
+  position: relative;
+}
+
+.controls-bot {
+  position: absolute;
+  bottom: 0px;
+  width: inherit;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), black);
+  /* backdrop-filter: blur(2px); */
+}
+
+.mpv-player {
+  width: 100%;
+  height: inherit;
+  position: relative;
 }
 
 .controls:hover {
@@ -76,11 +95,10 @@ button {
 }
 
 .player {
-  height: 540px;
+  height: inherit;
   margin: 0 auto;
-  width: 960px;
+  width: 100%;
   background-color: transparent;
-  margin-top: 160px;
 }
 
 .banner {
@@ -91,8 +109,8 @@ button {
   top: 0px;
   z-index: -3;
   object-fit: cover;
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
+  /* filter: blur(8px);
+  -webkit-filter: blur(8px); */
 }
 
 .overlay {
@@ -106,7 +124,7 @@ button {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 0px;
   border-radius: 10px;
 }
 
@@ -120,7 +138,6 @@ button {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--scroll-thumb-color);
-  border-radius: 8px;
 }
 
 .titlebar {
@@ -296,14 +313,14 @@ button {
 }
 .ui-video-seek-slider .hover-time {
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgb(0, 0, 0);
   line-height: 18px;
-  font-size: 16px;
-  color: #ddd;
+  font-size: 14px;
+  color: rgb(255, 255, 255);
   top: -25px;
   left: 0;
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 3px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   opacity: 0;
   transform: translateX(150px);
