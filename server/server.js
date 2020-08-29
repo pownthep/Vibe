@@ -330,7 +330,7 @@ function startLocalServer(oauth2Client) {
           const newFile = await httpCopyFile(
             req.query.id,
             oauth2Client.credentials.access_token,
-            `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
+            `${req.query.id}.mp4`
           );
           file = newFile;
         }
@@ -403,6 +403,58 @@ function startLocalServer(oauth2Client) {
     });
   }
 
+  app.get("/download/:index", (req, res) => {
+    var errorList = [];
+    fs.readFile(
+      "../public/data/shows/" + req.params.index + ".json",
+      async (err, data) => {
+        if (err) res.status(500).json(err);
+        else {
+          const json = JSON.parse(data);
+          const episodes = json.episodes.filter(e => e.size);
+          for (ep of episodes) {
+            try {
+              console.log(`Downloading: `, ep.name);
+              await downloadVideo(ep.id);
+              console.log("Done: ", ep.name);
+            } catch (error) {
+              errorList.push(ep);
+              console.log(error);
+            }
+          }
+          console.log("Errors: ", errorList);
+          res.json(errorList);
+        }
+      }
+    );
+  });
+
+  function downloadVideo(id) {
+    return new Promise((resolve, reject) => {
+      refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+        var access_token = oauth2Client.credentials.access_token;
+        try {
+          var auth = "Bearer ".concat(access_token);
+          var folder = __dirname + "/downloaded";
+          var dest = fs.createWriteStream(folder + `/${id}.mp4`);
+          const response = await axios({
+            url: `https://www.googleapis.com/drive/v3/files/${id}?alt=media`,
+            method: "GET",
+            responseType: "stream",
+            headers: {
+              Authorization: auth,
+            },
+          });
+          response.data.pipe(dest);
+          dest.on("finish", resolve);
+          dest.on("error", reject);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    });
+  }
+
   app.get("/downloaded", (req, res) => {
     fs.readdir(__dirname + "/downloaded", (err, files) => {
       if (err) res.json([]);
@@ -465,7 +517,7 @@ function startLocalServer(oauth2Client) {
           const copiedFile = await httpCopyFile(
             fileId,
             access_token,
-            `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
+            `${req.query.id}.mp4`
           );
           performRequest_default(req, res, access_token, copiedFile);
         }

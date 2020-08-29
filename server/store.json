@@ -1,201 +1,49 @@
 {
-  "files": [
-    {
-      "id": "1ySR3nn-OUed49FgWjIdueYRCMcIH7bft",
-      "name": "[1z9f1SRZf_Z1BUs247xksQRyHDXXoPwP0]-A Silent Voice-A Silent Voice",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "1804465602"
-    },
-    {
-      "id": "1ufCYGzfdBVMIiMwX9kIlFUy1juuKIDI5",
-      "name": "[1P82MZQEpgvGDA4sOuayTz6n4GBHy56Ov]-Akame ga Kill!-01. Kill the Darkness",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "270832553"
-    },
-    {
-      "id": "18Ieidrukbs4toewdakfUTOB2-lKQAzpZ",
-      "name": "[1zbkvRu8oPhxfhFc96KWiIxqXO8NI45wf]-Angel Beats!-08. Dancer in the Dark",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "266178060"
-    },
-    {
-      "id": "1IZqoxH3t6zKl8Qv6pGR2u0hr7ZYiuU7C",
-      "name": "[1P7TqvOnmOqWIgQ4RAhTva5YhDFdEOdpE]-Cowboy Bebop-01. Asteroid Blues",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "205056933"
-    },
-    {
-      "id": "1LA0Y80Gjvas3BrWY1fjoVyvhsxndz2j5",
-      "name": "[1ja_4m3fA0gh6tN-gUZAlxH_aJyhhrZuL]-HAIKYU!!-01. The End and the Beginning",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "199797326"
-    },
-    {
-      "id": "1tfKEKp6RGHWziDOg7aPwdyq4p0_nW9WN",
-      "name": "[1rq496YoOW0FsEWS93QlMqpuaukfVWhDS]-HAIKYU!!-02. Karasuno High School Volleyball Club",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "161825608"
-    },
-    {
-      "id": "1HVwes53BqWPcB_xDLQwv37hN_KhJXhH7",
-      "name": "[16P4B4EUW3j76cpAVMVl4lRHFz2R2CGe5]-Gintama-Episode - 001-002",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "100011939"
-    },
-    {
-      "id": "1fVFTd3xdr0T6NINtikIELC8nSPj88l44",
-      "name": "[1HKZUly7Rk0GjLhY5qVZL-xDNQ1K2Zeam]-Gintama-Episode - 042",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "59620878"
-    },
-    {
-      "id": "1HWunxHZmUf35qej1IS3-WZEmIHQAg2jT",
-      "name": "[1R9wcjswMpKuyecwo1Dn9ynxpVxSmlQ1U]-Gintama-Episode - 007",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "56917629"
-    },
-    {
-      "id": "1ewsA8FmUj2TJpdXopkLTRbrLEWGY7PaF",
-      "name": "[1yHnReJYwrQoJaYLcIZicbq1scMp87I1u]-Gintama-Episode - 041",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "56490069"
-    },
-    {
-      "id": "1HhNsja9DGPdGj5zSy540Aui5yJronujf",
-      "name": "[1hOqxJN65XETcTClEAyOqjg334EQJF0e5]-Gintama-Episode - 004",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "56224717"
-    },
-    {
-      "id": "1KCyl6i6Fh0zGXofCzn4Nb04fXP1Y02xj",
-      "name": "[1LWW5Vu_W2Lst-DrWUwe2v0Nm9n43fIhw]-Gintama-Episode - 040",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "52203056"
-    },
-    {
-      "id": "18wZOhoX2jUeNPnI0fdr9qS7y7gpWWVK9",
-      "name": "[18BX8X0ZGMYQBTOAudXBnODUi6npZ7d3z]-Gintama-Episode - 038",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "49025683"
-    },
-    {
-      "id": "18ZRvdWbORataHEQ_z-hTHjHKJcOz6VBC",
-      "name": "[1WdEH6FLRMsAJG2RXPmu8DM87OeenqTlE]-Gintama-Episode - 013",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "47764904"
-    },
-    {
-      "id": "16TUw0HSwXutaOWsDivFum8x9dE7Gqcoo",
-      "name": "[1a0qxXA_xh6c6M6aovxROMVwKPVg3eJ5a]-Gintama-Episode - 039",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "44131683"
-    }
-  ],
   "downloads": {
-    "1izRZt_U-s-x22kdKtS8v612-xcmzu_7n": {
-      "id": "1gpJyHYy2GfBzugXYPIciyADQAEomlbJK",
-      "name": "[1izRZt_U-s-x22kdKtS8v612-xcmzu_7n]-Another-01 - Rough Sketch",
-      "size": "62766218",
-      "progress": 62766218
+    "16P4B4EUW3j76cpAVMVl4lRHFz2R2CGe5": {
+      "id": "120EU-JPBaw1OqDMiXDD280R-sYWn-Cgm",
+      "name": "16P4B4EUW3j76cpAVMVl4lRHFz2R2CGe5.mp4",
+      "size": "100011939",
+      "progress": 100011939
     },
     "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0": {
-      "id": "1Vlj26OjgQDt1cINK7vOlRz5H11brH4RB",
-      "name": "[1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0]-Gintama-Episode - 003",
+      "id": "1WY-e_llut6i9Z1EG_rjUEiBlw_0OY1zm",
+      "name": "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0.mp4",
       "size": "54143829",
       "progress": 54143829
     },
     "1hOqxJN65XETcTClEAyOqjg334EQJF0e5": {
-      "id": "1y9fmxIziP65roYNYyNr413sFwkd7h9w4",
-      "name": "[1hOqxJN65XETcTClEAyOqjg334EQJF0e5]-Gintama-Episode - 004",
+      "id": "1DjbQL9bgILwROfdkkwgv10D2xJayOUor",
+      "name": "1hOqxJN65XETcTClEAyOqjg334EQJF0e5.mp4",
       "size": "56224717",
       "progress": 56224717
     },
     "1xKbxqy0P7UPnbsvZfXt30CSsZxnjaMpQ": {
-      "id": "1ESvUyo00OmZnBFuSan0eqoXs1qPVUQqu",
-      "name": "[1xKbxqy0P7UPnbsvZfXt30CSsZxnjaMpQ]-Gintama-Episode - 005",
+      "id": "1aradTidMs7KhvCHIqpA6NEYW6vG3MqXZ",
+      "name": "1xKbxqy0P7UPnbsvZfXt30CSsZxnjaMpQ.mp4",
       "size": "58326232",
       "progress": 58326232
     },
-    "1NzOHCNhCME5r2bJOs4ZEFGvIp7cBqXAK": {
-      "id": "1t9jAYPEo3_Q7mJGWH9gyTFkqTVtNCxuY",
-      "name": "[1NzOHCNhCME5r2bJOs4ZEFGvIp7cBqXAK]-Venom-Venom",
-      "size": "1876998085",
-      "progress": 1876998085
-    },
     "1lTNn3nhOp2imnYitJTnIAUNJy5WZuJUs": {
-      "id": "1caHBRDkfovL7kZXnYILirOfgBcTWanS_",
-      "name": "[1lTNn3nhOp2imnYitJTnIAUNJy5WZuJUs]-Gintama-Episode - 006",
+      "id": "1tmudzB5JozjLTIeGRCde_0yZ0Jd-iw0e",
+      "name": "1lTNn3nhOp2imnYitJTnIAUNJy5WZuJUs.mp4",
       "size": "63674588",
       "progress": 63674588
     },
     "1R9wcjswMpKuyecwo1Dn9ynxpVxSmlQ1U": {
-      "id": "1HWunxHZmUf35qej1IS3-WZEmIHQAg2jT",
-      "name": "[1R9wcjswMpKuyecwo1Dn9ynxpVxSmlQ1U]-Gintama-Episode - 007",
+      "id": "1ibOpTqceZmXJ41hWOs4XLQrToUwJyYXL",
+      "name": "1R9wcjswMpKuyecwo1Dn9ynxpVxSmlQ1U.mp4",
       "size": "56917629",
       "progress": 56917629
-    },
-    "1P7TqvOnmOqWIgQ4RAhTva5YhDFdEOdpE": {
-      "id": "1IZqoxH3t6zKl8Qv6pGR2u0hr7ZYiuU7C",
-      "name": "[1P7TqvOnmOqWIgQ4RAhTva5YhDFdEOdpE]-Cowboy Bebop-01. Asteroid Blues",
-      "size": "205056933",
-      "progress": 205056933
-    },
-    "1P82MZQEpgvGDA4sOuayTz6n4GBHy56Ov": {
-      "id": "1ufCYGzfdBVMIiMwX9kIlFUy1juuKIDI5",
-      "name": "[1P82MZQEpgvGDA4sOuayTz6n4GBHy56Ov]-Akame ga Kill!-01. Kill the Darkness",
-      "size": "270832553",
-      "progress": 270832553
-    },
-    "1WdEH6FLRMsAJG2RXPmu8DM87OeenqTlE": {
-      "id": "18ZRvdWbORataHEQ_z-hTHjHKJcOz6VBC",
-      "name": "[1WdEH6FLRMsAJG2RXPmu8DM87OeenqTlE]-Gintama-Episode - 013",
-      "size": "47764904",
-      "progress": 47764904
-    },
-    "18BX8X0ZGMYQBTOAudXBnODUi6npZ7d3z": {
-      "id": "18wZOhoX2jUeNPnI0fdr9qS7y7gpWWVK9",
-      "name": "[18BX8X0ZGMYQBTOAudXBnODUi6npZ7d3z]-Gintama-Episode - 038",
-      "size": "49025683",
-      "progress": 49025683
-    },
-    "1a0qxXA_xh6c6M6aovxROMVwKPVg3eJ5a": {
-      "id": "16TUw0HSwXutaOWsDivFum8x9dE7Gqcoo",
-      "name": "[1a0qxXA_xh6c6M6aovxROMVwKPVg3eJ5a]-Gintama-Episode - 039",
-      "size": "44131683",
-      "progress": 44131683
-    },
-    "1LWW5Vu_W2Lst-DrWUwe2v0Nm9n43fIhw": {
-      "id": "1KCyl6i6Fh0zGXofCzn4Nb04fXP1Y02xj",
-      "name": "[1LWW5Vu_W2Lst-DrWUwe2v0Nm9n43fIhw]-Gintama-Episode - 040",
-      "size": "52203056",
-      "progress": 52203056
-    },
-    "1yHnReJYwrQoJaYLcIZicbq1scMp87I1u": {
-      "id": "1ewsA8FmUj2TJpdXopkLTRbrLEWGY7PaF",
-      "name": "[1yHnReJYwrQoJaYLcIZicbq1scMp87I1u]-Gintama-Episode - 041",
-      "size": "56490069",
-      "progress": 56490069
-    },
-    "1HKZUly7Rk0GjLhY5qVZL-xDNQ1K2Zeam": {
-      "id": "1fVFTd3xdr0T6NINtikIELC8nSPj88l44",
-      "name": "[1HKZUly7Rk0GjLhY5qVZL-xDNQ1K2Zeam]-Gintama-Episode - 042",
-      "size": "59620878",
-      "progress": 59620878
     }
-  }
+  },
+  "files": [
+    {
+      "id": "1DD85qP4JN-iHkpJ3db40cY4DKMrEEf1e",
+      "name": "1Nb40sSuGnSUUpoTLZhYWnREi7yK5Sj90.mp4",
+      "mimeType": "video/x-matroska",
+      "ownedByMe": true,
+      "size": "402876183"
+    }
+  ]
 }

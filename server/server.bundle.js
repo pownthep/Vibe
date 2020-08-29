@@ -108470,7 +108470,7 @@ function startLocalServer(oauth2Client) {
           const newFile = await httpCopyFile(
             req.query.id,
             oauth2Client.credentials.access_token,
-            `[${req.query.id}]-${req.query.serieName}-${req.query.episodeName}`
+            `${req.query.id}.mp4`
           );
           file = newFile;
         }

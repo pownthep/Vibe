@@ -456,10 +456,7 @@ class Player extends React.PureComponent {
       this.setState({ auth: user });
       return;
     }
-    var filePath =
-      window.directory +
-      "/server/downloaded/" +
-      `[${id}]-${this.state.data.name}-${name}`;
+    var filePath = window.directory + "/server/downloaded/" + `${id}`;
     window.access(filePath, (err) => {
       const url =
         // "https://www.googleapis.com/drive/v3/files/" +
@@ -650,7 +647,13 @@ class Player extends React.PureComponent {
                               offset={0}
                               secondsPrefix="00:00:"
                               minutesPrefix="00:"
-                              thumbnailURL={this.state.previewId}
+                              thumbnailURL={
+                                this.state.currentEpisode
+                                  ? "https://pownthep-storage.b-cdn.net/previews/" +
+                                    this.state.currentEpisode.id +
+                                    ".png"
+                                  : null
+                              }
                             />
                           </div>
                           <div className={classes.controlContainer}>

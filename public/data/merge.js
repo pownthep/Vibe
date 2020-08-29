@@ -6,7 +6,7 @@ const readFile = util.promisify(fs.readFile);
 
 (async () => {
   try {
-    const json = await readFile("merged.json");
+    const json = await readFile("mergedV2.json");
     const data = JSON.parse(json)
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((i, index) => ({

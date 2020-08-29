@@ -27,9 +27,10 @@ export default function Drive() {
         <img
           src={`${
             window.API
-          }img/?url=https://lh3.googleusercontent.com/u/0/d/${rowData.name
-            .split("]")[0]
-            .replace("[", "")}`}
+          }img/?url=https://lh3.googleusercontent.com/u/0/d/${rowData.name.replace(
+            ".mp4",
+            ""
+          )}`}
           alt={rowData.name}
           style={{
             height: 50,
@@ -82,7 +83,15 @@ export default function Drive() {
   }, []);
   if (window.remote) {
     return (
-      <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
+      <div
+        style={{
+          width: "100%",
+          height: "calc(100vh - 65px)",
+          marginTop: "65px",
+          padding: 5,
+          overflow: "auto",
+        }}
+      >
         <div className={classes.root}>
           {`${state.info.usedString} / ${state.info.totalString} used`}
         </div>
