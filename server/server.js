@@ -411,7 +411,7 @@ function startLocalServer(oauth2Client) {
         if (err) res.status(500).json(err);
         else {
           const json = JSON.parse(data);
-          const episodes = json.episodes.filter(e => e.size);
+          const episodes = json.episodes.filter((e) => e.size);
           for (ep of episodes) {
             try {
               console.log(`Downloading: `, ep.name);
@@ -518,11 +518,13 @@ function startLocalServer(oauth2Client) {
             fileId,
             access_token,
             `${req.query.id}.mp4`
-          );
+          ).catch((error) => {
+            throw error;
+          });
           performRequest_default(req, res, access_token, copiedFile);
         }
       } catch (error) {
-        res.status(500);
+        res.status(500).json(error);
       }
     });
   });
@@ -571,7 +573,7 @@ function performRequest_default(req, res, access_token, fileInfo) {
       "Accept-Ranges": "bytes",
       "Content-Length": chunksize,
       //'Content-Type': 'video/mp4',
-      "Content-Type": fileMime,
+      "Content-Type": 'video/mp4',
     };
     //console.log(chunksize);
     res.writeHead(206, head);
@@ -595,7 +597,7 @@ function performRequest_default(req, res, access_token, fileInfo) {
     console.log("No requested range");
     const head = {
       "Content-Length": fileSize,
-      "Content-Type": fileMime,
+      "Content-Type": 'video/mp4',
     };
     res.writeHead(200, head);
     downloadFile(

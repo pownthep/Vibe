@@ -5,7 +5,6 @@ import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import "./index.css";
 
-// if (window.store) {
 (async () => {
   try {
     nprogress.start();
@@ -29,4 +28,3 @@ import "./index.css";
     console.log(error);
   }
 })();
-// } else render(<Landing />, document.getElementById("root"));
