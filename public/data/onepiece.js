@@ -1718,6 +1718,21 @@ const list = {
     "Santa Claus Red Is Blood Red",
     "Everybody's A Santa",
   ],
+  "Tower of God": [
+    "Ball",
+    "3/400 (Three Four-Hundredths)",
+    "The Correct Door",
+    "The Green April",
+    "The Crown's Fate",
+    "Position Selection",
+    "Lunch and Tag",
+    "Khun's Strategy",
+    "The One-Horned Ogre",
+    "Beyond the Sadness",
+    "Underwater Hunt (Part One)",
+    "Underwater Hunt (Part Two)",
+    "Tower of God"
+  ]
 };
 
 const fs = require("fs");
