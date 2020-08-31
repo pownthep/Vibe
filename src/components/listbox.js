@@ -49,7 +49,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   const itemSize = smUp ? 36 : 48;
 
   const getChildSize = (child) => {
-    return 150;
+    return 50;
     // if (React.isValidElement(child) && child.type === ListSubheader) {
     //   return 48;
     // }

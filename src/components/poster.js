@@ -2,6 +2,8 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
 import { makeStyles } from "@material-ui/core/styles";
+import { getLink, toDataURL } from "../utils/utils";
+import http from 'tauri/api/http'
 
 const useStyles = makeStyles({
   media: {
@@ -26,10 +28,10 @@ export default function Poster({ image, name }) {
       <div>
         <img
           className={classes.img}
-          src={window.API ? window.API + "img/?url=" + image : image}
+          src={getLink(image)}
           alt={name}
         />
-        <Typography variant="button" display="block" gutterBottom noWrap={true}>
+        <Typography display="block" gutterBottom noWrap={true} style={{textAlign: 'center'}}>
           {name}
         </Typography>
       </div>

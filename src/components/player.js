@@ -595,20 +595,16 @@ class Player extends React.PureComponent {
             <div className="container">
               <div ref={this.myRef} className="player">
                 {!window.remote ? (
-                  <iframe
-                    title="trailer"
+                  <video
                     style={{
-                      position: "absolute",
-                      top: 0,
-                      height: "540px",
-                      width: "960px",
-                      objectFit: "cover",
+                      width: "100%",
+                      height: "inherit",
+                      margin: 0,
+                      padding: 0,
                     }}
-                    src={`https://drive.google.com/file/d/${this.state.embed}/preview`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
+                    controls
+                    src={`https://www.googleapis.com/drive/v3/files/${this.state.embed}?alt=media&key=AIzaSyAv1WgLGclLIlhKvzIiIVOiqZqDA0EM9TI`}
+                  ></video>
                 ) : (
                   <div className="mpv-player">
                     <img

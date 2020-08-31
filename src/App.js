@@ -10,7 +10,7 @@ import {
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
 import Loader from "./components/loader";
-import PlayerPage from "./components/player";
+import FlashPlayer from "./components/flashplayer";
 import Home from "./components/home";
 import FavouritePage from "./components/favourites";
 import HistoryPage from "./components/history";
@@ -23,6 +23,7 @@ import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 import CloudRoundedIcon from "@material-ui/icons/CloudRounded";
 import HistoryRoundedIcon from "@material-ui/icons/HistoryRounded";
 import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
+import Titlebar from "./components/titlebar";
 
 const theme = createMuiTheme({
   palette: {
@@ -70,47 +71,45 @@ export default function App() {
       path: "/",
       exact: true,
       component: Home,
-      label: "Home",
+      label: "HOME",
       icon: <HomeRoundedIcon/>,
     },
     {
       path: "/favourites",
       exact: true,
       component: FavouritePage,
-      label: "Favourites",
+      label: "FAVORITES",
       icon: <FavoriteRoundedIcon/>,
     },
     {
       path: "/downloader",
       exact: true,
       component: DownloadPage,
-      label: "Downloader",
+      label: "DOWNLOADS",
       icon: <GetAppRoundedIcon />,
     },
     {
       path: "/drive",
       exact: true,
       component: DrivePage,
-      label: "My Drive",
+      label: "DRIVE",
       icon: <CloudRoundedIcon/>,
     },
     {
       path: "/history",
       exact: true,
       component: HistoryPage,
-      label: "History",
+      label: "HISTORY",
       icon: <HistoryRoundedIcon />,
     },
     {
       path: "/settings",
       exact: true,
       component: SettingsPage,
-      label: "Settings",
+      label: "SETTINGS",
       icon: <SettingsRoundedIcon />,
     },
   ];
-
-  const Titlebar = React.lazy(() => import("./components/titlebar"));
 
   return (
     <>
@@ -134,7 +133,7 @@ export default function App() {
                     key={"/watch/:id/:epId?"}
                     exact={true}
                     path="/watch/:id/:epId?"
-                    component={PlayerPage}
+                    component={FlashPlayer}
                   />
                   <Route render={() => <Redirect to="/" />} />
                 </Switch>

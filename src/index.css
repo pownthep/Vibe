@@ -1,12 +1,12 @@
 :root {
   --scroll-thumb-color: #bdbdbd;
 }
-/* @import url("https://rsms.me/inter/inter.css");
+@import url("https://rsms.me/inter/inter.css");
 * {
   font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-} */
+}
 
 body {
   margin: 0;
@@ -52,8 +52,9 @@ a {
   position: absolute;
   bottom: 0px;
   width: inherit;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), black);
+  /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0), black); */
   /* backdrop-filter: blur(2px); */
+  background-color: black;
 }
 
 .mpv-player {
@@ -79,7 +80,7 @@ button {
 }
 
 .volume-slider {
-  width: 70px;
+  width: 150px;
   padding-top: 4px;
   margin-right: 20px;
   margin-left: 10px;
@@ -89,16 +90,18 @@ button {
   width: 100vw;
   height: 100vh;
   position: fixed;
-  z-index: 10000000;
+  z-index: 100000000000;
   top: 0px;
   left: 0px;
+  background-color: black;
 }
 
 .player {
   height: inherit;
   margin: 0 auto;
   width: 100%;
-  background-color: transparent;
+  background-color: black;
+  z-index: 1;
 }
 
 .banner {
@@ -109,8 +112,6 @@ button {
   top: 0px;
   z-index: -3;
   object-fit: cover;
-  /* filter: blur(8px);
-  -webkit-filter: blur(8px); */
 }
 
 .overlay {
@@ -120,24 +121,6 @@ button {
   left: 0px;
   top: 0px;
   z-index: -2;
-}
-
-/* width */
-::-webkit-scrollbar {
-  width: 0px;
-  border-radius: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 8px;
-  width: 0px
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: var(--scroll-thumb-color);
 }
 
 .titlebar {

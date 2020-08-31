@@ -1,0 +1,32 @@
+[package]
+name = "vibe"
+version = "0.1.0"
+description = "A Tauri App"
+authors = [ "you" ]
+license = ""
+repository = ""
+default-run = "vibe"
+edition = "2018"
+build = "src/build.rs"
+
+[dependencies]
+actix-web = "2.0"
+actix-rt = "1.0"
+error-chain = "0.12.4"
+tempfile = "3.1.0"
+reqwest = { version = "0.10", features = [ "json" ] }
+tokio = { version = "0.2", features = [ "full" ] }
+serde_json = "1.0"
+serde = { version = "1.0", features = [ "derive" ] }
+tauri = { version = "0.9", features = [ "all-api" ] }
+
+[target."cfg(windows)".build-dependencies]
+winres = "0.1"
+
+[features]
+embedded-server = [ "tauri/embedded-server" ]
+no-server = [ "tauri/no-server" ]
+
+[[bin]]
+name = "vibe"
+path = "src/main.rs"

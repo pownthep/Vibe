@@ -227,8 +227,9 @@ export class VideoSeekSlider extends React.Component {
                 top: -100,
                 right: -45,
                 overflow: "hidden",
-                borderRadius: 4,
-                border: "2px solid white"
+                borderRadius: 5,
+                border: "2px solid white",
+                backgroundColor: "black"
               }}
             >
               <img
