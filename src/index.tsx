@@ -4,6 +4,22 @@ import App from "./App";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import "./index.css";
+import { Show } from "./utils/interfaces";
+import { getCatalogue, handleError } from "./utils/utils";
+
+declare global {
+  interface Window {
+      data: Array<Show>;
+      electron: boolean,
+      shell: any,
+      access: any,
+      remote: any
+      directory: string
+  }
+  interface HTMLVideoElement {
+      audioTracks: any
+  }
+}
 
 (async () => {
   try {
@@ -12,19 +28,17 @@ import "./index.css";
       window.data = JSON.parse(localStorage["data"]);
       nprogress.done();
       render(<App />, document.getElementById("root"));
-      const seriesRes = await fetch("https://vibe-three.vercel.app/data/trimmed-desktop.json");
-      const json = await seriesRes.json();
+      const json = await getCatalogue();
       window.data = json;
       localStorage["data"] = JSON.stringify(json);
     } else {
-      const seriesRes = await fetch("https://vibe-three.vercel.app/data/trimmed-desktop.json");
-      const json = await seriesRes.json();
+      const json = await getCatalogue();
       window.data = json;
       localStorage["data"] = JSON.stringify(json);
       nprogress.done();
       render(<App />, document.getElementById("root"));
     }
   } catch (error) {
-    console.log(error);
+    handleError(error);
   }
 })();

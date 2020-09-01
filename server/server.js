@@ -1,35 +1,46 @@
-var fs = require("fs");
-var googleAuth = require("google-auth-library");
-var express = require("express");
-var https = require("https");
-var app = express();
-var cors = require("cors");
+const fs = require("fs");
+const googleAuth = require("google-auth-library");
+const express = require("express");
+const https = require("https");
+const app = express();
+const cors = require("cors");
 const axios = require("axios");
 const prettyBytes = require("pretty-bytes");
 const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
+const bodyParser = require("body-parser");
 
 // Express setup
 app.use(cors());
 app.use(express.static("img"));
-const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static("chunks"));
 
 // If modifying these scopes, delete your previously saved credentials
-var SCOPES = ["https://www.googleapis.com/auth/drive"];
-var TOKEN_DIR = __dirname + "/.credentials/";
-var TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
-var TEMP_DIR = __dirname + "/.temp/";
-var CHUNK_SIZE = 20000000;
-var PORT = 80;
+const SCOPES = ["https://www.googleapis.com/auth/drive"];
+const TOKEN_DIR = __dirname + "/.credentials/";
+const TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
+const TEMP_DIR = __dirname + "/.temp/";
+const CHUNK_SIZE = 100000000;
+const PORT = 80;
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 const DL_DIR = __dirname + "/downloaded/";
+const credentials = {
+  web: {
+    client_id:
+      "511377925028-ar09unh2rtfs8h0vh2u08p8nn4i9plqm.apps.googleusercontent.com",
+    project_id: "elevated-summer-538",
+    auth_uri: "https://accounts.google.com/o/oauth2/auth",
+    token_uri: "https://oauth2.googleapis.com/token",
+    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+    client_secret: "QlADgLswq3Syw3e44OwNS4oa",
+    redirect_uris: ["http://127.0.0.1/code"],
+    javascript_origins: ["http://127.0.0.1"],
+  },
+};
 let authStatus;
-let isLatest = false;
 
 // Check for img dir or create one
 fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
@@ -45,31 +56,6 @@ fs.access(DL_DIR, fs.constants.F_OK, (err) => {
       if (err) console.error(err);
     });
 });
-
-const credentials = {
-  // web: {
-  //   client_id:
-  //     "880830326274-85ckm42lhoiec3jofmcbdohl8q6rrnlf.apps.googleusercontent.com",
-  //   project_id: "drivestreaming",
-  //   auth_uri: "https://accounts.google.com/o/oauth2/auth",
-  //   token_uri: "https://oauth2.googleapis.com/token",
-  //   auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  //   client_secret: "sBXvKT72bohos7VBMYKqU5i2",
-  //   redirect_uris: ["http://127.0.0.1:9001/code"],
-  //   javascript_origins: ["http://127.0.0.1:9001"],
-  // },
-  web: {
-    client_id:
-      "511377925028-ar09unh2rtfs8h0vh2u08p8nn4i9plqm.apps.googleusercontent.com",
-    project_id: "elevated-summer-538",
-    auth_uri: "https://accounts.google.com/o/oauth2/auth",
-    token_uri: "https://oauth2.googleapis.com/token",
-    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-    client_secret: "QlADgLswq3Syw3e44OwNS4oa",
-    redirect_uris: ["http://127.0.0.1/code"],
-    javascript_origins: ["http://127.0.0.1"],
-  },
-};
 
 authorize(credentials, startLocalServer);
 
@@ -100,10 +86,6 @@ function authorize(credentials, callback) {
 }
 
 function getNewToken(oauth2Client, callback) {
-  var authUrl = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES,
-  });
   callback(oauth2Client);
 }
 
@@ -140,7 +122,7 @@ function storeToken(token) {
 
 function startLocalServer(oauth2Client) {
   app.get("/authenticate", (req, res) => {
-    fs.readFile(TOKEN_PATH, function (err, token) {
+    fs.readFile(TOKEN_PATH, function (err) {
       if (err) {
         res.json({
           authenticated: false,
@@ -169,7 +151,7 @@ function startLocalServer(oauth2Client) {
           .then(({ filename }) => {
             res.sendFile(filename);
           })
-          .catch((err) => {
+          .catch(() => {
             res.sendFile(placeholderImg);
           });
         return;
@@ -184,35 +166,12 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/dash", async (req, res) => {
+  app.get("/dash", async () => {
     try {
-      const dl = await downloadFile(req.query.id, res);
     } catch (error) {
       console.log(error);
     }
   });
-
-  async function downloadFile(id, res) {
-    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var auth = "Bearer ".concat(access_token);
-      const url =
-        "https://www.googleapis.com" + "/drive/v3/files/" + id + "?alt=media";
-      const response = await axios({
-        url,
-        method: "GET",
-        headers: {
-          Authorization: auth,
-        },
-        responseType: "stream",
-      });
-      response.data.pipe(res);
-      return new Promise((resolve, reject) => {
-        res.on("finish", resolve);
-        res.on("error", reject);
-      });
-    });
-  }
 
   app.get("/clearcache", (req, res) => {
     fs.rmdir(TEMP_DIR, { recursive: true }, (err) => {
@@ -358,7 +317,7 @@ function startLocalServer(oauth2Client) {
       return;
     }
     let toDownloadList = Object.entries(store.get("downloads")).filter(
-      ([key, value]) => value.progress === 0
+      ([, value]) => value.progress === 0
     );
     if (toDownloadList.length === 0) {
       downloaderRunning = false;
@@ -373,14 +332,6 @@ function startLocalServer(oauth2Client) {
         var auth = "Bearer ".concat(access_token);
         var folder = __dirname + "/downloaded";
         var dest = fs.createWriteStream(folder + `/${firstItemValue.name}`);
-        var options = {
-          host: "www.googleapis.com",
-          path: "/drive/v3/files/" + firstItemValue.id + "?alt=media",
-          method: "GET",
-          headers: {
-            Authorization: auth,
-          },
-        };
         callback = function (response) {
           var progress = 0;
           const interval = setInterval(() => {
@@ -396,7 +347,6 @@ function startLocalServer(oauth2Client) {
           });
           response.pipe(dest);
         };
-        var req = https.request(options, callback).end();
       } catch (error) {
         console.log(error);
       }
@@ -429,32 +379,6 @@ function startLocalServer(oauth2Client) {
     );
   });
 
-  function downloadVideo(id) {
-    return new Promise((resolve, reject) => {
-      refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-        var access_token = oauth2Client.credentials.access_token;
-        try {
-          var auth = "Bearer ".concat(access_token);
-          var folder = __dirname + "/downloaded";
-          var dest = fs.createWriteStream(folder + `/${id}.mp4`);
-          const response = await axios({
-            url: `https://www.googleapis.com/drive/v3/files/${id}?alt=media`,
-            method: "GET",
-            responseType: "stream",
-            headers: {
-              Authorization: auth,
-            },
-          });
-          response.data.pipe(dest);
-          dest.on("finish", resolve);
-          dest.on("error", reject);
-        } catch (error) {
-          console.log(error);
-        }
-      });
-    });
-  }
-
   app.get("/downloaded", (req, res) => {
     fs.readdir(__dirname + "/downloaded", (err, files) => {
       if (err) res.json([]);
@@ -483,7 +407,7 @@ function startLocalServer(oauth2Client) {
     }, 1000);
   });
 
-  app.get(/\/code/, function (req, res) {
+  app.get("/code", function (req, res) {
     if (req.query.code) {
       oauth2Client.getToken(req.query.code, function (err, token) {
         if (err) {
@@ -560,7 +484,6 @@ function startLocalServer(oauth2Client) {
 
 function performRequest_default(req, res, access_token, fileInfo) {
   var fileSize = fileInfo.size;
-  var fileMime = fileInfo.mimeType;
   var fileId = fileInfo.id;
   const range = req.headers.range;
   if (range) {
@@ -635,7 +558,7 @@ function downloadFile(fileId, access_token, start, end, pipe, onEnd, onStart) {
       end: relativeEnd,
     });
     readStream.pipe(pipe, { end: false });
-    readStream.on("data", (chunk) => {
+    readStream.on("data", () => {
       //onData(chunk)
     });
     readStream.on("end", () => {
@@ -725,7 +648,7 @@ function httpDownloadFile(
   };
 
   var req = https.request(options, callback);
-  req.on("error", function (err) {});
+  req.on("error", function () {});
   req.end();
   onStart(req);
 }
@@ -790,7 +713,7 @@ function httpDeleteFile(fileId, access_token, response) {
       } else response.json({ deleted: false });
     });
   });
-  req.on("error", function (err) {
+  req.on("error", function () {
     response.json({ deleted: false });
   });
   req.end();
@@ -824,4 +747,30 @@ function flushBuffers(arrBuffer, fileId, startByte) {
     );
   }
   return [remainBuffer];
+}
+
+function downloadVideo(id) {
+  return new Promise((resolve, reject) => {
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      try {
+        var auth = "Bearer ".concat(access_token);
+        var folder = __dirname + "/downloaded";
+        var dest = fs.createWriteStream(folder + `/${id}.mp4`);
+        const response = await axios({
+          url: `https://www.googleapis.com/drive/v3/files/${id}?alt=media`,
+          method: "GET",
+          responseType: "stream",
+          headers: {
+            Authorization: auth,
+          },
+        });
+        response.data.pipe(dest);
+        dest.on("finish", resolve);
+        dest.on("error", reject);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  });
 }

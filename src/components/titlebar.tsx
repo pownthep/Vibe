@@ -13,6 +13,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
+import { NavRoute } from "../utils/interfaces";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,17 +41,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Titlebar({ backgroundColor, routes }) {
+type Props = {
+  backgroundColor: string,
+  routes: Array<NavRoute>
+}
+
+
+export default function Titlebar({ backgroundColor, routes }: Props) {
   const classes = useStyles();
 
   const [state, setState] = React.useState({
-    top: false,
     left: false,
-    bottom: false,
-    right: false,
   });
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = (anchor: any, open: boolean) => (event: any) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -63,7 +67,7 @@ export default function Titlebar({ backgroundColor, routes }) {
 
   const history = useHistory();
 
-  const list = (anchor) => (
+  const list = (anchor: any) => (
     <div
       className={clsx(classes.list, {
         [classes.fullList]: anchor === "top" || anchor === "bottom",
@@ -109,21 +113,20 @@ export default function Titlebar({ backgroundColor, routes }) {
     <Container backgroundColor={backgroundColor}>
       <div
         style={{
-          WebkitAppRegion: "no-drag",
           width: "auto",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        {["left"].map((anchor) => (
+        {["left"].map((anchor: any) => (
           <React.Fragment key={anchor}>
             <IconButton onClick={toggleDrawer(anchor, true)}>
               <MenuIcon />
             </IconButton>
             <Drawer
               anchor={anchor}
-              open={state[anchor]}
+              open={state.left}
               onClose={toggleDrawer(anchor, false)}
               classes={{ root: classes.drawer, paper: classes.drawerPaper }}
             >

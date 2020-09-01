@@ -6,19 +6,16 @@ import ClearAllIcon from "@material-ui/icons/ClearAll";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
 import Grow from "@material-ui/core/Grow";
-import Loader from "./loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { HistoryItem } from "../utils/interfaces";
+import { getImg, toHHMMSS, toDate } from "../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "80vh",
-    // backgroundColor: theme.palette.background.paper,
-  },
-  inline: {
-    display: "inline",
   },
   thumbnailCtn: {
     marginRight: 5,
@@ -56,48 +53,40 @@ const useStyles = makeStyles((theme) => ({
 
 export default function History() {
   const classes = useStyles();
-  const [state, setState] = useState({
-    history: [],
-    loading: true,
-  });
-  const [checked] = useState(true);
-  const clearHistory = (e) => {
-    if (state.history.length > 0) {
+  const [history, setHistory] = useState([] as Array<HistoryItem>);
+  const clearHistory = (e: any) : void => {
+    if (history.length > 0) {
       localStorage.removeItem("history");
-      setHistory();
+      setHistory([] as Array<HistoryItem>);
     }
   };
 
-  const setHistory = () => {
-    const localHistory = localStorage.getItem("history")
-      ? JSON.parse(localStorage.getItem("history"))
-      : null;
-    setState({
-      history: localHistory
-        ? Object.values(localHistory).sort((a, b) =>
-            a.currentTime < b.currentTime ? 1 : -1
-          )
-        : [],
-      loading: false,
-    });
+  const getHistory = () : void => {
+    let localHistory: { [index: string]: HistoryItem } = {};
+    const historyString = localStorage.getItem("history");
+    if (historyString) localHistory = JSON.parse(historyString);
+    const historyArray = Object.values(localHistory).sort((a, b) =>
+      a.currentTime < b.currentTime ? 1 : -1
+    );
+    setHistory(historyArray);
   };
 
   useEffect(() => {
-    setHistory();
+    getHistory();
   }, []);
 
-  const Row = ({ index, style }) => {
-    var rowItem = state.history[index];
+  const Row = ({ index, style }: any) : JSX.Element => {
+    var rowItem = history[index];
     return (
       <div style={style}>
         {rowItem ? (
-          <Grow in={checked} timeout={600} key={"listitem-" + rowItem.id}>
+          <Grow in={true} timeout={600} key={"listitem-" + rowItem.id}>
             <div className={classes.listItemContainer}>
               <div className={classes.thumbnailCtn}>
                 <img
                   alt={rowItem.title}
                   className={classes.thumbnail}
-                  src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${rowItem.id}`}
+                  src={getImg(rowItem.id)}
                   style={{ borderRadius: "5px" }}
                 />
                 <div className={classes.playBtn}>
@@ -138,8 +127,15 @@ export default function History() {
   };
 
   return (
-    <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
-      {state.loading ? <Loader /> : <></>}
+    <div
+      style={{
+        width: "100%",
+        height: "calc(100vh - 65px)",
+        marginTop: "65px",
+        padding: 5,
+        overflow: "auto",
+      }}
+    >
       <Tooltip title="Clear history" placement="right-start">
         <IconButton
           edge="end"
@@ -149,7 +145,7 @@ export default function History() {
           <ClearAllIcon />
         </IconButton>
       </Tooltip>
-      {state.history.length > 0 ? (
+      {history.length > 0 ? (
         <div className={classes.root}>
           <AutoSizer>
             {({ height, width }) => {
@@ -157,7 +153,7 @@ export default function History() {
                 <List
                   className="List"
                   height={height}
-                  itemCount={state.history.length}
+                  itemCount={history.length}
                   itemSize={190}
                   width={width}
                 >
@@ -172,15 +168,4 @@ export default function History() {
       )}
     </div>
   );
-}
-
-function toHHMMSS(s) {
-  var date = new Date(0);
-  date.setSeconds(parseInt(s)); // specify value for SECONDS here
-  return date.toISOString().substr(11, 8);
-}
-
-function toDate(s) {
-  var t = new Date(s);
-  return t.toLocaleString();
 }

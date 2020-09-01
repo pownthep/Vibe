@@ -2,44 +2,30 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  inline: {
-    display: "inline-block",
-  },
-}));
+import { getCacheSize, deleteCache } from "../utils/utils";
 
 export default function Settings() {
   const [size, setSize] = useState("0 B");
-  const classes = useStyles();
 
   useEffect(() => {
     if (!window.remote) return;
     (async () => {
-      const res = await fetch(window.API + "cachesize");
-      const json = await res.json();
+      const json = await getCacheSize();
       setSize(json.size);
     })();
   }, []);
 
-  const clearCache = async () => {
+  const clearCache = async (e: any) => {
     if (size === "0 B") return;
-    const res = await fetch(window.API + "clearcache");
-    const json = await res.json();
+    const json = await deleteCache();
     if (!json.error) setSize("0 B");
   };
-  if (window.remote) {
+  if (window.electron) {
     return (
-      <div style={{ marginTop: 70, diplay: "flex", justifyContent: "center", fontWeight: "bold" }}>
+      <div style={{ marginTop: "70px", display: "flex", justifyContent: "center", fontWeight: "bold" }}>
         <IconButton
-          variant="contained"
           color="secondary"
-          className={classes.button}
           onClick={clearCache}
         >
           <DeleteIcon />

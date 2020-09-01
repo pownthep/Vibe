@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getShow, getURL, getLink, toHHMMSS, preview, stream } from "../utils/utils";
+import {
+  getShow,
+  getLink,
+  toHHMMSS,
+  preview,
+  stream,
+  closeFullscreen,
+  openFullscreen,
+  handleError,
+  getURL,
+} from "../utils/utils";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import IconButton from "@material-ui/core/IconButton";
@@ -18,6 +28,7 @@ import { VideoSeekSlider } from "./seekbar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import EpisodeList from "./episodelist";
+import { Show, Episode } from "../utils/interfaces";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -40,9 +51,29 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function FlashPlayer(props) {
+type FlashPlayerProps = {
+  match: {
+    params: {
+      id: string;
+      epId: string;
+    };
+  };
+};
+
+type FlashPlayerState = {
+  data: Show;
+  favourited: boolean;
+  loadingData: boolean;
+  duration: number;
+  "time-pos": number;
+  pause: boolean;
+  volume_value: number;
+  fullscreen: boolean;
+};
+
+function FlashPlayer(props: FlashPlayerProps) {
   const [state, setState] = useState({
-    data: null,
+    data: null!,
     favourited: false,
     loadingData: false,
     duration: 3600,
@@ -50,36 +81,36 @@ export default function FlashPlayer(props) {
     pause: true,
     volume_value: 50,
     fullscreen: false,
-  });
-  const [id, setId] = useState(null);
-  const [list, setList] = useState([]);
+  } as FlashPlayerState);
+  const [id, setId] = useState("");
+  const [list, setList] = useState([] as Array<Episode>);
   const [_isMounted, setMounted] = useState(true);
   const [audioTrack, setAudioTrack] = useState(0);
   const [textTrack, setTextTrack] = useState(0);
   const [audioLabel, setAudioLabel] = useState("");
   const [textLabel, setTextLabel] = useState("");
   const classes = useStyles();
-  const videoEl = useRef(null);
-  const containerEl = useRef(null);
-  const [progress, setProgress] = useState(0);
+  const videoEl = useRef<HTMLVideoElement>(null!);
+  const containerEl = useRef<HTMLDivElement>(null!);
+  const [progress] = useState(0);
   const paramId = props.match.params.id;
   const epId = props.match.params.epId;
 
   useEffect(() => {
     nprogress.start();
     if (_isMounted) {
-      const favourites = localStorage.getItem(`favourites`)
-        ? JSON.parse(localStorage.getItem(`favourites`))
-        : {};
+      const favouritesString = localStorage.getItem("favourites");
+      let localFavourites: { [index: string]: boolean } = {};
+      if (favouritesString) localFavourites = JSON.parse(favouritesString);
+      const favourited = localFavourites[paramId] ? true : false;
       getShow(paramId).then((show) => {
         setState((prev) => ({
           ...prev,
           data: show,
-          favourited: favourites[paramId] ? true : false,
+          favourited: favourited,
         }));
         setList(show.episodes);
         if (epId) {
-          //handleEpisodeChange(episode.id, episode.ep, episode.timePos);
         }
       });
       nprogress.done();
@@ -89,7 +120,7 @@ export default function FlashPlayer(props) {
     };
   }, [_isMounted, paramId, epId]);
 
-  const filter = (e) => {
+  const filter = (e: any): void => {
     setList([
       ...state.data.episodes.filter((i) =>
         i.name.toLowerCase().includes(e.currentTarget.value.toLowerCase())
@@ -97,7 +128,7 @@ export default function FlashPlayer(props) {
     ]);
   };
 
-  const handleSeek = (newValue) => {
+  const handleSeek = (newValue: number): void => {
     if (!videoEl) return;
     const timePos = +newValue;
     setState((prev) => ({ ...prev, "time-pos": timePos }));
@@ -109,58 +140,72 @@ export default function FlashPlayer(props) {
     else videoEl.current.pause();
     setState((prev) => ({ ...prev, pause: !prev.pause }));
   };
-  const handleVolumeChange = (e, nv) => {
-    videoEl.current.volume = nv / 100.0;
-    setState((prev) => ({ ...prev, volume_value: nv }));
+  const handleVolumeChange = (event: any, value: any) => {
+    if (!videoEl) return;
+    videoEl.current.volume = value / 100.0;
+    setState((prev) => ({ ...prev, volume_value: value }));
   };
   const addToFavourites = () => {
-    const favourites = localStorage.getItem("favourites")
-      ? JSON.parse(localStorage.getItem("favourites"))
-      : {};
+    const favouritesString = localStorage.getItem("favourites");
+    let localFavourites: { [index: string]: boolean } = {};
+    if (favouritesString) localFavourites = JSON.parse(favouritesString);
     localStorage.setItem(
       `favourites`,
       JSON.stringify({
-        ...favourites,
+        ...localFavourites,
         [state.data.id]: true,
       })
     );
     setState((prev) => ({ ...prev, favourited: true }));
   };
   const cycleAudio = () => {
-    if (videoEl.current.audioTracks.length < 2) return;
-    videoEl.current.pause();
-    let newTrack =
-      audioTrack + 1 < videoEl.current.audioTracks.length ? audioTrack + 1 : 0;
-    videoEl.current.audioTracks[audioTrack].enabled = false;
-    videoEl.current.audioTracks[newTrack].enabled = true;
-    setAudioLabel(
-      (
-        newTrack +
-        ":" +
-        videoEl.current.audioTracks[newTrack].language
-      ).toUpperCase()
-    );
-    setAudioTrack(newTrack);
-    videoEl.current.play();
+    if (!videoEl) return;
+    try {
+      if (videoEl.current.audioTracks.length < 2) return;
+      videoEl.current.pause();
+      let newTrack =
+        audioTrack + 1 < videoEl.current.audioTracks.length
+          ? audioTrack + 1
+          : 0;
+      videoEl.current.audioTracks[audioTrack].enabled = false;
+      videoEl.current.audioTracks[newTrack].enabled = true;
+      setAudioLabel(
+        (
+          newTrack +
+          ":" +
+          videoEl.current.audioTracks[newTrack].language
+        ).toUpperCase()
+      );
+      setAudioTrack(newTrack);
+      videoEl.current.play();
+    } catch (error) {
+      handleError(error);
+    }
   };
   const cycleSub = () => {
-    if (videoEl.current.textTracks.length < 2) return;
-    videoEl.current.pause();
-    let newTrack =
-      textTrack + 1 < videoEl.current.textTracks.length ? textTrack + 1 : 0;
-    videoEl.current.textTracks[textTrack].mode = "disabled";
-    videoEl.current.textTracks[newTrack].mode = "showing";
-    setTextLabel(
-      (
-        newTrack +
-        ":" +
-        videoEl.current.textTracks[newTrack].language
-      ).toUpperCase()
-    );
-    setTextTrack(newTrack);
-    videoEl.current.play();
+    if (!videoEl) return;
+    try {
+      if (videoEl.current.textTracks.length < 2) return;
+      videoEl.current.pause();
+      let newTrack =
+        textTrack + 1 < videoEl.current.textTracks.length ? textTrack + 1 : 0;
+      videoEl.current.textTracks[textTrack].mode = "disabled";
+      videoEl.current.textTracks[newTrack].mode = "showing";
+      setTextLabel(
+        (
+          newTrack +
+          ":" +
+          videoEl.current.textTracks[newTrack].language
+        ).toUpperCase()
+      );
+      setTextTrack(newTrack);
+      videoEl.current.play();
+    } catch (error) {
+      handleError(error);
+    }
   };
   const toggleFullscreen = () => {
+    if (!containerEl) return;
     if (state.fullscreen) {
       closeFullscreen();
       containerEl.current.className = "player";
@@ -172,54 +217,20 @@ export default function FlashPlayer(props) {
   };
   const updateSeekBar = () => {
     var time = videoEl.current.currentTime;
-    var range = 0;
-    var bf = videoEl.current.buffered;
-    var length = bf.length;
-    if (length) {
-        while (!(bf.start(range) <= time && time <= bf.end(range))) {
-            range += 1;
-        }
-        setProgress(bf.end(range));
-    }
+    // try {
+    //   var range = 0;
+    //   var bf = videoEl.current.buffered;
+    //   var length = bf.length;
+    //   if (length) {
+    //     while (!(bf.start(range) <= time && time <= bf.end(range))) {
+    //       range += 1;
+    //     }
+    //     setProgress(bf.end(range));
+    //   }
+    // } catch (error) {
+
+    // }
     setState((prev) => ({ ...prev, "time-pos": time }));
-  };
-
-  var elem = document.documentElement;
-
-  /* View in fullscreen */
-  function openFullscreen() {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      /* Firefox */
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      /* Chrome, Safari and Opera */
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      /* IE/Edge */
-      elem.msRequestFullscreen();
-    }
-  }
-
-  /* Close fullscreen */
-  function closeFullscreen() {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      /* Firefox */
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      /* Chrome, Safari and Opera */
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      /* IE/Edge */
-      document.msExitFullscreen();
-    }
-  }
-
-  const onProgress = (e) => {
-    
   };
 
   return (
@@ -245,7 +256,6 @@ export default function FlashPlayer(props) {
               <img
                 src={getLink(state.data.banner)}
                 alt={"banner"}
-                // className="banner"
                 style={{
                   position: "absolute",
                   top: 0,
@@ -275,7 +285,9 @@ export default function FlashPlayer(props) {
                   nprogress.done();
                 }}
                 onTimeUpdate={updateSeekBar}
-                onProgress={onProgress}
+                onSeeking={() => nprogress.start()}
+                onSeeked={() => nprogress.done()}
+                onError={(e) => {e.currentTarget.src = getURL(id);handleError(e); nprogress.done()}}
               />
               <div className="loader" hidden={!state.loadingData}>
                 <CircularProgress />
@@ -283,7 +295,7 @@ export default function FlashPlayer(props) {
               <div className="controls">
                 <div className="controls-bot-container">
                   <div className="controls-bot">
-                    <div style={{ paddingLeft: 60, paddingRight: 60 }}>
+                    <div style={{ paddingLeft: 5, paddingRight: 5 }}>
                       <VideoSeekSlider
                         max={state.duration}
                         currentTime={state["time-pos"]}
@@ -334,18 +346,17 @@ export default function FlashPlayer(props) {
                             {toHHMMSS(state.duration)}
                           </p>
                         </div>
-                        <div style={{ margin: "0 auto", fontWeight: "bold" }}>
-                          {state.currentEpisode && state.currentEpisode.ep}
-                        </div>
                         <div className={classes.inline}>
                           <Tooltip title="Add to favourites">
-                            <IconButton
-                              aria-label="Add to favourites"
-                              disabled={state.favourited}
-                              onClick={addToFavourites}
-                            >
-                              <FavoriteIcon />
-                            </IconButton>
+                            <span>
+                              <IconButton
+                                aria-label="Add to favourites"
+                                disabled={state.favourited}
+                                onClick={addToFavourites}
+                              >
+                                <FavoriteIcon />
+                              </IconButton>
+                            </span>
                           </Tooltip>
                         </div>
                         <div className={classes.inline}>
@@ -419,7 +430,6 @@ export default function FlashPlayer(props) {
               placeholder="Find episode"
               onChange={filter}
             />
-            {/* <Divider /> */}
             <EpisodeList list={list} setId={setId} name={state.data.name} />
           </div>
         </div>
@@ -427,3 +437,5 @@ export default function FlashPlayer(props) {
     </div>
   );
 }
+
+export default FlashPlayer;

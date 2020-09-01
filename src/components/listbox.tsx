@@ -1,20 +1,15 @@
 import React from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-// import ListSubheader from "@material-ui/core/ListSubheader";
 import { useTheme } from "@material-ui/core/styles";
 import { VariableSizeList } from "react-window";
-import PropTypes from "prop-types";
 
-// const LISTBOX_PADDING = 8; // px
-
-function renderRow(props) {
+function renderRow(props: any) {
   const { data, index, style } = props;
   return React.cloneElement(data[index], {
     style: {
       ...style,
       margin: 0,
-      padding: 0,
-
+      paddingLeft: 20,
     },
   });
 }
@@ -23,13 +18,13 @@ const OuterElementContext = React.createContext({});
 
 const OuterElementType = React.forwardRef((props, ref) => {
   const outerProps = React.useContext(OuterElementContext);
-  return <div ref={ref} {...props} {...outerProps} />;
+  return <div ref={ref as any} {...props} {...outerProps} />;
 });
 
-function useResetCache(data) {
-  const ref = React.useRef(null);
+function useResetCache(data: any) {
+  const ref = React.useRef<any>(null);
   React.useEffect(() => {
-    if (ref.current != null) {
+    if (ref) {
       ref.current.resetAfterIndex(0, true);
     }
   }, [data]);
@@ -48,13 +43,8 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   const itemCount = itemData.length;
   const itemSize = smUp ? 36 : 48;
 
-  const getChildSize = (child) => {
-    return 50;
-    // if (React.isValidElement(child) && child.type === ListSubheader) {
-    //   return 48;
-    // }
-
-    // return itemSize;
+  const getChildSize = () : number => {
+    return itemSize;
   };
 
   const getHeight = () => {
@@ -67,7 +57,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   const gridRef = useResetCache(itemCount);
 
   return (
-    <div ref={ref}>
+    <div ref={ref as any}>
       <OuterElementContext.Provider value={other}>
         <VariableSizeList
           itemData={itemData}
@@ -76,7 +66,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
           ref={gridRef}
           outerElementType={OuterElementType}
           innerElementType="ul"
-          itemSize={(index) => getChildSize(itemData[index])}
+          itemSize={(index) => getChildSize()}
           overscanCount={5}
           itemCount={itemCount}
         >
@@ -86,9 +76,5 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
     </div>
   );
 });
-
-ListboxComponent.propTypes = {
-  children: PropTypes.node,
-};
 
 export default ListboxComponent;

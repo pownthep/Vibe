@@ -9,8 +9,6 @@ import {
 } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-import Loader from "./components/loader";
-import FlashPlayer from "./components/flashplayer";
 import Home from "./components/home";
 import FavouritePage from "./components/favourites";
 import HistoryPage from "./components/history";
@@ -24,16 +22,17 @@ import CloudRoundedIcon from "@material-ui/icons/CloudRounded";
 import HistoryRoundedIcon from "@material-ui/icons/HistoryRounded";
 import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
 import Titlebar from "./components/titlebar";
+import Player from "./components/player";
+import { NavRoute } from "./utils/interfaces";
+import FlashPlayer from "./components/flashplayer";
 
 const theme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      // Purple and green play nicely together.
       main: "#11cb5f",
     },
     secondary: {
-      // This is green.A700 as hex.
       main: "#ffffff",
     },
   },
@@ -43,43 +42,28 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
   content: {
     width: "100%",
-    // paddingLeft: theme.spacing(1),
-    // paddingRight: theme.spacing(1),
-  },
-  titlebar: theme.palette.background.paper,
-  padding: {
-    height: 20,
-  },
-  navIcon: {
-    minWidth: "100%",
-  },
-  drawerBg: {},
-  noBorder: {
-    borderRight: "1px",
   },
 }));
 
 export default function App() {
   const classes = useStyles();
 
-  const routes = [
+  const routes: Array<NavRoute> = [
     {
       path: "/",
       exact: true,
       component: Home,
       label: "HOME",
-      icon: <HomeRoundedIcon/>,
+      icon: <HomeRoundedIcon />,
     },
     {
       path: "/favourites",
       exact: true,
       component: FavouritePage,
       label: "FAVORITES",
-      icon: <FavoriteRoundedIcon/>,
+      icon: <FavoriteRoundedIcon />,
     },
     {
       path: "/downloader",
@@ -93,7 +77,7 @@ export default function App() {
       exact: true,
       component: DrivePage,
       label: "DRIVE",
-      icon: <CloudRoundedIcon/>,
+      icon: <CloudRoundedIcon />,
     },
     {
       path: "/history",
@@ -114,33 +98,31 @@ export default function App() {
   return (
     <>
       <Router>
-        <React.Suspense fallback={<Loader />}>
-          <ThemeProvider theme={theme}>
-            <div className={classes.root}>
-              <CssBaseline />
-              <Titlebar routes={routes} backgroundColor="black" />
-              <main className={classes.content}>
-                <Switch>
-                  {routes.map((route) => (
-                    <Route
-                      key={route.path}
-                      exact={route.exact}
-                      path={route.path}
-                      component={route.component}
-                    />
-                  ))}
+        <ThemeProvider theme={theme}>
+          <div className={classes.root}>
+            <CssBaseline />
+            <Titlebar routes={routes} backgroundColor="black" />
+            <main className={classes.content}>
+              <Switch>
+                {routes.map((route) => (
                   <Route
-                    key={"/watch/:id/:epId?"}
-                    exact={true}
-                    path="/watch/:id/:epId?"
-                    component={FlashPlayer}
+                    key={route.path}
+                    exact={route.exact}
+                    path={route.path}
+                    component={route.component}
                   />
-                  <Route render={() => <Redirect to="/" />} />
-                </Switch>
-              </main>
-            </div>
-          </ThemeProvider>
-        </React.Suspense>
+                ))}
+                <Route
+                  key={"/watch/:id/:epId?"}
+                  exact={true}
+                  path="/watch/:id/:epId?"
+                  component={window.electron ? Player : FlashPlayer}
+                />
+                <Route render={() => <Redirect to="/" />} />
+              </Switch>
+            </main>
+          </div>
+        </ThemeProvider>
       </Router>
     </>
   );

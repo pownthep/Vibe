@@ -13,7 +13,7 @@
       "progress": 54143829
     },
     "1hOqxJN65XETcTClEAyOqjg334EQJF0e5": {
-      "id": "1DjbQL9bgILwROfdkkwgv10D2xJayOUor",
+      "id": "1stgDF_2F5_Sh4787P0J9gpBOLLNy04zP",
       "name": "1hOqxJN65XETcTClEAyOqjg334EQJF0e5.mp4",
       "size": "56224717",
       "progress": 56224717
@@ -37,62 +37,5 @@
       "progress": 56917629
     }
   },
-  "files": [
-    {
-      "id": "1mgCMoDM4448S6mYljGyRsW-Mij2vKacT",
-      "name": "1_vFkZUygH4s3ubWjCPCXzquFPxBczhRg.mp4",
-      "mimeType": "video/mp4",
-      "ownedByMe": true,
-      "size": "2167074575"
-    },
-    {
-      "id": "1E5eY7UI3nqzyLpQhnZ2Jz3KSuESnnpNl",
-      "name": "1R0sQGDcl-otOUNkpfO-F6VNRKlCdqRvo.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "350375281"
-    },
-    {
-      "id": "1GF1QekNXCYA3GKVvYajf8o4YbGbZHkBt",
-      "name": "1A7bOccsQiFPthegjndIOkAMtbOmm-lwR.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "309143476"
-    },
-    {
-      "id": "1E9RxWh0A6DDgbjH0O3ttNBssIT_RyYWl",
-      "name": "1P82MZQEpgvGDA4sOuayTz6n4GBHy56Ov.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "270832553"
-    },
-    {
-      "id": "1gzxhD-nfORh5VYYr4Gmlmkgx-BITnV6M",
-      "name": "1ciHJSAjeWs2uegZWt7FQnP40g-BjQbid.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "253574436"
-    },
-    {
-      "id": "1p-c48cFlVMwY2Xs3ACKjRkd5-bvgmYtc",
-      "name": "1SxnRnmc663aknWCnx9deSOWUpzaqV_h0.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "67042280"
-    },
-    {
-      "id": "1-xhiIhxoMdEM3SxEsSegy309oyL0Av58",
-      "name": "1izRZt_U-s-x22kdKtS8v612-xcmzu_7n.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "62766218"
-    },
-    {
-      "id": "1Ori5dZVUrFlr0WTFb-LKS1Vp74nZGUrw",
-      "name": "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0.mp4",
-      "mimeType": "video/x-matroska",
-      "ownedByMe": true,
-      "size": "54143829"
-    }
-  ]
+  "files": []
 }

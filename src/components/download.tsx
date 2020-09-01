@@ -12,80 +12,53 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import PauseCircleFilledIcon from "@material-ui/icons/PauseCircleFilled";
 import Box from "@material-ui/core/Box";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import PropTypes from "prop-types";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import Loader from "./loader";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
+import { openFolder, DL_FOLDER_PATH, DL_API, openPath, getImg, fmtName } from "../utils/utils";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     maxHeight: "85vh",
-    //backgroundColor: theme.palette.background.paper,
     overflow: "auto",
     position: "relative",
   },
-  inline: {
-    display: "inline",
-  },
-  thumbnail: {
-    borderRadius: 5,
-    margin: 5,
-  },
 }));
-
-function LinearProgressWithLabel(props) {
-  return (
-    <Box display="flex" alignItems="center">
-      <Box width="100%" mr={1}>
-        <LinearProgress variant="determinate" {...props} />
-      </Box>
-      <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
-      </Box>
-    </Box>
-  );
-}
-
-LinearProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate and buffer variants.
-   * Value between 0 and 100.
-   */
-  value: PropTypes.number.isRequired,
-};
 
 export default function Download() {
   const classes = useStyles();
   const [progress, setProgress] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (!window.remote) {
-      setLoading(false);
-      return;
-    }
-    let eventSource = new EventSource(window.API + "downloading");
+    let eventSource = new EventSource(DL_API);
     eventSource.onmessage = (e) => {
       let json = JSON.parse(e.data);
-      setLoading(false);
       setProgress(json);
     };
     return () => {
       eventSource.close();
     };
   }, []);
-  if (window.remote) {
+
+  const handleFolderButtonClick = (e: any) => {
+    openFolder(DL_FOLDER_PATH);
+  }
+
+  if (window.electron) {
     return (
-      <div style={{ width: "100%", height: "calc(100vh - 65px)", marginTop: "65px", padding: 5, overflow: "auto"}}>
-        {loading ? <Loader /> : <></>}
+      <div
+        style={{
+          width: "100%",
+          height: "calc(100vh - 65px)",
+          marginTop: "65px",
+          padding: 5,
+          overflow: "auto",
+        }}
+      >
         <IconButton
           edge="end"
           aria-label="pause button"
-          onClick={(e) => {
-            window.shell.openPath(window.directory + "/server/downloaded/");
-          }}
+          onClick={handleFolderButtonClick}
         >
           <Tooltip title="Open folder">
             <FolderOpenIcon />
@@ -94,12 +67,12 @@ export default function Download() {
         <List className={classes.root}>
           {Object.entries(progress)
             .reverse()
-            .map(([key, value]) => (
+            .map(([key, value]: any) => (
               <div key={value.id}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar
-                      src={`${window.API}img/?url=https://lh3.googleusercontent.com/u/0/d/${key}=w200-h190-p-k-nu-iv1`}
+                      src={getImg(key)}
                       alt="thumbnail"
                     />
                   </ListItemAvatar>
@@ -118,11 +91,7 @@ export default function Download() {
                         edge="end"
                         aria-label="play button"
                         onClick={(e) => {
-                          window.shell.openPath(
-                            window.directory +
-                              "/server/downloaded/" +
-                              value.name
-                          );
+                          openPath(`${DL_FOLDER_PATH}/${value.name}`)
                         }}
                       >
                         <PlayCircleOutlineIcon />
@@ -147,17 +116,24 @@ export default function Download() {
     );
   } else {
     return (
-      <h1 style={{textAlign: 'center', marginTop: 100}}>Only available on Desktop App</h1>
-    )
+      <h1 style={{ textAlign: "center", marginTop: 100 }}>
+        Only available on Desktop App
+      </h1>
+    );
   }
 }
 
-function fmtName(s) {
-  return s
-    .replace(/\[(.+?)\]/g, "")
-    .replace(/\((.+?)\)/g, "")
-    .replace("Copy of ", "")
-    .replace("-", " ")
-    .replace(".mkv", "")
-    .trim();
+function LinearProgressWithLabel(props: any) {
+  return (
+    <Box display="flex" alignItems="center">
+      <Box width="100%" mr={1}>
+        <LinearProgress variant="determinate" {...props} />
+      </Box>
+      <Box minWidth={35}>
+        <Typography variant="body2" color="textSecondary">{`${Math.round(
+          props.value
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
 }

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import MediaCard from "./mediacard";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
@@ -8,7 +7,8 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { useHistory } from "react-router-dom";
 import Poster from "./poster";
-import RowList from "./row";
+import nprogress from "nprogress";
+import "nprogress/nprogress.css";
 
 export default function Home() {
   const [anime] = useState(window.data);
@@ -23,19 +23,12 @@ export default function Home() {
 
   const history = useHistory();
 
-  function handleClick(e) {
-    history.push("/watch/" + e.currentTarget.id);
-  }
+  const handleClick = (id: number): void => {
+    nprogress.start();
+    history.push("/watch/" + id);
+  };
 
-  function viewGenerator(props) {
-    if (item.viewMode === 0)
-      return <MediaCard image={props.banner} name={props.name} />;
-    else if (item.viewMode === 1)
-      return <Poster image={props.poster} name={props.name} />;
-    else return <RowList {...props} />;
-  }
-
-  const Row = ({ index, style }) => {
+  const Row = ({ index, style }: any) => {
     var start = index * itemsPerRow;
     var end = start + itemsPerRow;
     return (
@@ -49,22 +42,8 @@ export default function Home() {
             paddingLeft: 5,
           }}
         >
-          {anime.slice(start, end).map((el) => (
-            <a
-              onClick={handleClick}
-              key={el.id}
-              id={el.id}
-              style={{
-                width:
-                  item.viewMode === 2
-                    ? "100%"
-                    : item.viewMode === 0
-                    ? "33%"
-                    : "auto",
-              }}
-            >
-              {viewGenerator(el)}
-            </a>
+          {anime.slice(start, end).map(({ id, name, poster }) => (
+              <Poster image={poster} name={name} key={id} onClick={handleClick} id={id}/>
           ))}
         </div>
       </div>
@@ -95,10 +74,10 @@ export default function Home() {
             }}
             size="small"
             disableListWrap
-            ListboxComponent={ListboxComponent}
+            ListboxComponent={ListboxComponent as any}
             value={value}
             onChange={(e, v) => {
-              history.replace("/watch/" + v.id);
+              if (v) history.replace("/watch/" + v.id);
             }}
             options={anime}
             getOptionLabel={(option) => option.name}
@@ -126,7 +105,7 @@ export default function Home() {
               const matches = match(option.name, inputValue);
               const parts = parse(option.name, matches);
               return (
-                <div style={{marginLeft:20}}>
+                <div style={{ marginLeft: 20 }}>
                   {parts.map((part, index) => (
                     <span
                       key={index}
@@ -145,10 +124,7 @@ export default function Home() {
           />
           <AutoSizer>
             {({ height, width }) => {
-              if (item.viewMode === 0) itemsPerRow = 3;
-              else if (item.viewMode === 1)
-                itemsPerRow = Math.floor(width / item.width);
-              else if (item.viewMode === 2) itemsPerRow = 1;
+              itemsPerRow = Math.floor(width / item.width);
               var rowCount = Math.ceil(anime.length / itemsPerRow);
               return (
                 <List

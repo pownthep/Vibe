@@ -2,7 +2,6 @@ require("v8-compile-cache");
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { getPluginEntry } = require("mpv.js");
-const getPort = require('get-port');
 
 // Absolute path to the plugin directory.
 const pluginDir = path.join(
@@ -29,14 +28,11 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1560,
     height: 760,
-    frame: false,
     titleBarStyle: "hidden",
     backgroundColor: "#303030",
     webPreferences: {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true,
-      webSecurity: false
     },
     icon:
       process.platform !== "darwin"
@@ -44,9 +40,7 @@ function createWindow() {
         : path.join(__dirname, "assets/icon.icns"),
   });
 
-  (async () => {
-    process.env.PORT = await getPort();
-  })();
+  win.setMenuBarVisibility(false);
 
   if (process.env.DEV) {
     require(__dirname + "/server/server.js");

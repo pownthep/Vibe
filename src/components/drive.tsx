@@ -4,6 +4,10 @@ import MaterialTable from "material-table";
 import Grow from "@material-ui/core/Grow";
 import { makeStyles } from "@material-ui/core/styles";
 import prettyBytes from "pretty-bytes";
+import { deleteFile, getQuota, getDrive, getImg } from "../utils/utils";
+import { DriveInfo, DriveState } from "../utils/interfaces";
+import nprogress from "nprogress";
+import "nprogress/nprogress.css";
 
 const useStyles = makeStyles({
   root: {
@@ -23,14 +27,9 @@ export default function Drive() {
     {
       title: "Thumbnail",
       field: "thumbnail",
-      render: (rowData) => (
+      render: (rowData: DriveInfo) => (
         <img
-          src={`${
-            window.API
-          }img/?url=https://lh3.googleusercontent.com/u/0/d/${rowData.name.replace(
-            ".mp4",
-            ""
-          )}`}
+          src={getImg(rowData.name.replace(".mp4", ""))}
           alt={rowData.name}
           style={{
             height: 50,
@@ -45,7 +44,7 @@ export default function Drive() {
     {
       title: "Size",
       field: "size",
-      render: (rowData) => prettyBytes(Number(rowData.size)),
+      render: (rowData: DriveInfo) => prettyBytes(Number(rowData.size)),
     },
   ];
   const [state, setState] = useState({
@@ -57,17 +56,15 @@ export default function Drive() {
       totalString: "15 GB",
     },
     loading: true,
-  });
+  } as DriveState);
 
   useEffect(() => {
-    if (!window.remote) return;
+    nprogress.start();
+    if (!window.electron) return;
     let mounted = true;
     const getState = async () => {
-      const res1 = await fetch(window.API + "drive");
-      const res2 = await fetch(window.API + "quota");
-      const data = await res1.json();
-      const info = await res2.json();
-      console.log("setting state");
+      const data = await getDrive();
+      const info = await getQuota();
       if (mounted)
         setState((json) => ({
           ...json,
@@ -75,13 +72,14 @@ export default function Drive() {
           info: info,
           loading: false,
         }));
+      nprogress.done();
     };
     getState();
     return () => {
       mounted = false;
     };
   }, []);
-  if (window.remote) {
+  if (window.electron) {
     return (
       <div
         style={{
@@ -105,12 +103,10 @@ export default function Drive() {
               actionsColumnIndex: -1,
             }}
             editable={{
-              onRowDelete: (oldData) =>
+              onRowDelete: (oldData: DriveInfo) =>
                 new Promise(async (resolve, reject) => {
-                  const res = await fetch(window.API + "delete/" + oldData.id);
-                  const res2 = await fetch(window.API + "quota");
-                  const info = await res2.json();
-                  const json = await res.json();
+                  const json = await deleteFile(oldData.id);
+                  const info = await getQuota();
                   if (json.deleted) {
                     const dataDelete = [...state.data];
                     const index = oldData.tableData.id;

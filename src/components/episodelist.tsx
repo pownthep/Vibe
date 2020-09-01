@@ -5,12 +5,20 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 import prettyBytes from "pretty-bytes";
 import { getImg } from "../utils/utils";
+import { Episode } from "../utils/interfaces";
 import nprogress from "nprogress";
 
-export default memo(({ list, setId, name }) => {
-  const Row = ({ index, style }) => (
+type EpisodeListProps = {
+  list: Array<Episode>;
+  setId:  any;
+  name: string;
+  handleDownload?: any
+};
+
+export default memo(({ list, setId, name, handleDownload }: EpisodeListProps) => {
+  const Row = ({ index, style }: any) => (
     <div style={style}>
-      <Grow in={true} timeout={500}>
+      <Grow in={true} timeout={500 + (50 * index%5)}>
         <div>
           <div
             style={{
@@ -22,7 +30,7 @@ export default memo(({ list, setId, name }) => {
           >
             <img
               onClick={() => {
-                setId(list[index].id);
+                setId(list[index].id, list[index].name);
                 nprogress.start();
               }}
               src={getImg(list[index].id)}
@@ -35,16 +43,18 @@ export default memo(({ list, setId, name }) => {
               }}
             />
             <div style={{ position: "relative", paddingLeft: 5 }}>
-              <p
-                style={{
-                  marginBottom: 4,
-                  marginTop: 4,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                {list[index].name.replace(".mkv", "")}
-              </p>
+                  <p
+                    style={{
+                      marginBottom: 4,
+                      marginTop: 4,
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      height: 70,
+                      overflow: "auto"
+                    }}
+                  >
+                    {list[index].name.replace(".mkv", "")}
+                  </p>
               <p
                 style={{
                   marginTop: 0,
@@ -62,6 +72,7 @@ export default memo(({ list, setId, name }) => {
                   aria-label="more"
                   aria-controls="long-menu"
                   aria-haspopup="true"
+                  onClick={() => handleDownload(list[index].id)}
                 >
                   <GetAppRoundedIcon />
                 </IconButton>

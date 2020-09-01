@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
+    "@types/autosuggest-highlight": "^3.1.0",
+    "@types/nprogress": "^0.2.0",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-virtualized-auto-sizer": "^1.0.0",
+    "@types/react-window": "^1.8.2",
+    "@types/styled-components": "^5.1.2",
     "get-port": "^5.1.1",
     "mpv.js": "^0.3.0",
     "react": "^16.13.1",
@@ -19,13 +25,13 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "server": "nodemon ./server/server.js",
-    "electron-dev": "SET DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
+    "dev": "SET DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-mac": "export DEV=true && concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
-    "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(server/.credentials|.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded/.*)\"",
+    "pack-win": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded/.*)\"",
     "pack-osx": "npm run build && npm run bundle-server && electron-packager . --overwrite --icon=assets/icon.icns --ignore=\"(server/.credentials|.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded/.*)\"",
     "pack-all": "npm run build && npm run bundle-server && electron-packager . --all --overwrite --icon=assets/icon.ico --ignore=\"(.gitignore|server/gitignore|src*|server/img/.*|server/.temp|public|server/server.js|/server/store.json|/server/downloaded)\"",
     "bundle-server": "browserify --ignore-missing --no-builtins --no-commondir --insert-global-vars=\"global\" --no-browser-field ./server/server.js > ./server/server.bundle.js",
-    "build-test": "electron .",
+    "electron": "SET DEV=true && electron .",
     "setup": "electron-installer-windows --src vibe-win32-x64/ --dest dist/installers/",
     "tauri": "tauri"
   },
@@ -41,8 +47,7 @@
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
-      "last 1 safari version",
-      "ie 11"
+      "last 1 safari version"
     ]
   },
   "devDependencies": {
@@ -54,6 +59,10 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^26.0.10",
+    "@types/node": "^14.6.2",
+    "@types/react": "^16.9.48",
+    "@types/react-dom": "^16.9.8",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.19.2",
     "browserify": "^16.5.1",
@@ -83,8 +92,10 @@
     "react-infinite-scroll-component": "^5.0.5",
     "react-instantsearch-dom": "^6.5.0",
     "react-router-dom": "^5.2.0",
+    "react-scale-text": "^1.2.2",
     "react-scripts": "^3.4.3",
     "react-snapshot": "^1.3.0",
+    "react-text-resize": "^1.0.0",
     "react-video-seek-slider": "^2.1.2",
     "react-video-thumbnail": "^0.1.3",
     "react-virtualized-auto-sizer": "^1.0.2",
@@ -92,6 +103,7 @@
     "react-window-infinite-loader": "^1.0.5",
     "string-hash": "^1.1.3",
     "tauri": "^0.12.0",
+    "typescript": "^4.0.2",
     "uglify-js": "^3.9.4",
     "wait-on": "^5.0.1"
   },
