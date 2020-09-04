@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Grow, IconButton, Divider } from "@material-ui/core";
+import { Grow, IconButton, Divider, Typography } from "@material-ui/core";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
@@ -10,95 +10,97 @@ import nprogress from "nprogress";
 
 type EpisodeListProps = {
   list: Array<Episode>;
-  setId:  any;
+  setId: any;
   name: string;
-  handleDownload?: any
+  handleDownload?: any;
 };
 
-export default memo(({ list, setId, name, handleDownload }: EpisodeListProps) => {
-  const Row = ({ index, style }: any) => (
-    <div style={style}>
-      <Grow in={true} timeout={500 + (50 * index%5)}>
-        <div>
+export default memo(
+  ({ list, setId, name, handleDownload }: EpisodeListProps) => {
+    var itemsPerRow = 0;
+    var item = {
+      width: 300,
+      height: 260,
+    };
+    var margin = 5;
+    const Row = ({ index, style }: any) => {
+      var start = index * itemsPerRow;
+      var end = start + itemsPerRow;
+      return (
+        <div style={style}>
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "40% 60%",
-              paddingTop: 0,
-              height: 130,
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
             }}
           >
-            <img
-              onClick={() => {
-                setId(list[index].id, list[index].name);
-                nprogress.start();
-              }}
-              src={getImg(list[index].id)}
-              alt="thumbnail"
-              style={{
-                width: "100%",
-                height: "inherit",
-                objectFit: "cover",
-                cursor: "pointer",
-              }}
-            />
-            <div style={{ position: "relative", paddingLeft: 5 }}>
-                  <p
-                    style={{
-                      marginBottom: 4,
-                      marginTop: 4,
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      height: 70,
-                      overflow: "auto"
-                    }}
-                  >
-                    {list[index].name.replace(".mkv", "")}
-                  </p>
-              <p
+            {list.slice(start, end).map(({ id, name, size }, i) => (
+              <div
                 style={{
-                  marginTop: 0,
-                  marginBottom: 0,
-                  fontSize: 14,
+                  width: item.width,
+                  height: item.height,
+                  marginRight: i < end ? margin : 0,
                 }}
+                key={id}
               >
-                {name}
-              </p>
-              <p style={{ marginTop: 4, fontSize: 12, color: "#eeeeee" }}>
-                {prettyBytes(Number(list[index].size))}
-              </p>
-              <div style={{ position: "absolute", right: 10, bottom: 0 }}>
-                <IconButton
-                  aria-label="more"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  onClick={() => handleDownload(list[index].id)}
+                <div
+                  style={{
+                    cursor: "pointer",
+                    height: 169,
+                    width: item.width,
+                  }}
+                  onClick={() => setId(id, name)}
                 >
-                  <GetAppRoundedIcon />
-                </IconButton>
+                  <img
+                    src={getImg(id)}
+                    alt="thumbnail"
+                    style={{
+                      height: 169,
+                      width: item.width,
+                      borderRadius: 2,
+                    }}
+                  />
+                </div>
+                <div style={{ height: 72 }}>
+                  <Typography display="block" gutterBottom noWrap={true}>
+                    {name}
+                  </Typography>
+                  <p style={{ margin: 0 }}>
+                    {prettyBytes(Number(size))}
+                    <IconButton
+                      aria-label="download btn"
+                      onClick={() => handleDownload(id)}
+                    >
+                      <GetAppRoundedIcon />
+                    </IconButton>
+                  </p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-          <Divider />
         </div>
-      </Grow>
-    </div>
-  );
-  return (
-    <AutoSizer>
-      {({ height, width }) => {
-        return (
-          <List
-            className="List"
-            height={height - 66}
-            itemCount={list.length}
-            itemSize={130}
-            width={width}
-          >
-            {Row}
-          </List>
-        );
-      }}
-    </AutoSizer>
-  );
-});
+      );
+    };
+    return (
+      <AutoSizer>
+        {({ height, width }) => {
+          itemsPerRow = Math.floor(width / item.width);
+          var rowCount = Math.ceil(list.length / itemsPerRow);
+          margin = (width - itemsPerRow * item.width) / itemsPerRow;
+          return (
+            <List
+              className="List"
+              height={height}
+              itemCount={rowCount}
+              itemSize={item.height}
+              width={width}
+            >
+              {Row}
+            </List>
+          );
+        }}
+      </AutoSizer>
+    );
+  }
+);

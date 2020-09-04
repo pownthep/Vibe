@@ -1,5 +1,12 @@
+@import url("https://rsms.me/inter/inter.css");
+
 :root {
   --scroll-thumb-color: #bdbdbd;
+  --primary-color: #3d5afe;
+}
+
+* {
+  font-family: "Inter", sans-serif;
 }
 
 body {
@@ -20,12 +27,119 @@ a {
   margin-top: 65px;
 }
 
+.banner {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 3;
+  background: linear-gradient(70deg, rgb(0, 0, 0), transparent),
+    linear-gradient(180deg, transparent 50%, rgb(0, 0, 0)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.288), transparent);
+}
+
+.details {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 4;
+  overflow: auto;
+}
+
+.info {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40vh;
+  padding-top: 100px;
+  padding-left: 20px;
+  display: grid;
+  grid-template-columns: auto 90%;
+}
+
+.info-poster {
+  height: calc(40vh - 85px);
+}
+
+.search-container {
+  padding-right: 20px;
+  height: 10vh;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.search-container-left {
+  padding-left: 25px;
+  height: 10vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: white;
+}
+
+::placeholder {
+  color: white;
+}
+
+.show-title {
+  margin: 0;
+}
+
+.imdb-info {
+  padding-left: 20px;
+  width: 90%;
+  overflow: auto;
+  padding-bottom: 20px;
+}
+
+.episode-list {
+  width: 100%;
+  height: 50vh;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.show-desc {
+  max-width: 500px;
+}
+
+.banner-img {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+}
+
 input:focus {
   outline: none;
 }
 
 ::-webkit-scrollbar {
   width: 0px;
+  border-radius: 40px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 40px;
+  -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.37);
 }
 
 .controls {
@@ -33,10 +147,11 @@ input:focus {
   position: absolute;
   bottom: 0px;
   width: inherit;
-  opacity: 0;
   transition: all 300ms ease-in-out;
-  color: white;
   height: inherit;
+  /* background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0), rgba(0,0,0,0.5)); */
+  background-color: rgba(0, 0, 0, 0.61);
+  opacity: 0;
 }
 
 .controls-bot-container {
@@ -49,9 +164,6 @@ input:focus {
   position: absolute;
   bottom: 0px;
   width: inherit;
-  /* backdrop-filter: blur(2px); */
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), black); 
-  /* background-color: black; */
 }
 
 .mpv-player {
@@ -62,11 +174,6 @@ input:focus {
 
 .controls:hover {
   opacity: 1;
-}
-
-button {
-  background-color: none;
-  border: none;
 }
 
 .volume-slider {
@@ -83,33 +190,41 @@ button {
   z-index: 100000000000;
   top: 0px;
   left: 0px;
-  background-color: black;
 }
 
 .player {
-  height: inherit;
-  margin: 0 auto;
-  width: 100%;
-  background-color: black;
-  z-index: 1;
+  position: fixed;
+  height: 202px;
+  width: 360px;
+  top: 65px;
+  right: 0px;
+  z-index: 6;
+  box-shadow:
+  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
 }
 
 #nprogress .bar {
-  background: #11cb5f;
+  background: var(--primary-color);
   height: 3px;
 }
 
 .video-time {
-  margin: 0 auto
+  margin: 0 auto;
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px #11cb5f, 0 0 5px #11cb5f;
+  box-shadow: 0 0 10px var(--primary-color), 0 0 5px var(--primary-color);
 }
 
 #nprogress .spinner-icon {
-  border-top-color: #11cb5f;
-  border-left-color: #11cb5f;
+  border-top-color: var(--primary-color);
+  border-left-color: var(--primary-color);
   display: none;
 }
 
@@ -135,9 +250,9 @@ button {
 }
 .ui-video-seek-slider .track .main {
   width: 100%;
-  height: 3px;
+  height: 5px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 30px;
+  border-radius: 60px;
   position: absolute;
   left: 0;
   top: 8.5px;
@@ -158,6 +273,7 @@ button {
   z-index: 2;
   transform-origin: 0 0;
   transition: 0.5s transform;
+  border-radius: 60px;
 }
 .ui-video-seek-slider .track .main .seek-hover {
   position: absolute;
@@ -169,25 +285,27 @@ button {
   transform-origin: 0 0;
   opacity: 0;
   transition: opacity 0.4s;
+  border-radius: 60px;
 }
 .ui-video-seek-slider .track .main .connect {
   position: absolute;
-  background-color: #11cb5f;
+  background-color: var(--primary-color);
   width: 100%;
   height: 100%;
   z-index: 3;
   left: 0;
   transform: scaleX(0.13);
   transform-origin: 0 0;
+  border-radius: 60px;
 }
 .ui-video-seek-slider .track.active .main {
-  transform: scaleY(2);
+  transform: scaleY(1.2);
 }
 .ui-video-seek-slider .thumb {
   pointer-events: none;
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 15px;
+  height: 0px;
   left: -6px;
   top: 4px;
   z-index: 4;
@@ -198,9 +316,10 @@ button {
   border-radius: 100%;
   width: 100%;
   height: 100%;
-  background-color: #11cb5f;
+  background-color: var(--primary-color);
   opacity: 0;
   transform: scale(0.4);
+  border-radius: 60px;
 }
 .ui-video-seek-slider .thumb.active .handler {
   opacity: 1;
@@ -226,4 +345,12 @@ button {
 }
 .ui-video-seek-slider:hover .track .main .seek-hover {
   opacity: 1;
+}
+
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000000000;
 }

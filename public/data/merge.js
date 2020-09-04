@@ -26,16 +26,16 @@ const readFile = util.promisify(fs.readFile);
       poster: i.poster,
     }));
     fs.writeFile("trimmed.json", JSON.stringify(trimmed), () => {});
-    const trimmedDesktop = data.map((i) => ({
-      id: i.id,
-      name: i.name,
-      poster: i.poster,
-      banner: i.banner,
-      keywords: i.keywords,
-    }));
+    // const trimmedDesktop = data.map((i) => ({
+    //   id: i.id,
+    //   name: i.name,
+    //   poster: i.poster,
+    //   banner: i.banner,
+    //   keywords: i.keywords,
+    // }));
     fs.writeFile(
       "trimmed-desktop.json",
-      JSON.stringify(trimmedDesktop),
+      JSON.stringify(data),
       () => {}
     );
   } catch (error) {}

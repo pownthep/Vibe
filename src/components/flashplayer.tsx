@@ -8,7 +8,6 @@ import {
   closeFullscreen,
   openFullscreen,
   handleError,
-  getURL,
 } from "../utils/utils";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
@@ -287,7 +286,7 @@ function FlashPlayer(props: FlashPlayerProps) {
                 onTimeUpdate={updateSeekBar}
                 onSeeking={() => nprogress.start()}
                 onSeeked={() => nprogress.done()}
-                onError={(e) => {e.currentTarget.src = getURL(id);handleError(e); nprogress.done()}}
+                onError={(e) => {handleError(e); nprogress.done()}}
               />
               <div className="loader" hidden={!state.loadingData}>
                 <CircularProgress />

@@ -10,6 +10,7 @@ const store = require("data-store")({ path: __dirname + "/store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
 const bodyParser = require("body-parser");
+const HTMLParser = require("node-html-parser");
 
 // Express setup
 app.use(cors());
@@ -22,7 +23,7 @@ const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const TOKEN_DIR = __dirname + "/.credentials/";
 const TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 const TEMP_DIR = __dirname + "/.temp/";
-const CHUNK_SIZE = 100000000;
+const CHUNK_SIZE = 10000000;
 const PORT = 80;
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
@@ -121,6 +122,43 @@ function storeToken(token) {
 }
 
 function startLocalServer(oauth2Client) {
+  app.get("/imdb", async (req, res) => {
+    try {
+      if (store.get(req.query.url)) {
+        res.json(store.get(req.query.url));
+        return;
+      }
+      const data = await getIMBD(req.query.url);
+      store.set(req.query.url, data);
+      res.json(data);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+  });
+
+  app.get("/search", async (req, res) => {
+    const response = await axios.get(
+      `https://www.imdb.com/find?q=${req.query.text}`
+    );
+    const html = await response.data;
+    const DOM = HTMLParser.parse(html);
+    const findSection = DOM.querySelectorAll(".findResult").map((d) => ({
+      img: d.querySelector(".primary_photo")
+        ? d
+            .querySelector(".primary_photo")
+            .querySelector("img")
+            .getAttribute("src")
+        : "",
+      link: d
+        .querySelector(".result_text")
+        .querySelector("a")
+        .getAttribute("href"),
+      title: d.querySelector(".result_text").text,
+    }));
+    res.json(findSection);
+  });
+
   app.get("/authenticate", (req, res) => {
     fs.readFile(TOKEN_PATH, function (err) {
       if (err) {
@@ -313,6 +351,7 @@ function startLocalServer(oauth2Client) {
   let downloaderRunning = false;
   async function fileDownloader() {
     if (!store.get("downloads")) {
+      console.log("Downloading");
       downloaderRunning = false;
       return;
     }
@@ -332,6 +371,14 @@ function startLocalServer(oauth2Client) {
         var auth = "Bearer ".concat(access_token);
         var folder = __dirname + "/downloaded";
         var dest = fs.createWriteStream(folder + `/${firstItemValue.name}`);
+        var options = {
+          host: "www.googleapis.com",
+          path: "/drive/v3/files/" + firstItemValue.id + "?alt=media",
+          method: "GET",
+          headers: {
+            Authorization: auth,
+          },
+        };
         callback = function (response) {
           var progress = 0;
           const interval = setInterval(() => {
@@ -347,6 +394,7 @@ function startLocalServer(oauth2Client) {
           });
           response.pipe(dest);
         };
+        var req = https.request(options, callback).end();
       } catch (error) {
         console.log(error);
       }
@@ -443,15 +491,74 @@ function startLocalServer(oauth2Client) {
             access_token,
             `${req.query.id}.mp4`
           ).catch((error) => {
+            console.log(error);
             throw error;
           });
           performRequest_default(req, res, access_token, copiedFile);
         }
       } catch (error) {
         res.status(500).json(error);
+        console.log(error);
       }
     });
   });
+
+  app.get("/stream2", (req, res) => {
+    const range = req.headers.range;
+    downloadVideo(req.query.id, res, req, range, req.query.size);
+  });
+
+  function downloadVideo(id, res, req, range, fileSize) {
+    console.log(id, range, fileSize);
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = end - start + 1;
+      const head = {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunksize,
+        "Content-Type": "video/mp4",
+      };
+      res.writeHead(206, head);
+      var access_token = oauth2Client.credentials.access_token;
+      try {
+        var auth = "Bearer ".concat(access_token);
+        const response = await axios({
+          url: `https://www.googleapis.com/drive/v3/files/${id}?alt=media`,
+          method: "GET",
+          responseType: "stream",
+          headers: {
+            Authorization: auth,
+          },
+        });
+        response.data.pipe(res);
+        var progress = 0;
+        var interval = setInterval(() => {
+          console.log(prettyBytes(progress));
+        }, 1000);
+        response.data.on("data", (data) => {
+          progress += data.length;
+        });
+        response.data.on("end", function () {
+          console.log("data", "end");
+          if (!req.aborted) {
+            res.end();
+          }
+          clearInterval(interval);
+        });
+        res.once("close", function () {
+          console.log("closed");
+          clearInterval(interval);
+          if (typeof response.abort === "function") response.abort();
+          if (typeof response.destroy === "function") response.destroy();
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
 
   app.get("/video/:id", (req, res) => {
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
@@ -496,7 +603,7 @@ function performRequest_default(req, res, access_token, fileInfo) {
       "Accept-Ranges": "bytes",
       "Content-Length": chunksize,
       //'Content-Type': 'video/mp4',
-      "Content-Type": 'video/mp4',
+      "Content-Type": "video/mp4",
     };
     //console.log(chunksize);
     res.writeHead(206, head);
@@ -520,7 +627,7 @@ function performRequest_default(req, res, access_token, fileInfo) {
     console.log("No requested range");
     const head = {
       "Content-Length": fileSize,
-      "Content-Type": 'video/mp4',
+      "Content-Type": "video/mp4",
     };
     res.writeHead(200, head);
     downloadFile(
@@ -681,6 +788,7 @@ function httpCopyFile(fileId, access_token, fileName) {
       });
     });
     req.on("error", function (err) {
+      console.log(error);
       reject(err);
     });
     req.write(data);
@@ -749,28 +857,30 @@ function flushBuffers(arrBuffer, fileId, startByte) {
   return [remainBuffer];
 }
 
-function downloadVideo(id) {
-  return new Promise((resolve, reject) => {
-    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      try {
-        var auth = "Bearer ".concat(access_token);
-        var folder = __dirname + "/downloaded";
-        var dest = fs.createWriteStream(folder + `/${id}.mp4`);
-        const response = await axios({
-          url: `https://www.googleapis.com/drive/v3/files/${id}?alt=media`,
-          method: "GET",
-          responseType: "stream",
-          headers: {
-            Authorization: auth,
-          },
-        });
-        response.data.pipe(dest);
-        dest.on("finish", resolve);
-        dest.on("error", reject);
-      } catch (error) {
-        console.log(error);
-      }
-    });
+const getIMBD = (url) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await axios.get(url);
+      const html = await res.data;
+      const DOM = HTMLParser.parse(html);
+      const rating = DOM.querySelector(".ratingValue").querySelector("strong")
+        .rawText;
+      const genre = DOM.querySelector(".title_wrapper")
+        .querySelector(".subtext")
+        .text.split("|")
+        .map((i) => i.trim().replace(/\n/gm, ""));
+      const desc = DOM.querySelector(".plot_summary")
+        .text.split("\n")
+        .map((i) => i.replace("|", "").trim())
+        .filter((i) => i.length > 0);
+
+      resolve({
+        rating: Number(rating),
+        genre: genre,
+        desc: desc,
+      });
+    } catch (error) {
+      reject(error);
+    }
   });
-}
+};

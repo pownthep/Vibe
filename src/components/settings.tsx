@@ -23,15 +23,20 @@ export default function Settings() {
   };
   if (window.electron) {
     return (
-      <div style={{ marginTop: "70px", display: "flex", justifyContent: "center", fontWeight: "bold" }}>
-        <IconButton
-          color="secondary"
-          onClick={clearCache}
-        >
+      <div
+        style={{
+          marginTop: "70px",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems:"center",
+          fontWeight: "bold",
+        }}
+      >
+        <IconButton color="secondary" onClick={clearCache}>
           <DeleteIcon />
         </IconButton>
         Cache Size: {size}
-        <Divider light />
+        <Divider/>
       </div>
     );
   } else {

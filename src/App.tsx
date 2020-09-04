@@ -25,18 +25,8 @@ import Titlebar from "./components/titlebar";
 import Player from "./components/player";
 import { NavRoute } from "./utils/interfaces";
 import FlashPlayer from "./components/flashplayer";
-
-const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-    primary: {
-      main: "#11cb5f",
-    },
-    secondary: {
-      main: "#ffffff",
-    },
-  },
-});
+import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
+import AddPage from "./components/add_page";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +37,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export const themeState = atom({
+  key: "themeState",
+  default: {
+    palette: {
+      type: "dark",
+    },
+  },
+});
+
 export default function App() {
+  const themeStateValue = useRecoilValue(themeState);
+  const theme = createMuiTheme(themeStateValue as any);
+
   const classes = useStyles();
 
   const routes: Array<NavRoute> = [
@@ -55,75 +57,78 @@ export default function App() {
       path: "/",
       exact: true,
       component: Home,
-      label: "HOME",
+      label: "Home",
       icon: <HomeRoundedIcon />,
     },
     {
       path: "/favourites",
       exact: true,
       component: FavouritePage,
-      label: "FAVORITES",
+      label: "Favourites",
       icon: <FavoriteRoundedIcon />,
     },
     {
       path: "/downloader",
       exact: true,
       component: DownloadPage,
-      label: "DOWNLOADS",
+      label: "Downloads",
       icon: <GetAppRoundedIcon />,
     },
     {
       path: "/drive",
       exact: true,
       component: DrivePage,
-      label: "DRIVE",
+      label: "Drive",
       icon: <CloudRoundedIcon />,
     },
     {
       path: "/history",
       exact: true,
       component: HistoryPage,
-      label: "HISTORY",
+      label: "History",
       icon: <HistoryRoundedIcon />,
     },
     {
       path: "/settings",
       exact: true,
       component: SettingsPage,
-      label: "SETTINGS",
+      label: "Settings",
+      icon: <SettingsRoundedIcon />,
+    },
+    {
+      path: "/add",
+      exact: true,
+      component: AddPage,
+      label: "Add",
       icon: <SettingsRoundedIcon />,
     },
   ];
 
   return (
-    <>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <div className={classes.root}>
-            <CssBaseline />
-            <Titlebar routes={routes} backgroundColor="black" />
-            <main className={classes.content}>
-              <Switch>
-                {routes.map((route) => (
-                  <Route
-                    key={route.path}
-                    exact={route.exact}
-                    path={route.path}
-                    component={route.component}
-                  />
-                ))}
-                <Route
-                  key={"/watch/:id/:epId?"}
-                  exact={true}
-                  path="/watch/:id/:epId?"
-                  component={window.electron ? Player : FlashPlayer}
-                />
-                <Route render={() => <Redirect to="/" />} />
-              </Switch>
-            </main>
-          </div>
-        </ThemeProvider>
-      </Router>
-    </>
+    <ThemeProvider theme={theme}>
+      <div className={classes.root}>
+        <CssBaseline />
+        <Titlebar routes={routes} backgroundColor="black" />
+        <main className={classes.content}>
+          <Switch>
+            {routes.map((route) => (
+              <Route
+                key={route.path}
+                exact={route.exact}
+                path={route.path}
+                component={route.component}
+              />
+            ))}
+            <Route
+              key={"/watch/:id/:epId?"}
+              exact={true}
+              path="/watch/:id/:epId?"
+              component={window.electron ? Player : FlashPlayer}
+            />
+            <Route render={() => <Redirect to="/" />} />
+          </Switch>
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }

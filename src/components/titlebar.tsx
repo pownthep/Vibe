@@ -1,140 +1,58 @@
 import React from "react";
-import {
-  Container,
-} from "../utils/styles";
+import { Container } from "../utils/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
-import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import clsx from "clsx";
-import MenuIcon from "@material-ui/icons/Menu";
+import { Link } from "react-router-dom";
 import { NavRoute } from "../utils/interfaces";
+import { useSetRecoilState } from "recoil";
+import { themeState } from "../App";
+import { Divider, IconButton } from "@material-ui/core";
+import Darkmode from "./darkmode";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
+const useStyles = makeStyles(() => ({
+  navItem: {
+    margin: "5px 20px 5px 20px",
   },
-  nav: {
-    width: "100%",
-    backgroundColor: "inherit",
+  logo: {
+    margin: "0 0 0 20px",
+    height: 30,
   },
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: "auto",
-  },
-  listItemText: {
-    fontWeight: "bold",
-  },
-  drawerPaper: {
-    backgroundColor: "rgba(0,0,0,0.9)",
-    backdropFilter: "blur(2px)",
-  },
-  drawer: {
-    WebkitAppRegion: "no-drag",
+  navText: {
+    fontFamily: "'Inter var', sans-serif",
   },
 }));
 
 type Props = {
-  backgroundColor: string,
-  routes: Array<NavRoute>
-}
-
+  backgroundColor: string;
+  routes: Array<NavRoute>;
+};
 
 export default function Titlebar({ backgroundColor, routes }: Props) {
   const classes = useStyles();
-
-  const [state, setState] = React.useState({
-    left: false,
-  });
-
-  const toggleDrawer = (anchor: any, open: boolean) => (event: any) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-  };
-
-  const history = useHistory();
-
-  const list = (anchor: any) => (
-    <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === "top" || anchor === "bottom",
-      })}
-      role="presentation"
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        <ListItem button>
-          <ListItemIcon>
-            <img
-              src="http://vibe-three.vercel.app/icon.ico"
-              alt="logo"
-              width="35"
-            />
-          </ListItemIcon>
-          <ListItemText primary={<strong>VIBE</strong>} />
-        </ListItem>
-        <Divider />
-        {routes.map((r, index) => (
-          <div key={index}>
-            <ListItem
-              button
-              onClick={() => {
-                toggleDrawer(anchor, false);
-                history.push(r.path);
-              }}
-            >
-              <ListItemIcon>{r.icon}</ListItemIcon>
-              <ListItemText
-                primary={<strong>{r.label}</strong>}
-                classes={{ root: classes.listItemText }}
-              />
-            </ListItem>
-            {index === 4 && <Divider style={{ marginTop: "auto" }} />}
-          </div>
-        ))}
-      </List>
-    </div>
-  );
 
   return (
     <Container backgroundColor={backgroundColor}>
       <div
         style={{
-          width: "auto",
+          width: "100vw",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        {["left"].map((anchor: any) => (
-          <React.Fragment key={anchor}>
-            <IconButton onClick={toggleDrawer(anchor, true)}>
-              <MenuIcon />
-            </IconButton>
-            <Drawer
-              anchor={anchor}
-              open={state.left}
-              onClose={toggleDrawer(anchor, false)}
-              classes={{ root: classes.drawer, paper: classes.drawerPaper }}
-            >
-              {list(anchor)}
-            </Drawer>
-          </React.Fragment>
+        <img
+          src="https://vibe-three.vercel.app/icon.ico"
+          alt="logo"
+          className={classes.logo}
+        />
+        {routes.map((r, index) => (
+          <div key={index} className={classes.navItem}>
+            <Link to={r.path}>{r.label}</Link>
+          </div>
         ))}
-        <h1>VIBE</h1>
+        <div style={{ margin: "0 auto" }}></div>
+        {/* <div className={classes.navItem}>
+          <Darkmode />
+        </div> */}
       </div>
     </Container>
   );

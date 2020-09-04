@@ -1,6 +1,3 @@
-import { OverridableComponent } from "@material-ui/core/OverridableComponent";
-import { SvgIconTypeMap } from "@material-ui/core";
-
 export interface DriveInfo {
   name: string;
   size: string;
@@ -26,6 +23,7 @@ export interface Show {
   keywords: string;
   poster: string;
   episodes: Array<Episode>;
+  imdb: string;
 }
 
 export interface Quota {
@@ -48,19 +46,19 @@ export interface HistoryItem {
   index: string;
   timePos: number;
   currentTime: number;
-  duration: number | null
+  duration: number | null;
 }
 
 export interface APIError {
-  error: string
+  error: string;
 }
 
 export interface History {
-  [index: string]: HistoryItem
+  [index: string]: HistoryItem;
 }
 
 export interface Favourites {
-  [index: string]: boolean 
+  [index: string]: boolean;
 }
 
 export interface NavRoute {
@@ -69,4 +67,10 @@ export interface NavRoute {
   component: () => JSX.Element;
   label: String;
   icon: any;
+}
+
+export interface IMDBSearchResponse {
+  img: string;
+  link: string;
+  title: string;
 }

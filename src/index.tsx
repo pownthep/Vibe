@@ -6,18 +6,32 @@ import "nprogress/nprogress.css";
 import "./index.css";
 import { Show } from "./utils/interfaces";
 import { getCatalogue, handleError } from "./utils/utils";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from "recoil";
 
 declare global {
   interface Window {
-      data: Array<Show>;
-      electron: boolean,
-      shell: any,
-      access: any,
-      remote: any
-      directory: string
+    data: Array<Show>;
+    electron: boolean;
+    shell: any;
+    access: any;
+    remote: any;
+    directory: string;
+    imdb: any
   }
   interface HTMLVideoElement {
-      audioTracks: any
+    audioTracks: any;
   }
 }
 
@@ -27,7 +41,14 @@ declare global {
     if (localStorage["data"]) {
       window.data = JSON.parse(localStorage["data"]);
       nprogress.done();
-      render(<App />, document.getElementById("root"));
+      render(
+        <Router>
+          <RecoilRoot>
+            <App />
+          </RecoilRoot>
+        </Router>,
+        document.getElementById("root")
+      );
       const json = await getCatalogue();
       window.data = json;
       localStorage["data"] = JSON.stringify(json);
@@ -36,7 +57,14 @@ declare global {
       window.data = json;
       localStorage["data"] = JSON.stringify(json);
       nprogress.done();
-      render(<App />, document.getElementById("root"));
+      render(
+        <Router>
+          <RecoilRoot>
+            <App />
+          </RecoilRoot>
+        </Router>,
+        document.getElementById("root")
+      );
     }
   } catch (error) {
     handleError(error);

@@ -1,14 +1,20 @@
-import { Show, Episode, DriveInfo, Quota } from "./interfaces";
+import {
+  Show,
+  Episode,
+  DriveInfo,
+  Quota,
+  IMDBSearchResponse,
+} from "./interfaces";
 
+export const DATA_DOMAIN = "http://localhost:3000";
 export const DOMAIN = "http://localhost";
 export const DL_API = `${DOMAIN}/downloading`;
 export const ADD_TO_DL_API = `${DOMAIN}/add_to_download_queue?id=`;
 export const CACHE_SIZE_API = `${DOMAIN}/cachesize`;
 export const CLEAR_CACHE_API = `${DOMAIN}/clearcache`;
-export const JSON_URL =
-  "https://vibe-three.vercel.app/data/trimmed-desktop.json";
+export const JSON_URL = `${DATA_DOMAIN}/data/trimmed-desktop.json`;
 
-export const SHOWS_PATH = "https://vibe-three.vercel.app/data/shows/";
+export const SHOWS_PATH = `${DATA_DOMAIN}/data/shows/`;
 export const DL_FOLDER_PATH = `${window.directory}/server/downloaded`;
 
 export const deleteFile = async (id: String) => {
@@ -92,12 +98,12 @@ export const deleteCache = async (): Promise<{ error: boolean }> => {
   }
 };
 
-export const getURL = (id: String): string => {
+export const getURL = (id: string): string => {
   return `http://localhost/stream?id=${id}`;
 };
 
 export const getImg = (id: String): string => {
-  return `http://localhost/img/?url=https://lh3.googleusercontent.com/u/0/d/${id}`;
+  return `http://localhost/img/?url=https://lh3.googleusercontent.com/u/0/d/${id}=w300-k-nu-iv1`;
 };
 
 export const getLink = (url: String): string => {
@@ -119,7 +125,7 @@ export const stream = (id: String): string => {
 };
 
 export const getPath = (id: String): string => {
-  return `${__dirname}/server/download/${id}`;
+  return `${window.directory}/server/downloaded/${id}.mp4`;
 };
 
 /* View in fullscreen */
@@ -153,4 +159,20 @@ export const downloadFile = async (id: string): Promise<any> => {
 
 export const handleError = (error: any) => {
   console.error(error);
+};
+
+export const searchIMDB = async (
+  text: string
+): Promise<Array<IMDBSearchResponse>> => {
+  try {
+    const res = await fetch(`${DOMAIN}/search?text=${text}`);
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getIMDBInfo = async (url: string): Promise<any> => {
+  const res = await fetch(`http://localhost/imdb?url=https://www.imdb.com${url}`);
+  return await res.json();
 };

@@ -1,18 +1,7 @@
 import React from "react";
 import { ReactMPV } from "mpv.js";
-import Slider from "@material-ui/core/Slider";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import IconButton from "@material-ui/core/IconButton";
-import { Tooltip } from "@material-ui/core";
-import AudiotrackOutlinedIcon from "@material-ui/icons/AudiotrackOutlined";
-import SubtitlesOutlinedIcon from "@material-ui/icons/SubtitlesOutlined";
-import FullscreenExitOutlinedIcon from "@material-ui/icons/FullscreenExitOutlined";
-import FullscreenOutlinedIcon from "@material-ui/icons/FullscreenOutlined";
-import VolumeDown from "@material-ui/icons/VolumeDown";
 import Grid from "@material-ui/core/Grid";
-import PlayArrowOutlinedIcon from "@material-ui/icons/PlayArrowOutlined";
-import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import { VideoSeekSlider } from "./seekbar";
@@ -24,13 +13,24 @@ import {
   preview,
   downloadFile,
   handleError,
-  toHHMMSS,
-  getLink,
   getURL,
   stream,
+  getLink,
 } from "../utils/utils";
 import { Show, Episode, HistoryItem, Favourites } from "../utils/interfaces";
 import EpisodeList from "./episodelist";
+import VolumeCtrl from "./volume_ctrl";
+import Timer from "./timer";
+import Duration from "./duration";
+import Play from "./play";
+import Audio from "./audio";
+import Subtitle from "./subtitle";
+import Fullscreen from "./fullscreen";
+import FavouriteBtn from "./favourite_btn";
+import { Divider, Button } from "@material-ui/core";
+import { Overlay } from "../utils/styles";
+import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
+import Draggable from "react-draggable";
 
 type PlayerParams = {
   id: string;
@@ -49,6 +49,7 @@ type State = {
   volume_value: number;
   currentEpisode: HistoryItem;
   favourited: boolean;
+  imdb: any;
 };
 
 class Player extends React.PureComponent<Props, State> {
@@ -64,13 +65,14 @@ class Player extends React.PureComponent<Props, State> {
     this.state = {
       pause: true,
       "time-pos": 0,
-      duration: 10000,
+      duration: 100,
       fullscreen: false,
       data: null!,
       episodes: [],
       volume_value: 50,
       currentEpisode: null!,
       favourited: true,
+      imdb: null,
     };
     this.playerContainerEl = React.createRef();
     this.window = window.electron ? window.remote.getCurrentWindow() : window;
@@ -106,18 +108,15 @@ class Player extends React.PureComponent<Props, State> {
           favourited: favourited,
         });
       }
-
-      // Setting current episode
-      if (this.props.match.params.epId && this._isMounted) {
-        const epId = this.props.match.params.epId;
-        const historyString = localStorage.getItem(`history`);
-        if (historyString) {
-          const episode = JSON.parse(historyString)[epId];
-          this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
-        }
-      }
     } catch (error) {
       handleError(error);
+    }
+    if (this.state.data.imdb) {
+      const res = await fetch(
+        `http://localhost/imdb?url=${this.state.data.imdb}`
+      );
+      const data = await res.json();
+      this.setState({ imdb: data });
     }
     nprogress.done();
   }
@@ -133,9 +132,7 @@ class Player extends React.PureComponent<Props, State> {
     });
   }
 
-  togglePause = (e: any) => {
-    e.target.blur();
-    if (!this.state.duration) return;
+  togglePause = () => {
     this.setState({ pause: !this.state.pause });
     this.mpv.property("pause", !this.state.pause);
   };
@@ -146,6 +143,14 @@ class Player extends React.PureComponent<Props, State> {
     ["pause", "time-pos", "duration", "eof-reached"].forEach(observe);
     this.mpv.property("hwdec", "auto");
     this.mpv.command("set", "ao-volume", this.state.volume_value);
+    if (this.props.match.params.epId && this._isMounted) {
+      const epId = this.props.match.params.epId;
+      const historyString = localStorage.getItem(`history`);
+      if (historyString) {
+        const episode = JSON.parse(historyString)[epId];
+        this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
+      }
+    }
   };
   handlePropertyChange = (name: string, value: any) => {
     switch (name) {
@@ -201,7 +206,9 @@ class Player extends React.PureComponent<Props, State> {
   };
 
   handleEpisodeChange = (id: string, name: string, timePos: number = 0) => {
+    console.log("Changing episode");
     nprogress.start();
+
     if (window.electron) {
       const filePath = getPath(id);
       window.access(filePath, (err: any) => {
@@ -210,8 +217,11 @@ class Player extends React.PureComponent<Props, State> {
         } else {
           this.mpv.command("loadfile", filePath);
         }
+        this.setState({ "time-pos": timePos });
+        this.mpv.property("time-pos", timePos);
       });
-    } else document.querySelector("video")?.addEventListener("durationchange", () => nprogress.done());
+    }
+
     const newEpisode: HistoryItem = {
       id: id,
       ep: name,
@@ -244,20 +254,16 @@ class Player extends React.PureComponent<Props, State> {
     });
   };
 
-  handleVolumeChange = (e: any, nv: any) => {
+  handleVolumeChange = (nv: number) => {
     this.setState({ volume_value: nv });
     this.mpv.command("set", "ao-volume", nv);
   };
 
-  cycleSub = (e: any) => {
-    e.target.blur();
-    if (!this.state.duration) return;
+  cycleSubtitleTrack = () => {
     this.mpv.command("keypress", "j");
   };
 
-  cycleAudio = (e: any) => {
-    e.target.blur();
-    if (!this.state.duration) return;
+  cycleAudioTrack = () => {
     this.mpv.command("keypress", "#");
   };
 
@@ -288,214 +294,203 @@ class Player extends React.PureComponent<Props, State> {
     this.setState({ favourited: true });
   };
 
-  videoStyle = { width: "100%", height: "inherit", margin: 0, padding: 0 };
-  containerStyle = {
-    width: "100%",
-    height: "calc(100vh - 65px)",
-    maxHeight: "calc(100vh - 65px)",
-    marginTop: "65px",
-    overflow: "hidden",
-    display: "grid",
-    gridTemplateColumns: "70% 30%",
+  filterEpisodes = (e: any) => {
+    const text = e.target.value;
+    if (text === null || text.length === 0) {
+      this.setState({
+        episodes: this.state.data.episodes,
+      });
+      return;
+    }
+    const filteredList = this.state.data.episodes.filter((e) =>
+      e.name.toLocaleLowerCase().includes(text.toLocaleLowerCase())
+    );
+    this.setState({
+      episodes: filteredList,
+    });
   };
+
+  videoStyle = { width: "100%", height: "inherit", margin: 0, padding: 0 };
 
   render() {
     return (
       <>
         {this.state.data && (
-          <div style={this.containerStyle}>
-            <div ref={this.playerContainerEl} className="player">
-              {!window.electron ? (
-                <video
-                  style={this.videoStyle}
-                  controls
-                  src={
-                    this.state.currentEpisode &&
-                    stream(this.state.currentEpisode.id)
-                  }
-                  autoPlay
-                ></video>
-              ) : (
-                <div className="mpv-player">
-                  <img
-                    src={getLink(this.state.data.banner)}
-                    alt={"banner"}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "inherit",
-                      display: this.state.currentEpisode ? "none" : "block",
-                      objectFit: "fill",
-                    }}
-                  />
-                  <ReactMPV
-                    onReady={this.handleMPVReady}
-                    onPropertyChange={this.handlePropertyChange}
-                    onMouseDown={this.togglePause}
-                  />
-                  <div className="controls">
-                    <div
-                      style={{
-                        margin: "0 auto",
-                        fontWeight: "bold",
-                        position: "absolute",
-                        fontSize: 25,
-                        top: 0,
-                        width: "100%",
-                        textAlign: "center",
-                        paddingLeft: 5,
-                        paddingRight: 5,
-                        background: "rgba(0,0,0,0.7)",
-                      }}
-                    >
-                      {this.state.currentEpisode &&
-                        this.state.currentEpisode.ep}
+          <div
+            style={{
+              width: "100%",
+              position: "absolute",
+              height: "100vh",
+              overflow: "hidden",
+              backgroundColor: "rgba(0, 0, 0, 0.514)",
+            }}
+          >
+            {this.state.data.trailer ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${this.state.data.trailer}?
+                    version=3&controls=0&start=0&autoplay=1&loop=1&rel=0&showinfo=0&playlist=${this.state.data.trailer}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; loop"
+                className="banner"
+              ></iframe>
+            ) : (
+              <img
+                src={this.state.data.banner}
+                className="banner-img"
+                onError={(e: any) => (e.target.style.display = "none")}
+              />
+            )}
+            <div className="overlay"></div>
+            <div className="details">
+              <div className="info">
+                <img
+                  src={getLink(this.state.data.poster)}
+                  alt="banner"
+                  className="info-poster"
+                />
+                <div className="imdb-info">
+                  <div>
+                    <h1 className="show-title">{this.state.data.name}</h1>
+                    <p>
+                      ⭐{" "}
+                      {this.state.imdb
+                        ? this.state.imdb.rating
+                        : this.state.data.rating}{" "}
+                    </p>
+                    <p>
+                      {this.state.imdb &&
+                        this.state.imdb.genre.map((i: string) => `${i} | `)}
+                    </p>
+                    <p className="show-desc">
+                      {this.state.imdb
+                        ? this.state.imdb.desc[0]
+                        : this.state.data.desc}
+                    </p>
+                    <p>
+                      {this.state.imdb
+                        ? this.state.imdb.desc
+                            .slice(1, 10)
+                            .filter((i: string) => !i.includes("See full"))
+                            .map((i: string) => i + "\n")
+                        : this.state.data.keywords}
+                    </p>
+                    <Button variant="contained">Play</Button>
+                    <FavouriteBtn
+                      favourited={this.state.favourited}
+                      addToFavourites={this.addToFavourites}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="search-container-left">
+                <SearchRoundedIcon />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Find episode"
+                  onChange={this.filterEpisodes}
+                />{" "}
+              </div>
+              <div className="episode-list">
+                <EpisodeList
+                  list={this.state.episodes}
+                  setId={this.handleEpisodeChange}
+                  name={this.state.data.name}
+                  handleDownload={this.addToDownload}
+                />
+              </div>
+            </div>
+            <div
+              ref={this.playerContainerEl}
+              className="player"
+              style={{
+                opacity: this.state.currentEpisode ? 1 : 0,
+              }}
+            >
+              <div className="mpv-player">
+                <ReactMPV
+                  onReady={this.handleMPVReady}
+                  onPropertyChange={this.handlePropertyChange}
+                  onMouseDown={this.togglePause}
+                />
+                <div
+                  className="controls"
+                  style={{
+                    display: this.state.currentEpisode ? "block" : "none",
+                  }}
+                >
+                  {this.state.fullscreen && (
+                    <div className="absolute-center">
+                      <Play
+                        pause={this.state.pause}
+                        togglePause={this.togglePause}
+                      />
                     </div>
-                    <div className="controls-bot-container">
-                      <div className="controls-bot">
-                        <div style={{ paddingLeft: 5, paddingRight: 5 }}>
-                          <VideoSeekSlider
-                            max={this.state.duration}
-                            currentTime={this.state["time-pos"]}
-                            progress={this.state["time-pos"] + 300}
-                            onChange={this.handleSeek}
-                            offset={0}
-                            secondsPrefix="00:00:"
-                            minutesPrefix="00:"
-                            thumbnailURL={
-                              this.state.currentEpisode &&
-                              preview(this.state.currentEpisode.id)
-                            }
+                  )}
+                  <div className="controls-bot-container">
+                    <div className="controls-bot">
+                      <div>
+                        <Grid
+                          container
+                          direction="row"
+                          justify="center"
+                          alignItems="center"
+                        >
+                          {this.state.fullscreen && (
+                            <VolumeCtrl
+                              value={this.state.volume_value}
+                              setVolume={this.handleVolumeChange}
+                            />
+                          )}
+                          {this.state.fullscreen && (
+                            <div
+                              style={{
+                                margin: "0 auto",
+                                fontWeight: "bold",
+                                width: "70%",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Timer seconds={this.state["time-pos"]} />
+                              <div style={{ width: "85%", margin: "0 auto" }}>
+                                <VideoSeekSlider
+                                  max={this.state.duration}
+                                  currentTime={this.state["time-pos"]}
+                                  progress={this.state["time-pos"] + 300}
+                                  onChange={this.handleSeek}
+                                  offset={0}
+                                  secondsPrefix="00:00:"
+                                  minutesPrefix="00:"
+                                  thumbnailURL={
+                                    this.state.currentEpisode &&
+                                    preview(this.state.currentEpisode.id)
+                                  }
+                                />
+                              </div>
+                              <Duration seconds={this.state.duration} />
+                            </div>
+                          )}
+                          {this.state.fullscreen && (
+                            <Audio cycleAudioTrack={this.cycleAudioTrack} />
+                          )}
+                          {this.state.fullscreen && (
+                            <Subtitle
+                              cycleSubtitleTrack={this.cycleSubtitleTrack}
+                            />
+                          )}
+                          <Fullscreen
+                            fullscreen={this.state.fullscreen}
+                            toggleFullscreen={this.toggleFullscreen}
                           />
-                        </div>
-                        <div>
-                          <Grid
-                            container
-                            direction="row"
-                            justify="center"
-                            alignItems="center"
-                          >
-                            <div>
-                              <Tooltip title="Toggle play/pause">
-                                <IconButton
-                                  aria-label="toggle play and pause"
-                                  onClick={this.togglePause}
-                                  size="medium"
-                                >
-                                  {this.state.pause ? (
-                                    <PlayArrowOutlinedIcon fontSize="inherit" />
-                                  ) : (
-                                    <PauseCircleOutlineOutlinedIcon fontSize="inherit" />
-                                  )}
-                                </IconButton>
-                              </Tooltip>
-                            </div>
-                            <VolumeDown />
-                            <div className="volume-slider">
-                              <Slider
-                                value={this.state.volume_value}
-                                onChange={this.handleVolumeChange}
-                                aria-labelledby="discrete-slider-custom"
-                                step={1}
-                              />
-                            </div>
-                            <div style={{ margin: "0 auto", fontWeight: "bold" }}>
-                              <p>
-                                {toHHMMSS(this.state["time-pos"])} /{" "}
-                                {toHHMMSS(this.state.duration)}
-                              </p>
-                            </div>
-                            <div>
-                              <Tooltip title="Add to favourites">
-                                <span>
-                                  <IconButton
-                                    aria-label="Add to favourites"
-                                    disabled={this.state.favourited}
-                                    onClick={this.addToFavourites}
-                                  >
-                                    <FavoriteIcon />
-                                  </IconButton>
-                                </span>
-                              </Tooltip>
-                            </div>
-                            <div>
-                              <Tooltip title="Cycle audio track">
-                                <IconButton
-                                  aria-label="cycle audio track"
-                                  onClick={this.cycleAudio}
-                                >
-                                  <AudiotrackOutlinedIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </div>
-                            <div>
-                              <Tooltip title="Cycle subtitle track">
-                                <IconButton
-                                  aria-label="cycle subtitle track"
-                                  onClick={this.cycleSub}
-                                >
-                                  <SubtitlesOutlinedIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </div>
-                            <div>
-                              <Tooltip title="Toggle fullscreen">
-                                <IconButton
-                                  aria-label="cycle subtitle track"
-                                  onClick={this.toggleFullscreen}
-                                >
-                                  {this.state.fullscreen ? (
-                                    <FullscreenExitOutlinedIcon />
-                                  ) : (
-                                    <FullscreenOutlinedIcon />
-                                  )}
-                                </IconButton>
-                              </Tooltip>
-                            </div>
-                          </Grid>
-                        </div>
+                        </Grid>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-            <div
-              style={{
-                height: "100vh",
-                overflow: "hidden",
-                position: "fixed",
-                top: 0,
-                right: 0,
-                width: "30vw",
-                zIndex: 10000000,
-                borderLeft: "1px solid #212121",
-                backgroundColor: "#424242",
-              }}
-            >
-              <input
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  width: "100%",
-                  height: "65px",
-                  backgroundColor: "black",
-                  border: "none",
-                  paddingLeft: "20px",
-                  color: "white",
-                  borderBottom: "1px solid #212121",
-                }}
-                placeholder="Find episode"
-                onChange={this.handleSearch}
-              />
-              <EpisodeList
-                list={this.state.episodes}
-                setId={this.handleEpisodeChange}
-                name={this.state.data.name}
-                handleDownload={this.addToDownload}
-              />
+              </div>
             </div>
           </div>
         )}

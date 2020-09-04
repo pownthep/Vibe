@@ -49,6 +49,7 @@ function createWindow() {
     require(__dirname + "/server/server.bundle.js");
     win.loadFile(path.join(__dirname, "/build/index.html"));
   }
+  win.webContents.setAudioMuted(true)
 
   win.once("ready-to-show", () => {});
 }

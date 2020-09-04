@@ -15,7 +15,6 @@ const useStyles = makeStyles(() => ({
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    backgroundColor: "inherit",
     alignContent: "flex-start",
   },
   gridList: {
@@ -32,7 +31,6 @@ const useStyles = makeStyles(() => ({
     width: "100%",
     height: 230,
     objectFit: "cover",
-    borderRadius: 4,
   },
 }));
 
@@ -84,15 +82,13 @@ export default function Favourites() {
                     titlePosition="top"
                     actionIcon={
                       <IconButton
-                        aria-label={`star ${window.data[parseInt(key)].name}`}
-                        className="favourite-icon"
+                        aria-label="Unfavourite"
                         onClick={() => deleteFav(key)}
                       >
                         <HighlightOffIcon />
                       </IconButton>
                     }
                     actionPosition="left"
-                    className={classes.titleBar}
                   />
                 </GridListTile>
               </Grow>

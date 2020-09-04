@@ -9,7 +9,7 @@ function renderRow(props: any) {
     style: {
       ...style,
       margin: 0,
-      paddingLeft: 20,
+      paddingLeft: 0,
     },
   });
 }
@@ -44,14 +44,15 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
   const itemSize = smUp ? 36 : 48;
 
   const getChildSize = () : number => {
-    return itemSize;
+    return 200;
   };
 
   const getHeight = () => {
-    if (itemCount > 8) {
-      return 8 * itemSize;
-    }
-    return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
+    return 1200;
+    // if (itemCount > 8) {
+    //   return 8 * itemSize;
+    // }
+    // return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
   };
 
   const gridRef = useResetCache(itemCount);
