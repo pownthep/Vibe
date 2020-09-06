@@ -4,11 +4,13 @@ import {
   DriveInfo,
   Quota,
   IMDBSearchResponse,
+  AuthenticateAPiResponse,
 } from "./interfaces";
 
-export const DATA_DOMAIN = "http://localhost:3000";
+export const DATA_DOMAIN = "https://vibe-three.vercel.app";
 export const DOMAIN = "http://localhost";
 export const DL_API = `${DOMAIN}/downloading`;
+export const AUTH_API = `${DOMAIN}/authenticate`;
 export const ADD_TO_DL_API = `${DOMAIN}/add_to_download_queue?id=`;
 export const CACHE_SIZE_API = `${DOMAIN}/cachesize`;
 export const CLEAR_CACHE_API = `${DOMAIN}/clearcache`;
@@ -16,6 +18,15 @@ export const JSON_URL = `${DATA_DOMAIN}/data/trimmed-desktop.json`;
 
 export const SHOWS_PATH = `${DATA_DOMAIN}/data/shows/`;
 export const DL_FOLDER_PATH = `${window.directory}/server/downloaded`;
+
+export const getAuthLink = async (): Promise<AuthenticateAPiResponse> => {
+  const res = await fetch(AUTH_API);
+  return await res.json();
+};
+
+export const controlBtnColor = {
+  color: "white",
+};
 
 export const deleteFile = async (id: String) => {
   const res = await fetch(`http://localhost/delete/${id}`);
@@ -59,11 +70,11 @@ export const fmtName = (s: String): string => {
 };
 
 export const openFolder = (path: String): void => {
-  window.shell.openPath(path);
+  window.openPath(path);
 };
 
 export const openPath = (path: String): void => {
-  window.shell.openPath(path);
+  window.openPath(path);
 };
 
 export const getShow = async (id: String): Promise<Show> => {
@@ -113,7 +124,7 @@ export const getLink = (url: String): string => {
 export const toHHMMSS = (s: number): string => {
   var date = new Date(0);
   date.setSeconds(s);
-  return date.toISOString().substr(11, 8);
+  return date.toISOString().substr(11, 8).replace("00:", "");
 };
 
 export const preview = (id: String): string => {
@@ -173,6 +184,8 @@ export const searchIMDB = async (
 };
 
 export const getIMDBInfo = async (url: string): Promise<any> => {
-  const res = await fetch(`http://localhost/imdb?url=https://www.imdb.com${url}`);
+  const res = await fetch(
+    `http://localhost/imdb?url=https://www.imdb.com${url}`
+  );
   return await res.json();
 };

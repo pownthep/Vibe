@@ -6,8 +6,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import prettyBytes from "pretty-bytes";
 import { deleteFile, getQuota, getDrive, getImg } from "../utils/utils";
 import { DriveInfo, DriveState } from "../utils/interfaces";
-import nprogress from "nprogress";
-import "nprogress/nprogress.css";
+import { useSetRecoilState } from "recoil";
+import { navState } from "../App";
 
 const useStyles = makeStyles({
   root: {
@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 });
 
 export default function Drive() {
+  const setNavState = useSetRecoilState(navState);
   const classes = useStyles();
   const columns = [
     {
@@ -50,6 +51,7 @@ export default function Drive() {
   const [state, setState] = useState({
     data: [],
     info: {
+      user: {} as any,
       usedNumber: 0,
       totalNumber: 1,
       usedString: "0 B",
@@ -59,7 +61,7 @@ export default function Drive() {
   } as DriveState);
 
   useEffect(() => {
-    nprogress.start();
+    setNavState("Google Drive");
     if (!window.electron) return;
     let mounted = true;
     const getState = async () => {
@@ -72,13 +74,12 @@ export default function Drive() {
           info: info,
           loading: false,
         }));
-      nprogress.done();
     };
     getState();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [setNavState]);
   if (window.electron) {
     return (
       <div

@@ -9,12 +9,10 @@ import {
   closeFullscreen,
   openFullscreen,
   getShow,
-  getPath,
   preview,
   downloadFile,
   handleError,
   getURL,
-  stream,
   getLink,
 } from "../utils/utils";
 import { Show, Episode, HistoryItem, Favourites } from "../utils/interfaces";
@@ -27,10 +25,10 @@ import Audio from "./audio";
 import Subtitle from "./subtitle";
 import Fullscreen from "./fullscreen";
 import FavouriteBtn from "./favourite_btn";
-import { Divider, Button } from "@material-ui/core";
-import { Overlay } from "../utils/styles";
-import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
-import Draggable from "react-draggable";
+import { Divider, Typography } from "@material-ui/core";
+import IdleTimer from "react-idle-timer";
+import nProgress from "nprogress";
+import SearchBar from "./search_bar";
 
 type PlayerParams = {
   id: string;
@@ -50,6 +48,8 @@ type State = {
   currentEpisode: HistoryItem;
   favourited: boolean;
   imdb: any;
+  active: boolean;
+  enteredPlayer: boolean;
 };
 
 class Player extends React.PureComponent<Props, State> {
@@ -59,9 +59,11 @@ class Player extends React.PureComponent<Props, State> {
   bannerRef: React.RefObject<unknown>;
   _isMounted: boolean;
   seeking: boolean;
+  idleTimer: any;
   constructor(props: Props) {
     super(props);
     this.mpv = null;
+    this.idleTimer = null;
     this.state = {
       pause: true,
       "time-pos": 0,
@@ -73,6 +75,8 @@ class Player extends React.PureComponent<Props, State> {
       currentEpisode: null!,
       favourited: true,
       imdb: null,
+      active: true,
+      enteredPlayer: false,
     };
     this.playerContainerEl = React.createRef();
     this.window = window.electron ? window.remote.getCurrentWindow() : window;
@@ -122,6 +126,7 @@ class Player extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
+    nProgress.configure({ parent: "body" });
     this._isMounted = false;
     nprogress.done();
     if (!this.state.currentEpisode) return;
@@ -133,6 +138,7 @@ class Player extends React.PureComponent<Props, State> {
   }
 
   togglePause = () => {
+    if (!this.mpv) return;
     this.setState({ pause: !this.state.pause });
     this.mpv.property("pause", !this.state.pause);
   };
@@ -199,6 +205,7 @@ class Player extends React.PureComponent<Props, State> {
   };
 
   handleSeek = (newValue: number) => {
+    if (!this.mpv) return;
     if (!this.state.currentEpisode) return;
     const timePos = newValue;
     this.setState({ "time-pos": timePos });
@@ -206,21 +213,22 @@ class Player extends React.PureComponent<Props, State> {
   };
 
   handleEpisodeChange = (id: string, name: string, timePos: number = 0) => {
+    nProgress.configure({ parent: "#player" });
+    if (!this.mpv) return;
     console.log("Changing episode");
     nprogress.start();
 
-    if (window.electron) {
-      const filePath = getPath(id);
-      window.access(filePath, (err: any) => {
-        if (err) {
-          this.mpv.command("loadfile", getURL(id));
-        } else {
-          this.mpv.command("loadfile", filePath);
-        }
-        this.setState({ "time-pos": timePos });
-        this.mpv.property("time-pos", timePos);
-      });
-    }
+    this.mpv.command("loadfile", getURL(id));
+    console.log("loading url");
+    this.setState({ "time-pos": timePos });
+    this.mpv.property("time-pos", timePos);
+    // window.access(filePath, (err: any) => {
+    //   if (err) {
+    //   } else {
+    //     this.mpv.command("loadfile", filePath);
+    //     console.log("loading file");
+    //   }
+    // });
 
     const newEpisode: HistoryItem = {
       id: id,
@@ -255,15 +263,18 @@ class Player extends React.PureComponent<Props, State> {
   };
 
   handleVolumeChange = (nv: number) => {
+    if (!this.mpv) return;
     this.setState({ volume_value: nv });
     this.mpv.command("set", "ao-volume", nv);
   };
 
   cycleSubtitleTrack = () => {
+    if (!this.mpv) return;
     this.mpv.command("keypress", "j");
   };
 
   cycleAudioTrack = () => {
+    if (!this.mpv) return;
     this.mpv.command("keypress", "#");
   };
 
@@ -310,7 +321,31 @@ class Player extends React.PureComponent<Props, State> {
     });
   };
 
+  handleOnAction = (event: any) => {
+    console.log("user did something", event);
+  };
+
+  handleOnActive = () => {
+    this.setState({ active: true });
+  };
+
+  handleOnIdle = () => {
+    this.setState({ active: false });
+  };
+
   videoStyle = { width: "100%", height: "inherit", margin: 0, padding: 0 };
+
+  onEnterPlayer = () => {
+    this.setState({
+      enteredPlayer: true,
+    });
+  };
+
+  onLeavePlayer = () => {
+    this.setState({
+      enteredPlayer: false,
+    });
+  };
 
   render() {
     return (
@@ -318,131 +353,68 @@ class Player extends React.PureComponent<Props, State> {
         {this.state.data && (
           <div
             style={{
-              width: "100%",
-              position: "absolute",
+              display: "grid",
+              gridTemplateColumns: "60% 40%",
+              paddingTop: 20,
+              overflow: "auto",
               height: "100vh",
-              overflow: "hidden",
-              backgroundColor: "rgba(0, 0, 0, 0.514)",
             }}
           >
-            {this.state.data.trailer ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${this.state.data.trailer}?
-                    version=3&controls=0&start=0&autoplay=1&loop=1&rel=0&showinfo=0&playlist=${this.state.data.trailer}`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; loop"
-                className="banner"
-              ></iframe>
-            ) : (
-              <img
-                src={this.state.data.banner}
-                className="banner-img"
-                onError={(e: any) => (e.target.style.display = "none")}
-              />
-            )}
-            <div className="overlay"></div>
-            <div className="details">
-              <div className="info">
-                <img
-                  src={getLink(this.state.data.poster)}
-                  alt="banner"
-                  className="info-poster"
-                />
-                <div className="imdb-info">
-                  <div>
-                    <h1 className="show-title">{this.state.data.name}</h1>
-                    <p>
-                      ⭐{" "}
-                      {this.state.imdb
-                        ? this.state.imdb.rating
-                        : this.state.data.rating}{" "}
-                    </p>
-                    <p>
-                      {this.state.imdb &&
-                        this.state.imdb.genre.map((i: string) => `${i} | `)}
-                    </p>
-                    <p className="show-desc">
-                      {this.state.imdb
-                        ? this.state.imdb.desc[0]
-                        : this.state.data.desc}
-                    </p>
-                    <p>
-                      {this.state.imdb
-                        ? this.state.imdb.desc
-                            .slice(1, 10)
-                            .filter((i: string) => !i.includes("See full"))
-                            .map((i: string) => i + "\n")
-                        : this.state.data.keywords}
-                    </p>
-                    <Button variant="contained">Play</Button>
-                    <FavouriteBtn
-                      favourited={this.state.favourited}
-                      addToFavourites={this.addToFavourites}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="search-container-left">
-                <SearchRoundedIcon />
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Find episode"
-                  onChange={this.filterEpisodes}
-                />{" "}
-              </div>
-              <div className="episode-list">
-                <EpisodeList
-                  list={this.state.episodes}
-                  setId={this.handleEpisodeChange}
-                  name={this.state.data.name}
-                  handleDownload={this.addToDownload}
-                />
-              </div>
-            </div>
-            <div
-              ref={this.playerContainerEl}
-              className="player"
-              style={{
-                opacity: this.state.currentEpisode ? 1 : 0,
+            <IdleTimer
+              ref={(ref) => {
+                this.idleTimer = ref;
               }}
-            >
-              <div className="mpv-player">
-                <ReactMPV
-                  onReady={this.handleMPVReady}
-                  onPropertyChange={this.handlePropertyChange}
-                  onMouseDown={this.togglePause}
-                />
-                <div
-                  className="controls"
-                  style={{
-                    display: this.state.currentEpisode ? "block" : "none",
-                  }}
-                >
-                  {this.state.fullscreen && (
+              timeout={1500}
+              onActive={this.handleOnActive}
+              onIdle={this.handleOnIdle}
+              debounce={1000}
+            />
+            <div>
+              <div
+                ref={this.playerContainerEl}
+                className="player"
+                style={{ cursor: this.state.active ? "default" : "none" }}
+                onMouseLeave={this.onLeavePlayer}
+                onMouseEnter={this.onEnterPlayer}
+                id="player"
+              >
+                <div className="mpv-player">
+                  <ReactMPV
+                    onReady={this.handleMPVReady}
+                    onPropertyChange={this.handlePropertyChange}
+                    onMouseDown={this.togglePause}
+                  />
+                  <div
+                    className="controls"
+                    style={{
+                      opacity:
+                        (this.state.enteredPlayer && this.state.active) ||
+                        this.state.pause
+                          ? 1
+                          : 0,
+                    }}
+                  >
                     <div className="absolute-center">
                       <Play
                         pause={this.state.pause}
                         togglePause={this.togglePause}
                       />
                     </div>
-                  )}
-                  <div className="controls-bot-container">
-                    <div className="controls-bot">
-                      <div>
-                        <Grid
-                          container
-                          direction="row"
-                          justify="center"
-                          alignItems="center"
-                        >
-                          {this.state.fullscreen && (
+
+                    <div className="controls-bot-container">
+                      <div className="controls-bot">
+                        <div>
+                          <Grid
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center"
+                          >
                             <VolumeCtrl
                               value={this.state.volume_value}
                               setVolume={this.handleVolumeChange}
                             />
-                          )}
-                          {this.state.fullscreen && (
+
                             <div
                               style={{
                                 margin: "0 auto",
@@ -472,25 +444,91 @@ class Player extends React.PureComponent<Props, State> {
                               </div>
                               <Duration seconds={this.state.duration} />
                             </div>
-                          )}
-                          {this.state.fullscreen && (
+
                             <Audio cycleAudioTrack={this.cycleAudioTrack} />
-                          )}
-                          {this.state.fullscreen && (
+
                             <Subtitle
                               cycleSubtitleTrack={this.cycleSubtitleTrack}
                             />
-                          )}
-                          <Fullscreen
-                            fullscreen={this.state.fullscreen}
-                            toggleFullscreen={this.toggleFullscreen}
-                          />
-                        </Grid>
+
+                            <Fullscreen
+                              fullscreen={this.state.fullscreen}
+                              toggleFullscreen={this.toggleFullscreen}
+                            />
+                          </Grid>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              {this.state.currentEpisode && (
+                <div style={{ textAlign: "end", margin: 5 }}>
+                  <Typography variant="h6" gutterBottom>
+                    {this.state.currentEpisode.ep}
+                  </Typography>
+                  <Divider />
+                </div>
+              )}
+              <div className="details">
+                <div className="info">
+                  <img
+                    src={getLink(this.state.data.poster)}
+                    alt="banner"
+                    className="info-poster"
+                  />
+                  <div className="imdb-info">
+                    <h1 className="show-title">
+                      {this.state.data.name}{" "}
+                      <FavouriteBtn
+                        favourited={this.state.favourited}
+                        addToFavourites={this.addToFavourites}
+                      />
+                    </h1>
+                    <p>
+                      <span role="img" aria-label="stars">
+                        ⭐
+                        {this.state.imdb
+                          ? this.state.imdb.rating
+                          : this.state.data.rating}{" "}
+                      </span>
+                    </p>
+                    <p>
+                      {this.state.imdb &&
+                        this.state.imdb.genre.map((i: string) => `${i} | `)}
+                    </p>
+                    <p className="show-desc">
+                      {this.state.imdb
+                        ? this.state.imdb.desc[0]
+                        : this.state.data.desc}
+                    </p>
+                    <p>
+                      {this.state.imdb
+                        ? this.state.imdb.desc
+                            .slice(1, 10)
+                            .filter((i: string) => !i.includes("See full"))
+                            .map((i: string) => i + "\n")
+                        : this.state.data.keywords}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="episode-list">
+              <div
+                style={{
+                  height: 55,
+                  width: "100%",
+                }}
+              >
+                <SearchBar onChangeHandler={this.filterEpisodes} />
+              </div>
+              <EpisodeList
+                list={this.state.episodes}
+                setId={this.handleEpisodeChange}
+                name={this.state.data.name}
+                handleDownload={this.addToDownload}
+              />
             </div>
           </div>
         )}

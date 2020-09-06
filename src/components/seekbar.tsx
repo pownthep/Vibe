@@ -85,7 +85,7 @@ export class VideoSeekSlider extends React.Component<Props, State> {
   };
 
   private changeCurrentTimePosition(pageX: number): void {
-    if(!this.track) return;
+    if (!this.track) return;
     let position: number = pageX - this.track.getBoundingClientRect().left;
 
     position = position < 0 ? 0 : position;
@@ -113,8 +113,11 @@ export class VideoSeekSlider extends React.Component<Props, State> {
     }
   };
 
-  private handleTrackHover = (clear: boolean, e: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-    if(!this.track) return;
+  private handleTrackHover = (
+    clear: boolean,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ): void => {
+    if (!this.track) return;
     let position: number = e.pageX - this.track.getBoundingClientRect().left;
 
     if (clear) {
@@ -198,7 +201,10 @@ export class VideoSeekSlider extends React.Component<Props, State> {
 
     if (this.props.max + (this.props.offset ? this.props.offset : 0) < 60) {
       return this.props.secondsPrefix + times.ss;
-    } else if (this.props.max + (this.props.offset ? this.props.offset : 0) < 3600) {
+    } else if (
+      this.props.max + (this.props.offset ? this.props.offset : 0) <
+      3600
+    ) {
       return this.props.minutesPrefix + times.mm + ":" + times.ss;
     } else {
       return times.hh + ":" + times.mm + ":" + times.ss;
@@ -240,7 +246,7 @@ export class VideoSeekSlider extends React.Component<Props, State> {
     let percent = (this.state.seekHoverPosition * 119) / this.state.trackWidth;
     let y = percent ? Math.floor(percent / 10) : 0;
     let x = percent ? Math.floor(percent % 10) : 0;
-    
+
     if (!this.props.hideHoverTime) {
       return (
         <div
@@ -272,6 +278,7 @@ export class VideoSeekSlider extends React.Component<Props, State> {
                 }}
                 src={this.props.thumbnailURL}
                 alt="preview"
+                onError={(e: any) => (e.target.style.display = "none")}
               />
             </div>
           ) : null}

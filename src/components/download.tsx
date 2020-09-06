@@ -4,22 +4,31 @@ import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { IconButton, Tooltip } from "@material-ui/core";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import PauseCircleFilledIcon from "@material-ui/icons/PauseCircleFilled";
+import PauseRoundedIcon from "@material-ui/icons/PauseRounded";
 import Box from "@material-ui/core/Box";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
-import { openFolder, DL_FOLDER_PATH, DL_API, openPath, getImg, fmtName } from "../utils/utils";
+import {
+  openFolder,
+  DL_FOLDER_PATH,
+  DL_API,
+  openPath,
+  getImg,
+  fmtName,
+} from "../utils/utils";
 
-const useStyles = makeStyles((theme) => ({
+import { useSetRecoilState } from "recoil";
+import { navState } from "../App";
+
+const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
-    maxHeight: "85vh",
+    height: "calc(100vh - 160px)",
     overflow: "auto",
     position: "relative",
   },
@@ -29,7 +38,10 @@ export default function Download() {
   const classes = useStyles();
   const [progress, setProgress] = React.useState({});
 
+  const setNavState = useSetRecoilState(navState);
+
   React.useEffect(() => {
+    setNavState("Downloads");
     let eventSource = new EventSource(DL_API);
     eventSource.onmessage = (e) => {
       let json = JSON.parse(e.data);
@@ -38,20 +50,19 @@ export default function Download() {
     return () => {
       eventSource.close();
     };
-  }, []);
+  }, [setNavState]);
 
-  const handleFolderButtonClick = (e: any) => {
+  const handleFolderButtonClick = () => {
     openFolder(DL_FOLDER_PATH);
-  }
+  };
 
   if (window.electron) {
     return (
       <div
         style={{
           width: "100%",
-          height: "calc(100vh - 65px)",
-          marginTop: "65px",
-          padding: 5,
+          height: "100vh",
+          paddingTop: "8px",
           overflow: "auto",
         }}
       >
@@ -65,15 +76,18 @@ export default function Download() {
           </Tooltip>
         </IconButton>
         <List className={classes.root}>
+          <Divider />
           {Object.entries(progress)
             .reverse()
             .map(([key, value]: any) => (
               <div key={value.id}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar
+                    <img
                       src={getImg(key)}
                       alt="thumbnail"
+                      width="48"
+                      height="27"
                     />
                   </ListItemAvatar>
                   <ListItemText primary={fmtName(value.name)} />
@@ -81,7 +95,7 @@ export default function Download() {
                     <ListItemSecondaryAction>
                       <IconButton edge="end" aria-label="pause button">
                         <Tooltip title="Pause download">
-                          <PauseCircleFilledIcon />
+                          <PauseRoundedIcon />
                         </Tooltip>
                       </IconButton>
                     </ListItemSecondaryAction>
@@ -90,11 +104,11 @@ export default function Download() {
                       <IconButton
                         edge="end"
                         aria-label="play button"
-                        onClick={(e) => {
-                          openPath(`${DL_FOLDER_PATH}/${value.name}`)
+                        onClick={() => {
+                          openPath(`${DL_FOLDER_PATH}/${value.name}`);
                         }}
                       >
-                        <PlayCircleOutlineIcon />
+                        <PlayArrowRoundedIcon />
                       </IconButton>
                     </Tooltip>
                   )}

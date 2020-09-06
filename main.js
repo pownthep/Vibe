@@ -9,6 +9,7 @@ const pluginDir = path.join(
   "build",
   "Release"
 );
+console.log(pluginDir);
 // See pitfalls section for details.
 if (process.platform !== "linux") {
   process.chdir(pluginDir);
@@ -49,7 +50,7 @@ function createWindow() {
     require(__dirname + "/server/server.bundle.js");
     win.loadFile(path.join(__dirname, "/build/index.html"));
   }
-  win.webContents.setAudioMuted(true)
+  win.webContents.setAudioMuted(true);
 
   win.once("ready-to-show", () => {});
 }

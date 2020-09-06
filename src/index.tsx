@@ -6,29 +6,22 @@ import "nprogress/nprogress.css";
 import "./index.css";
 import { Show } from "./utils/interfaces";
 import { getCatalogue, handleError } from "./utils/utils";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-} from "recoil";
+import { BrowserRouter as Router } from "react-router-dom";
+import { RecoilRoot } from "recoil";
+import ResponsiveDrawer from "./App";
 
 declare global {
   interface Window {
     data: Array<Show>;
     electron: boolean;
-    shell: any;
+    openExternal: any;
+    openPath: any;
     access: any;
     remote: any;
     directory: string;
-    imdb: any
+    imdb: any;
+    readFile: any;
+    writeFile: any;
   }
   interface HTMLVideoElement {
     audioTracks: any;
@@ -44,7 +37,7 @@ declare global {
       render(
         <Router>
           <RecoilRoot>
-            <App />
+            <ResponsiveDrawer />
           </RecoilRoot>
         </Router>,
         document.getElementById("root")

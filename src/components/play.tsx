@@ -10,7 +10,8 @@ type Props = {
 
 function Play({ pause, togglePause }: Props) {
   const style = {
-    fontSize: 300,
+    fontSize: 100,
+    color: "white"
   };
 
   const Button = (pause: boolean) => {

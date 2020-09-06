@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import ListboxComponent from "./listbox";
 import { Show } from "../utils/interfaces";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
 import { useHistory } from "react-router-dom";
-import { Divider } from "@material-ui/core";
-import { getLink } from "../utils/utils";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
@@ -16,9 +10,8 @@ type Props = {
   filterList: (text: string) => void;
 };
 
-export default function AutoComplete({ list, filterList }: Props) {
-  const [value, setValue] = useState();
-  const history = useHistory();
+export default function AutoComplete({ filterList }: Props) {
+  const [] = useState();
 
   const handleKeyUp = (e: any) => {
     if (e.keyCode === 13) {
@@ -37,6 +30,7 @@ export default function AutoComplete({ list, filterList }: Props) {
 
   return (
     <div className="search-container">
+      <SearchRoundedIcon />
       <input
         type="text"
         className="search-input"
@@ -44,7 +38,6 @@ export default function AutoComplete({ list, filterList }: Props) {
         onKeyUp={handleKeyUp}
         onChange={handleChange}
       />
-      <SearchRoundedIcon />
     </div>
     // <Autocomplete
     //   id="virtualize-demo"

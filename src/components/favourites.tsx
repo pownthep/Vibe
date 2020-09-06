@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Grow from "@material-ui/core/Grow";
 import { getLink } from "../utils/utils";
+import { useSetRecoilState } from "recoil";
+import { navState } from "../App";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -35,6 +37,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Favourites() {
+  const setNavState = useSetRecoilState(navState);
   const favouritesString = localStorage.getItem("favourites");
   let localFavourites = {};
   if (favouritesString) localFavourites = JSON.parse(favouritesString);
@@ -49,13 +52,16 @@ export default function Favourites() {
     setFavourites(prev);
   };
 
+  useEffect(() => {
+    setNavState("Favourites");
+  }, [setNavState]);
+
   return (
     <div
       style={{
         width: "100%",
-        height: "calc(100vh - 65px)",
-        marginTop: "65px",
-        padding: 5,
+        height: "100vh",
+        paddingTop: 20,
         overflow: "auto",
       }}
     >
@@ -85,7 +91,7 @@ export default function Favourites() {
                         aria-label="Unfavourite"
                         onClick={() => deleteFav(key)}
                       >
-                        <HighlightOffIcon />
+                        <HighlightOffIcon style={{ color: "white" }} />
                       </IconButton>
                     }
                     actionPosition="left"

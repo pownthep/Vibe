@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { useHistory } from "react-router-dom";
 import Poster from "./poster";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
-import AutoComplete from "./autocomplete";
+import { useSetRecoilState } from "recoil";
+import { navState } from "../App";
 
 export default function Home() {
-  const [shows, setShows] = useState(window.data);
+  const setNavState = useSetRecoilState(navState);
+  const [shows] = useState(window.data);
   const item = {
     width: 185,
     height: 265,
@@ -16,12 +18,16 @@ export default function Home() {
     viewMode: 1,
   };
   let itemsPerRow = 1;
-  const [] = React.useState(null);
 
   const history = useHistory();
 
+  useEffect(() => {
+    setNavState("Home");
+  }, [setNavState]);
+
   const handleClick = (id: number): void => {
     nprogress.start();
+    setNavState("");
     history.push("/watch/" + id);
   };
 
@@ -53,54 +59,33 @@ export default function Home() {
     );
   };
 
-  const filterList = (text: string) => {
-    if (!text || text.length === 0) {
-      setShows(window.data);
-      nprogress.done();
-      return;
-    }
-    const filteredList = window.data.filter((s) =>
-      JSON.stringify(s).toLowerCase().includes(text)
-    );
-    setShows(filteredList);
-    nprogress.done();
-  };
-
   return (
     <>
       {shows ? (
-        <div style={{
-          width: "100%",
-          height: "calc(100vh - 65px)",
-          marginTop: "65px",
-          padding: 0,
-        }}>
-          <AutoComplete list={shows} filterList={filterList} />
-          <div
-            style={{
-              width: "100%",
-              height: "calc(90vh - 65px)",
-              padding: 0,
+        <div
+          style={{
+            width: "100%",
+            height: "100vh",
+            paddingTop: 20,
+          }}
+        >
+          <AutoSizer>
+            {({ height, width }) => {
+              itemsPerRow = Math.floor(width / item.width);
+              var rowCount = Math.ceil(shows.length / itemsPerRow);
+              return (
+                <List
+                  className="List"
+                  height={height}
+                  itemCount={rowCount}
+                  itemSize={item.rowHeight}
+                  width={width}
+                >
+                  {Row}
+                </List>
+              );
             }}
-          >
-            <AutoSizer>
-              {({ height, width }) => {
-                itemsPerRow = Math.floor(width / item.width);
-                var rowCount = Math.ceil(shows.length / itemsPerRow);
-                return (
-                  <List
-                    className="List"
-                    height={height}
-                    itemCount={rowCount}
-                    itemSize={item.rowHeight}
-                    width={width}
-                  >
-                    {Row}
-                  </List>
-                );
-              }}
-            </AutoSizer>
-          </div>
+          </AutoSizer>
         </div>
       ) : null}
     </>

@@ -3,6 +3,7 @@ import VolumeDownRoundedIcon from "@material-ui/icons/VolumeDownRounded";
 import VolumeOffRoundedIcon from "@material-ui/icons/VolumeOffRounded";
 import VolumeUpRoundedIcon from "@material-ui/icons/VolumeUpRounded";
 import { IconButton, Slider } from "@material-ui/core";
+import { controlBtnColor } from "../utils/utils";
 
 type Props = {
   value: number;
@@ -20,9 +21,10 @@ function VolumeCtrl({ value, setVolume }: Props) {
   };
 
   const button = (value: number) => {
-    if (value === 0) return <VolumeOffRoundedIcon />;
-    else if (value > 0 && value < 75) return <VolumeDownRoundedIcon />;
-    else return <VolumeUpRoundedIcon />;
+    if (value === 0) return <VolumeOffRoundedIcon style={controlBtnColor} />;
+    else if (value > 0 && value < 75)
+      return <VolumeDownRoundedIcon style={controlBtnColor} />;
+    else return <VolumeUpRoundedIcon style={controlBtnColor} />;
   };
 
   return (
@@ -32,7 +34,7 @@ function VolumeCtrl({ value, setVolume }: Props) {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        width: 130
+        width: 130,
       }}
     >
       <IconButton aria-label="toggle mute" onClick={toggleMute}>

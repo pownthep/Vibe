@@ -15,6 +15,7 @@ const HTMLParser = require("node-html-parser");
 // Express setup
 app.use(cors());
 app.use(express.static("img"));
+app.use(express.static("downloaded"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -160,19 +161,35 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/authenticate", (req, res) => {
-    fs.readFile(TOKEN_PATH, function (err) {
-      if (err) {
-        res.json({
-          authenticated: false,
-          url: oauth2Client.generateAuthUrl({
-            access_type: "offline",
-            scope: SCOPES,
-          }),
-        });
-      } else {
-        res.json({ authenticated: true });
-      }
+    res.set({
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+
+      // enabling CORS
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers":
+        "Origin, X-Requested-With, Content-Type, Accept",
     });
+    let interval = setInterval(() => {
+      fs.readFile(TOKEN_PATH, function (err) {
+        if (err) {
+          const json = {
+            authenticated: false,
+            url: oauth2Client.generateAuthUrl({
+              access_type: "offline",
+              scope: SCOPES,
+            }),
+          };
+          res.write(`data: ${JSON.stringify(json)}\n\n`);
+        } else {
+          const json = { authenticated: true };
+          res.write(`data: ${JSON.stringify(json)}\n\n`);
+          clearInterval(interval);
+        }
+      });
+      console.log("authenticate interval");
+    }, 1000);
   });
 
   app.get("/img", async (req, res) => {
@@ -475,32 +492,42 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/stream", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var fileId = req.query.id;
-      try {
-        const files = await checkFile(fileId, access_token);
-        if (files.length === 1) {
-          console.log("file exist in drive");
-          var fileInfo = files[0];
-          performRequest_default(req, res, access_token, fileInfo);
-        } else {
-          console.log("copying file to drive");
-          const copiedFile = await httpCopyFile(
-            fileId,
-            access_token,
-            `${req.query.id}.mp4`
-          ).catch((error) => {
-            console.log(error);
-            throw error;
+    fs.access(
+      `${__dirname}/downloaded/${req.query.id}.mp4`,
+      fs.constants.F_OK,
+      (err) => {
+        if (err) {
+          refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+            var access_token = oauth2Client.credentials.access_token;
+            var fileId = req.query.id;
+            try {
+              const files = await checkFile(fileId, access_token);
+              if (files.length === 1) {
+                console.log("file exist in drive");
+                var fileInfo = files[0];
+                performRequest_default(req, res, access_token, fileInfo);
+              } else {
+                console.log("copying file to drive");
+                const copiedFile = await httpCopyFile(
+                  fileId,
+                  access_token,
+                  `${req.query.id}.mp4`
+                ).catch((error) => {
+                  console.log(error);
+                  throw error;
+                });
+                performRequest_default(req, res, access_token, copiedFile);
+              }
+            } catch (error) {
+              res.status(500).json(error);
+              console.log(error);
+            }
           });
-          performRequest_default(req, res, access_token, copiedFile);
+        } else {
+          res.sendFile(`${__dirname}/downloaded/${req.query.id}.mp4`);
         }
-      } catch (error) {
-        res.status(500).json(error);
-        console.log(error);
       }
-    });
+    );
   });
 
   app.get("/stream2", (req, res) => {

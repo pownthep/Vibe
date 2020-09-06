@@ -1,9 +1,9 @@
-import React, { memo } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 import { themeState } from "../App";
 import Brightness4RoundedIcon from "@material-ui/icons/Brightness4Rounded";
 import Brightness7RoundedIcon from "@material-ui/icons/Brightness7Rounded";
-import { IconButton } from "@material-ui/core";
+import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 
 function Darkmode() {
   const [theme, setTheme] = useRecoilState(themeState);
@@ -17,8 +17,8 @@ function Darkmode() {
   };
 
   return (
-    <IconButton
-      style={{ WebKitRegion: "no-drag" } as any}
+    <ListItem
+      button
       onClick={() => {
         setTheme((old) => ({
           palette: {
@@ -28,8 +28,11 @@ function Darkmode() {
         }));
       }}
     >
-      {Button()}
-    </IconButton>
+      <ListItemIcon>{Button()}</ListItemIcon>
+      <ListItemText
+        primary={theme.palette.type === "light" ? "Dark Mode" : "Light Mode"}
+      />
+    </ListItem>
   );
 }
 

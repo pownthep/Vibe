@@ -1,33 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-router-dom";
-import Grow from "@material-ui/core/Grow";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { HistoryItem } from "../utils/interfaces";
-import { getImg, toHHMMSS, toDate } from "../utils/utils";
+import { getImg, toHHMMSS } from "../utils/utils";
+import { Typography } from "@material-ui/core";
+import { useSetRecoilState } from "recoil";
+import { navState } from "../App";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
-    height: "80vh",
+    height: "calc(100vh - 68px)",
   },
   thumbnailCtn: {
-    marginRight: 5,
     position: "relative",
     width: "100%",
     height: "inherit",
-    padding: 5,
   },
   thumbnail: {
-    marginRight: 5,
     width: "100%",
     height: "inherit",
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   playBtn: {
     position: "absolute",
@@ -44,24 +45,38 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: 162,
     paddingLeft: 10,
-    paddingTop: 5,
   },
   bgIcon: {
     fontSize: "4rem",
+    color: "white",
+  },
+  progress: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+  },
+  timer: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    background: "rgba(0,0,0,0.8)",
+    padding: 3,
+    borderRadius: 4,
+    color: "white",
   },
 }));
 
 export default function History() {
   const classes = useStyles();
   const [history, setHistory] = useState([] as Array<HistoryItem>);
-  const clearHistory = (e: any) : void => {
+  const clearHistory = (): void => {
     if (history.length > 0) {
       localStorage.removeItem("history");
       setHistory([] as Array<HistoryItem>);
     }
   };
 
-  const getHistory = () : void => {
+  const getHistory = (): void => {
     let localHistory: { [index: string]: HistoryItem } = {};
     const historyString = localStorage.getItem("history");
     if (historyString) localHistory = JSON.parse(historyString);
@@ -70,69 +85,87 @@ export default function History() {
     );
     setHistory(historyArray);
   };
+  const setNavState = useSetRecoilState(navState);
 
   useEffect(() => {
+    setNavState("History");
     getHistory();
-  }, []);
+  }, [setNavState]);
 
-  const Row = ({ index, style }: any) : JSX.Element => {
-    var rowItem = history[index];
-    return (
-      <div style={style}>
-        {rowItem ? (
-          <Grow in={true} timeout={600} key={"listitem-" + rowItem.id}>
-            <div className={classes.listItemContainer}>
+  const Row = memo(
+    ({ index, style }: any): JSX.Element => {
+      var rowItem = history[index];
+      return (
+        <div style={style}>
+          {rowItem ? (
+            <div
+              className={classes.listItemContainer}
+              key={"listitem-" + rowItem.id}
+            >
               <div className={classes.thumbnailCtn}>
                 <img
                   alt={rowItem.title}
                   className={classes.thumbnail}
                   src={getImg(rowItem.id)}
-                  style={{ borderRadius: "5px" }}
                 />
                 <div className={classes.playBtn}>
                   <Tooltip title="Continue watching" placement="right-start">
                     <Link to={`/watch/${rowItem.index}/${rowItem.id}`}>
                       <IconButton edge="end" aria-label="comments">
-                        <PlayCircleOutlineIcon
+                        <PlayArrowRoundedIcon
                           classes={{ root: classes.bgIcon }}
                         />
                       </IconButton>
                     </Link>
                   </Tooltip>
                 </div>
-                <LinearProgress
-                  variant="determinate"
-                  value={
-                    rowItem.duration
-                      ? (rowItem.timePos / rowItem.duration) * 100
-                      : 0
-                  }
-                />
+                <div className={classes.progress}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={
+                      rowItem.duration
+                        ? (rowItem.timePos / rowItem.duration) * 100
+                        : 0
+                    }
+                  />
+                </div>
+                <div className={classes.timer}>
+                  {toHHMMSS(rowItem.timePos).replace("00:", "")}
+                </div>
               </div>
               <div className={classes.historyInfo}>
-                <h2 style={{ margin: 0 }}>
-                  {rowItem.title +
-                    " - " +
-                    ` Episode: ${rowItem.ep} - ${toHHMMSS(rowItem.timePos)}`}
-                </h2>
-                {toDate(rowItem.currentTime)}
+                <Typography
+                  display="block"
+                  gutterBottom
+                  variant="subtitle1"
+                  noWrap={true}
+                >
+                  {rowItem.ep}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  display="block"
+                  gutterBottom
+                  noWrap={true}
+                >
+                  {rowItem.title}
+                </Typography>
               </div>
             </div>
-          </Grow>
-        ) : (
-          <></>
-        )}
-      </div>
-    );
-  };
+          ) : (
+            <></>
+          )}
+        </div>
+      );
+    }
+  );
 
   return (
     <div
       style={{
         width: "100%",
-        height: "calc(100vh - 65px)",
-        marginTop: "65px",
-        padding: 5,
+        height: "100vh",
+        paddingTop: "8px",
         overflow: "auto",
       }}
     >

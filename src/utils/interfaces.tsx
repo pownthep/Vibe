@@ -24,9 +24,15 @@ export interface Show {
   poster: string;
   episodes: Array<Episode>;
   imdb: string;
+  type: string;
 }
 
 export interface Quota {
+  user: {
+    picture: {
+      url: string;
+    };
+  };
   usedNumber: number;
   totalNumber: number;
   usedString: string;
@@ -73,4 +79,9 @@ export interface IMDBSearchResponse {
   img: string;
   link: string;
   title: string;
+}
+
+export interface AuthenticateAPiResponse {
+  authenticated: boolean;
+  url?: string;
 }

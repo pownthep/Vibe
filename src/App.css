@@ -1,1 +1,6 @@
+.box {
+}
 
+.box:hover {
+  background: var(--scrollbarBG);
+}

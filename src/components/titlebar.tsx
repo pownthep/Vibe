@@ -3,17 +3,15 @@ import { Container } from "../utils/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { NavRoute } from "../utils/interfaces";
-import { useSetRecoilState } from "recoil";
-import { themeState } from "../App";
-import { Divider, IconButton } from "@material-ui/core";
 import Darkmode from "./darkmode";
+import LoginButton from "./login_btn";
 
 const useStyles = makeStyles(() => ({
   navItem: {
     margin: "5px 20px 5px 20px",
+    fontWeight: "bold",
   },
   logo: {
-    margin: "0 0 0 20px",
     height: 30,
   },
   navText: {
@@ -37,22 +35,28 @@ export default function Titlebar({ backgroundColor, routes }: Props) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          padding: "0px 20px 0px 20px",
         }}
       >
-        <img
-          src="https://vibe-three.vercel.app/icon.ico"
-          alt="logo"
-          className={classes.logo}
-        />
-        {routes.map((r, index) => (
-          <div key={index} className={classes.navItem}>
-            <Link to={r.path}>{r.label}</Link>
-          </div>
-        ))}
-        <div style={{ margin: "0 auto" }}></div>
-        {/* <div className={classes.navItem}>
+        <div>
           <Darkmode />
-        </div> */}
+        </div>
+        <div style={{ margin: "0 auto" }}></div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {routes.map((r, index) => (
+            <div key={index} className={classes.navItem}>
+              <Link to={r.path}>{r.label}</Link>
+            </div>
+          ))}
+        </div>
+        <div style={{ margin: "0 auto" }}></div>
+        <LoginButton />
       </div>
     </Container>
   );
