@@ -90,7 +90,7 @@ export default function Download() {
                       height="27"
                     />
                   </ListItemAvatar>
-                  <ListItemText primary={fmtName(value.name)} />
+                  <ListItemText primary={(value.name)} />
                   {(value.progress / Number(value.size)) * 100 !== 100 ? (
                     <ListItemSecondaryAction>
                       <IconButton edge="end" aria-label="pause button">

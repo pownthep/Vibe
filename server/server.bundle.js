@@ -10869,7 +10869,7 @@ module.exports={
   "_args": [
     [
       "axios@0.19.2",
-      "C:\\Users\\pl\\Desktop\\Vibe"
+      "/Users/pownthep/Desktop/Vibe"
     ]
   ],
   "_development": true,
@@ -10895,7 +10895,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/axios/-/axios-0.19.2.tgz",
   "_spec": "0.19.2",
-  "_where": "C:\\Users\\pl\\Desktop\\Vibe",
+  "_where": "/Users/pownthep/Desktop/Vibe",
   "author": {
     "name": "Matt Zabriskie"
   },
@@ -26856,7 +26856,7 @@ module.exports={
   "_args": [
     [
       "google-auth-library@0.12.0",
-      "C:\\Users\\pl\\Desktop\\Vibe"
+      "/Users/pownthep/Desktop/Vibe"
     ]
   ],
   "_development": true,
@@ -26881,7 +26881,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/google-auth-library/-/google-auth-library-0.12.0.tgz",
   "_spec": "0.12.0",
-  "_where": "C:\\Users\\pl\\Desktop\\Vibe",
+  "_where": "/Users/pownthep/Desktop/Vibe",
   "author": {
     "name": "Google Inc."
   },
@@ -109733,7 +109733,7 @@ const TOKEN_DIR = __dirname + "/.credentials/";
 const TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 const TEMP_DIR = __dirname + "/.temp/";
 const CHUNK_SIZE = 10000000;
-const PORT = 80;
+const PORT = 8080;
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 const DL_DIR = __dirname + "/downloaded/";
@@ -109869,19 +109869,34 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/authenticate", (req, res) => {
-    fs.readFile(TOKEN_PATH, function (err) {
-      if (err) {
-        res.json({
-          authenticated: false,
-          url: oauth2Client.generateAuthUrl({
-            access_type: "offline",
-            scope: SCOPES,
-          }),
-        });
-      } else {
-        res.json({ authenticated: true });
-      }
+    res.set({
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+
+      // enabling CORS
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers":
+        "Origin, X-Requested-With, Content-Type, Accept",
     });
+    let interval = setInterval(() => {
+      fs.readFile(TOKEN_PATH, function (err) {
+        if (err) {
+          const json = {
+            authenticated: false,
+            url: oauth2Client.generateAuthUrl({
+              access_type: "offline",
+              scope: SCOPES,
+            }),
+          };
+          res.write(`data: ${JSON.stringify(json)}\n\n`);
+        } else {
+          const json = { authenticated: true };
+          res.write(`data: ${JSON.stringify(json)}\n\n`);
+          clearInterval(interval);
+        }
+      });
+    }, 5000);
   });
 
   app.get("/img", async (req, res) => {

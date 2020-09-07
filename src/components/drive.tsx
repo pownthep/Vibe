@@ -85,10 +85,7 @@ export default function Drive() {
       <div
         style={{
           width: "100%",
-          height: "calc(100vh - 65px)",
-          marginTop: "65px",
-          padding: 5,
-          overflow: "auto",
+          height: "100vh",
         }}
       >
         <div className={classes.root}>
