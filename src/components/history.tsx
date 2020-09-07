@@ -17,7 +17,7 @@ import { navState } from "../App";
 const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
-    height: "calc(100vh - 68px)",
+    height: "calc(100vh - 81px)",
   },
   thumbnailCtn: {
     position: "relative",
@@ -165,8 +165,7 @@ export default function History() {
       style={{
         width: "100%",
         height: "100vh",
-        paddingTop: "8px",
-        overflow: "auto",
+        paddingTop: 13,
       }}
     >
       <Tooltip title="Clear history" placement="right-start">

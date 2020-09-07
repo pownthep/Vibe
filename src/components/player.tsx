@@ -167,6 +167,7 @@ class Player extends React.PureComponent<Props, State> {
         this.setState({ pause: value });
         break;
       case "duration":
+        console.log(value);
         this.setState({
           currentEpisode: {
             ...this.state.currentEpisode,
@@ -355,7 +356,7 @@ class Player extends React.PureComponent<Props, State> {
             style={{
               display: "grid",
               gridTemplateColumns: "60% 40%",
-              paddingTop: 20,
+              paddingTop: 25,
               overflow: "auto",
               height: "100vh",
             }}

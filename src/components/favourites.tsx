@@ -61,7 +61,7 @@ export default function Favourites() {
       style={{
         width: "100%",
         height: "100vh",
-        paddingTop: 20,
+        paddingTop: 25,
         overflow: "auto",
       }}
     >

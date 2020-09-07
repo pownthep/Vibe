@@ -29,7 +29,7 @@ export default function Settings() {
     return (
       <div
         style={{
-          paddingTop: 20,
+          paddingTop: 13,
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",

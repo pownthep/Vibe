@@ -29,6 +29,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import Darkmode from "./components/darkmode";
 import "./App.css";
 import LoginButton from "./components/login_btn";
+import Titlebar from "./components/titlebar";
 
 const drawerWidth = 240;
 
@@ -60,12 +61,14 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    borderRight: "none",
+    "-webkit-app-region": "no-drag",
+    zIndex: 9,
   },
   content: {
     flexGrow: 1,
     paddingLeft: 20,
     paddingRight: 20,
-    borderRadius: 8,
   },
   search: {
     position: "relative",
@@ -294,6 +297,11 @@ function ResponsiveDrawer(props: any) {
 
   return (
     <ThemeProvider theme={theme}>
+      <Titlebar
+        backgroundColor={
+          themeStateValue.palette.type === "dark" ? "#212121" : "#f5f5f5"
+        }
+      />
       <div className={`${themeStateValue.palette.type}`}>
         <CssBaseline />
         <nav className={classes.drawer} aria-label="mailbox folders">

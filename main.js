@@ -30,6 +30,7 @@ function createWindow() {
     width: 1560,
     height: 760,
     titleBarStyle: "hidden",
+    frame: false,
     backgroundColor: "#303030",
     webPreferences: {
       plugins: true,

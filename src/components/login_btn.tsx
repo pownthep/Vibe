@@ -34,16 +34,15 @@ export default function LoginButton() {
       <ListItem
         button
         onClick={() => {
-          if (user.url) window.openExternal(user.url);
+          if (user && !user.authenticated) window.openExternal(user.url);
         }}
-        disabled={user && user.authenticated ? false : true}
         style={{ marginTop: "auto" }}
       >
         {profile && (
           <ListItemAvatar>
             <Avatar
               alt={profile.name}
-              src={profile.user.picture.url as string}
+              src={"https://vibe-three.vercel.app/icon.ico"}
             />
           </ListItemAvatar>
         )}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { NavRoute } from "../utils/interfaces";
 import Darkmode from "./darkmode";
 import LoginButton from "./login_btn";
+import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
   navItem: {
@@ -21,43 +22,11 @@ const useStyles = makeStyles(() => ({
 
 type Props = {
   backgroundColor: string;
-  routes: Array<NavRoute>;
 };
 
-export default function Titlebar({ backgroundColor, routes }: Props) {
+export default function Titlebar({ backgroundColor }: Props) {
   const classes = useStyles();
+  console.log(backgroundColor);
 
-  return (
-    <Container backgroundColor={backgroundColor}>
-      <div
-        style={{
-          width: "100vw",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "0px 20px 0px 20px",
-        }}
-      >
-        <div>
-          <Darkmode />
-        </div>
-        <div style={{ margin: "0 auto" }}></div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {routes.map((r, index) => (
-            <div key={index} className={classes.navItem}>
-              <Link to={r.path}>{r.label}</Link>
-            </div>
-          ))}
-        </div>
-        <div style={{ margin: "0 auto" }}></div>
-        <LoginButton />
-      </div>
-    </Container>
-  );
+  return <Container backgroundColor={backgroundColor}></Container>;
 }

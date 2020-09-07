@@ -106,7 +106,7 @@ a {
 
 .episode-list {
   width: 100%;
-  height: calc(100vh - 20px);
+  height: calc(100vh - 45px);
   padding-left: 20px;
 }
 
