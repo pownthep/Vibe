@@ -117,7 +117,7 @@ class Player extends React.PureComponent<Props, State> {
     }
     if (this.state.data.imdb) {
       const res = await fetch(
-        `http://localhost/imdb?url=${this.state.data.imdb}`
+        `http://localhost:8080/imdb?url=${this.state.data.imdb}`
       );
       const data = await res.json();
       this.setState({ imdb: data });

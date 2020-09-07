@@ -3,25 +3,27 @@ const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { getPluginEntry } = require("mpv.js");
 
-// Absolute path to the plugin directory.
-const pluginDir = path.join(
-  path.dirname(require.resolve("mpv.js")),
-  "build",
-  "Release"
-);
-console.log(pluginDir);
+let os;
+switch (process.platform) {
+  case "darwin":
+    os = "mac";
+    break;
+  case "win32":
+    os = "win";
+    break;
+}
+
+const pdir = path.join(__dirname, "mpv", os);
+
 // See pitfalls section for details.
 if (process.platform !== "linux") {
-  process.chdir(pluginDir);
+  process.chdir(pdir);
 }
 // Fix for latest Electron.
 app.commandLine.appendSwitch("no-sandbox");
 // To support a broader number of systems.
 app.commandLine.appendSwitch("ignore-gpu-blacklist");
-app.commandLine.appendSwitch(
-  "register-pepper-plugins",
-  getPluginEntry(pluginDir)
-);
+app.commandLine.appendSwitch("register-pepper-plugins", getPluginEntry(pdir));
 
 let win;
 function createWindow() {
@@ -36,10 +38,10 @@ function createWindow() {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
     },
-    icon:
-      process.platform !== "darwin"
-        ? path.join(__dirname, "assets/icon.ico")
-        : path.join(__dirname, "assets/icon.icns"),
+    // icon:
+    //   process.platform !== "darwin"
+    //     ? path.join(__dirname, "assets/icon.ico")
+    //     : path.join(__dirname, "assets/icon.icns"),
   });
 
   win.setMenuBarVisibility(false);

@@ -8,7 +8,7 @@ import {
 } from "./interfaces";
 
 export const DATA_DOMAIN = "https://vibe-three.vercel.app";
-export const DOMAIN = "http://localhost";
+export const DOMAIN = "http://localhost:8080";
 export const DL_API = `${DOMAIN}/downloading`;
 export const AUTH_API = `${DOMAIN}/authenticate`;
 export const ADD_TO_DL_API = `${DOMAIN}/add_to_download_queue?id=`;
@@ -29,12 +29,12 @@ export const controlBtnColor = {
 };
 
 export const deleteFile = async (id: String) => {
-  const res = await fetch(`http://localhost/delete/${id}`);
+  const res = await fetch(`${DOMAIN}/delete/${id}`);
   return await res.json();
 };
 export const getQuota = async (): Promise<Quota> => {
   try {
-    const res = await fetch("http://localhost/quota");
+    const res = await fetch(`${DOMAIN}/quota`);
     return await res.json();
   } catch (error) {
     throw error;
@@ -43,7 +43,7 @@ export const getQuota = async (): Promise<Quota> => {
 
 export const getDrive = async (): Promise<Array<DriveInfo>> => {
   try {
-    const res = await fetch("http://localhost/drive");
+    const res = await fetch(`${DOMAIN}/drive`);
     return await res.json();
   } catch (error) {
     throw error;
@@ -110,15 +110,15 @@ export const deleteCache = async (): Promise<{ error: boolean }> => {
 };
 
 export const getURL = (id: string): string => {
-  return `http://localhost/stream?id=${id}`;
+  return `${DOMAIN}/stream?id=${id}`;
 };
 
 export const getImg = (id: String): string => {
-  return `http://localhost/img/?url=https://lh3.googleusercontent.com/u/0/d/${id}=w300-k-nu-iv1`;
+  return `${DOMAIN}/img/?url=https://lh3.googleusercontent.com/u/0/d/${id}=w300-k-nu-iv1`;
 };
 
 export const getLink = (url: String): string => {
-  return `http://localhost/img/?url=${url}`;
+  return `${DOMAIN}/img/?url=${url}`;
 };
 
 export const toHHMMSS = (s: number): string => {
@@ -185,7 +185,7 @@ export const searchIMDB = async (
 
 export const getIMDBInfo = async (url: string): Promise<any> => {
   const res = await fetch(
-    `http://localhost/imdb?url=https://www.imdb.com${url}`
+    `${DOMAIN}/imdb?url=https://www.imdb.com${url}`
   );
   return await res.json();
 };

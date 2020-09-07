@@ -1,66 +1,4 @@
 {
-  "downloads": {
-    "16P4B4EUW3j76cpAVMVl4lRHFz2R2CGe5": {
-      "id": "120EU-JPBaw1OqDMiXDD280R-sYWn-Cgm",
-      "name": "16P4B4EUW3j76cpAVMVl4lRHFz2R2CGe5.mp4",
-      "size": "100011939",
-      "progress": 100011939
-    },
-    "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0": {
-      "id": "11Aw6nltAehlvJUwpJs4IRCVISJZqSYKK",
-      "name": "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0.mp4",
-      "size": "54143829",
-      "progress": 54143829
-    },
-    "1hOqxJN65XETcTClEAyOqjg334EQJF0e5": {
-      "id": "1-8UYHrNZ7LBmpODB-ZA2l3vMI2-o103w",
-      "name": "1hOqxJN65XETcTClEAyOqjg334EQJF0e5.mp4",
-      "size": "56224717",
-      "progress": 56224717
-    },
-    "1xKbxqy0P7UPnbsvZfXt30CSsZxnjaMpQ": {
-      "id": "1aradTidMs7KhvCHIqpA6NEYW6vG3MqXZ",
-      "name": "1xKbxqy0P7UPnbsvZfXt30CSsZxnjaMpQ.mp4",
-      "size": "58326232",
-      "progress": 58326232
-    },
-    "1lTNn3nhOp2imnYitJTnIAUNJy5WZuJUs": {
-      "id": "1tmudzB5JozjLTIeGRCde_0yZ0Jd-iw0e",
-      "name": "1lTNn3nhOp2imnYitJTnIAUNJy5WZuJUs.mp4",
-      "size": "63674588",
-      "progress": 63674588
-    },
-    "1R9wcjswMpKuyecwo1Dn9ynxpVxSmlQ1U": {
-      "id": "1ibOpTqceZmXJ41hWOs4XLQrToUwJyYXL",
-      "name": "1R9wcjswMpKuyecwo1Dn9ynxpVxSmlQ1U.mp4",
-      "size": "56917629",
-      "progress": 56917629
-    },
-    "1sAITxbsCYLPBym9r0fUEt8wZ2Qh0yYZF": {
-      "id": "1yTyq9R2mz6pR6h_jrfelISFQmrwtVCqM",
-      "name": "1sAITxbsCYLPBym9r0fUEt8wZ2Qh0yYZF.mp4",
-      "size": "1860908869",
-      "progress": 1860908869
-    },
-    "11ooDSqp3phMYcI08dYbiorwAS0y1wK-1": {
-      "id": "1gFwCpH0r0fU0s8phH74oC4584__BT2p3",
-      "name": "11ooDSqp3phMYcI08dYbiorwAS0y1wK-1.mp4",
-      "size": "134722865",
-      "progress": 134722865
-    },
-    "1SnGhdBeB5n6dEwVb3nVFt5bHTnUtmefW": {
-      "id": "10px0RNW_JmRlyujQBOK-ksy7ua_nRRdy",
-      "name": "1SnGhdBeB5n6dEwVb3nVFt5bHTnUtmefW.mp4",
-      "size": "1787625320",
-      "progress": 1787625320
-    },
-    "1EJUog-15oRMFa5u_Hg-7g3myIfKfX_Cv": {
-      "id": "1IoCjLznpehMcSE_9Rd6z818GAutlLHc7",
-      "name": "1EJUog-15oRMFa5u_Hg-7g3myIfKfX_Cv.mp4",
-      "size": "1747657463",
-      "progress": 1747657463
-    }
-  },
   "files": [
     {
       "id": "1DGr1PXi0AkCh-G_dTzb5augr5awkpqT5",
@@ -133,14 +71,31 @@
       "size": "54143829"
     }
   ],
+  "downloads": {
+    "1GkCnuLKIiQU2sFPPfgNa18_6nPOarEb0": {
+      "id": "1DGr1PXi0AkCh-G_dTzb5augr5awkpqT5",
+      "name": "1GkCnuLKIiQU2sFPPfgNa18_6nPOarEb0.mp4",
+      "size": "1664037588",
+      "progress": 1664037588
+    },
+    "1GHi1Cx5YHX4gzXqZ7dpga2A_dSzXtYiN": {
+      "id": "1nv5LpQbR1wC3FNWX2apAXvjenNrDRo6l",
+      "name": "1GHi1Cx5YHX4gzXqZ7dpga2A_dSzXtYiN.mp4",
+      "size": "841194206",
+      "progress": 841194206
+    },
+    "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0": {
+      "id": "1is9hGEypLxZSHivNGVSaLy12dseBxinS",
+      "name": "1IH_21zfwFGO6zg0K4OdLMG_qPegYo_V0.mp4",
+      "size": "54143829",
+      "progress": 54143829
+    }
+  },
   "https://www": {
     "imdb": {
       "com/title/tt12227418": {
         "rating": 8.2,
-        "genre": [
-          "Animation, Action, Adventure",
-          "TV Series (2020)"
-        ],
+        "genre": ["Animation, Action, Adventure", "TV Series (2020)"],
         "desc": [
           "A tournament takes place to determine the best fighter among all high school students in Korea.",
           "Stars:",
@@ -148,72 +103,9 @@
           "See full cast & crew »"
         ]
       },
-      "com/title/tt3431758": {
-        "rating": 7.8,
-        "genre": [
-          "13",
-          "23min",
-          "Animation, Adventure, Comedy",
-          "TV Mini-Series (2014)"
-        ],
-        "desc": [
-          "Siblings Sora and Shiro together make up the most feared team of pro gamers in the world, The Blank. When they manage to beat god himself in a game of chess, they are sent to a world where all disputes are settled with games.",
-          "Stars:",
-          "Yoshitsugu Matsuoka, Ai Kayano, Yôko Hikasa",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt10233448": {
-        "rating": 8.8,
-        "genre": [
-          "24min",
-          "Animation, Action, Adventure",
-          "TV Series (2019)"
-        ],
-        "desc": [
-          "Thorfinn pursues a journey with his father's killer in order to take revenge and end his life in a duel as an honorable warrior and pay his father a homage.",
-          "Stars:",
-          "Naoya Uchida, Hiroki Yasumoto, Yûto Uemura",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt5897304": {
-        "rating": 8.5,
-        "genre": [
-          "24min",
-          "Animation, Action, Comedy",
-          "TV Series (2016– )"
-        ],
-        "desc": [
-          "A psychic middle school boy tries to live a normal life and keep his growing powers under control, even though he constantly gets into trouble.",
-          "Stars:",
-          "Setsuo Ito, Takahiro Sakurai, Akio Ôtsuka",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt0388629/": {
-        "rating": 8.7,
-        "genre": [
-          "24min",
-          "Animation, Action, Adventure",
-          "TV Series (1999– )"
-        ],
-        "desc": [
-          "Follows the adventures of Monkey D. Luffy and his pirate crew in order to find the greatest treasure ever left by the legendary Pirate, Gold Roger. The famous mystery treasure named \"One Piece\".",
-          "Creator:",
-          "Eiichiro Oda",
-          "Stars:",
-          "Mayumi Tanaka, Tony Beck, Laurent Vernin",
-          "See full cast & crew »"
-        ]
-      },
       "com/title/tt3398540": {
         "rating": 8.7,
-        "genre": [
-          "24min",
-          "Animation, Comedy, Drama",
-          "TV Series (2014–2020)"
-        ],
+        "genre": ["24min", "Animation, Comedy, Drama", "TV Series (2014–2020)"],
         "desc": [
           "Hinata Shouyou, a short middle school student, gained a sudden love of volleyball after watching a national championship match on TV. Determined to become like the championship's star ...",
           "See full summary »",
@@ -221,153 +113,6 @@
           "Haruichi Furudate",
           "Stars:",
           "Ayumu Murase, Kaito Ishikawa, Yu Hayashi",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt9335498/?ref_=fn_al_tt_1": {
-        "rating": 8.7,
-        "genre": [
-          "25min",
-          "Animation, Action, Fantasy",
-          "TV Series (2019– )"
-        ],
-        "desc": [
-          "A family is attacked by demons and only two members survive - Tanjiro and his sister Nezuko, who is turning into a demon slowly. Tanjiro sets out to become a demon slayer to avenge his family and cure his sister.",
-          "Stars:",
-          "Natsuki Hanae, Zach Aguilar, Abby Trott",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt0315465/?ref_=fn_al_tt_2": {
-        "rating": 3.4,
-        "genre": [
-          "R",
-          "1h 25min",
-          "Horror, Comedy",
-          "Video 19 May 2004"
-        ],
-        "desc": [
-          "When five troubled teens are sentenced by Juvenile Court to clean up an abandoned mental hospital, the dormant demons sleeping in the institution are awakened and begin to take over the teens' bodies one by one.",
-          "Director:",
-          "James Cotten",
-          "Writers:",
-          "James Cotten, Michael B. Druxman (story)",
-          "1 more credit »",
-          "Stars:",
-          "Michelle Acuna, Howard Williams Jr., Adam Huss",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt5914996/?ref_=fn_al_tt_1": {
-        "rating": 7.5,
-        "genre": [
-          "1h 50min",
-          "Animation, Adventure, Comedy",
-          "8 February 2018 (Thailand)"
-        ],
-        "desc": [
-          "Adaption of the sixth Light Novel of series, it follows the story of two new characters - Riku and Shuvi - during the events of the Ancient War, prior to the 10 pledges.",
-          "Director:",
-          "Atsuko Ishizuka",
-          "Writers:",
-          "Yû Kamiya (based on the novel by), Jukki Hanada",
-          "Stars:",
-          "Alexandra Bedford, Jessica Boone, Ricardo Contreras",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt7447044/?ref_=fn_al_tt_2": {
-        "rating": 5.8,
-        "genre": [
-          "3min",
-          "Animation, Short, Fantasy",
-          "TV Series (2014)"
-        ],
-        "desc": [
-          "Picture drama specials included on the Blu-ray/DVD volumes. Showing the main protagonists of the series No Game, No Life in various interesting, funny and sometimes even suggestive every ...",
-          "See full summary »",
-          "Stars:",
-          "Winnie Brandes, Corinna Dorenkamp, Amelia Fischer",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt9373714/?ref_=fn_al_tt_4": {
-        "rating": 5.4,
-        "genre": [
-          "3min",
-          "Animation, Short, Fantasy",
-          "Episode aired 2014"
-        ],
-        "desc": [
-          "Add a Plot »"
-        ]
-      },
-      "com/title/tt9373710/?ref_=fn_al_tt_5": {
-        "rating": 5,
-        "genre": [
-          "3min",
-          "Animation, Short, Fantasy",
-          "Episode aired 2014"
-        ],
-        "desc": [
-          "Add a Plot »"
-        ]
-      },
-      "com/title/tt9679542": {
-        "rating": 8.2,
-        "genre": [
-          "23min",
-          "Animation, Action, Adventure",
-          "TV Series (2019– )"
-        ],
-        "desc": [
-          "One fateful day, all of humanity was petrified by a blinding flash of light. After several millennia, high schooler Taiju awakens and finds himself lost in a world of statues. However, he's...",
-          "See full summary »",
-          "Stars:",
-          "Yûsuke Kobayashi, Manami Numakura, Gen Satô",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt9458304": {
-        "rating": 8.4,
-        "genre": [
-          "30min",
-          "Animation, Action, Adventure",
-          "TV Series (2019– )"
-        ],
-        "desc": [
-          "A father in pursuit of power gives parts of his new-born son to a host of demons. Years later, the son battles those demons to regain what is rightfully his.",
-          "Stars:",
-          "Rio Suzuki, Mugihito, Hiroki Suzuki",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt6455986/?ref_=fn_al_tt_1": {
-        "rating": 7.7,
-        "genre": [
-          "24min",
-          "Animation, Action, Fantasy",
-          "TV Series (2017– )"
-        ],
-        "desc": [
-          "For having insulted God, an arrogant Japanese salaryman in the moment of his sudden death is sentenced to be reborn in an alternate universe similar to 1910's Europe, in an empire torn ...",
-          "See full summary »",
-          "Stars:",
-          "Amber Lee Connors, Monica Rial, Aoi Yûki",
-          "See full cast & crew »"
-        ]
-      },
-      "com/title/tt9335498": {
-        "rating": 8.7,
-        "genre": [
-          "25min",
-          "Animation, Action, Fantasy",
-          "TV Series (2019– )"
-        ],
-        "desc": [
-          "A family is attacked by demons and only two members survive - Tanjiro and his sister Nezuko, who is turning into a demon slowly. Tanjiro sets out to become a demon slayer to avenge his family and cure his sister.",
-          "Stars:",
-          "Natsuki Hanae, Zach Aguilar, Abby Trott",
           "See full cast & crew »"
         ]
       }

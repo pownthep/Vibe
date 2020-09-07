@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { getLink } from "../utils/utils";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { Grow, Fade, Collapse } from "@material-ui/core";
 
 const useStyles = makeStyles({
   media: {
@@ -28,37 +29,24 @@ export default function Poster({ image, name, onClick, id }: Props) {
   const [loaded, setLoaded] = React.useState(false);
   const classes = useStyles();
   const handleClick = () => onClick(id);
-  const onLoad = () => {
-    setLoaded(true);
-  };
 
   return (
-    <div className={classes.media} onClick={handleClick}>
-      <div className={classes.media}>
-        {!loaded && (
-          <Skeleton
-            animation="wave"
-            width="100%"
-            height="265px"
-            variant="rect"
-          ></Skeleton>
-        )}
-        <img
-          className={classes.img}
-          src={getLink(image)}
-          alt={name}
-          onLoad={onLoad}
-          style={{ display: loaded ? "block" : "none" }}
-        />
-        <Typography
-          display="block"
-          gutterBottom
-          noWrap={true}
-          style={{ textAlign: "center" }}
-        >
-          {name}
-        </Typography>
-      </div>
+    <div className="poster animated animatedFadeInUp fadeInUp" onClick={handleClick}>
+        <div className={classes.media}>
+          <img
+            className={classes.img}
+            src={getLink(image)}
+            alt={name}
+          />
+          <Typography
+            display="block"
+            gutterBottom
+            noWrap={true}
+            style={{ textAlign: "center" }}
+          >
+            {name}
+          </Typography>
+        </div>
     </div>
   );
 }

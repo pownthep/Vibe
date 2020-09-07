@@ -20,7 +20,7 @@ export default memo(
       return (
         <div style={style}>
           <div
-            className="box"
+            className="box animated animatedFadeInUp fadeInUp"
             style={{
               display: "grid",
               gridTemplateColumns: "40% 60%",

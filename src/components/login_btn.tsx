@@ -14,7 +14,7 @@ export default function LoginButton() {
   const [profile, setProfile] = useState(null as any);
 
   useEffect(() => {
-    let eventSource = new EventSource("http://localhost/authenticate");
+    let eventSource = new EventSource("http://localhost:8080/authenticate");
     eventSource.onmessage = async (e) => {
       const user = JSON.parse(e.data);
       setUser(user);
@@ -46,7 +46,7 @@ export default function LoginButton() {
             />
           </ListItemAvatar>
         )}
-        {!user && (
+        {user && !user.authenticated && (
           <ListItemIcon>
             <AccountCircleRoundedIcon />
           </ListItemIcon>
@@ -56,7 +56,7 @@ export default function LoginButton() {
             profile ? (
               <strong>{profile.name}</strong>
             ) : (
-              <strong>Authenticate app</strong>
+              <strong>Authenticate</strong>
             )
           }
         />
