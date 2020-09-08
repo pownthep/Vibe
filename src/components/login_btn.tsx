@@ -50,7 +50,7 @@ export default function LoginButton() {
         onClick={() => {
           if (user && !user.authenticated) window.openExternal(user.url);
         }}
-        style={{ margin: 5, borderRadius: 4, width: "auto" }}
+        style={{ margin: 5, borderRadius: 4, width: "auto", marginTop: window.os === "darwin" ? 25:0 }}
       >
         {profile && (
           <ListItemAvatar>

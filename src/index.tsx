@@ -22,6 +22,7 @@ declare global {
     imdb: any;
     readFile: any;
     writeFile: any;
+    os: any;
   }
   interface HTMLVideoElement {
     audioTracks: any;

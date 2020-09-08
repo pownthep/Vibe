@@ -7,3 +7,4 @@ window.openPath = shell.openPath;
 window.directory = __dirname;
 window.access = fs.access;
 window.electron = true;
+window.os = process.platform;

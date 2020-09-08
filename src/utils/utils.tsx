@@ -8,7 +8,7 @@ import {
 } from "./interfaces";
 
 export const DATA_DOMAIN = "https://vibe-three.vercel.app";
-export const DOMAIN = "http://localhost";
+export const DOMAIN = "http://localhost:8080";
 export const DL_API = `${DOMAIN}/downloading`;
 export const AUTH_API = `${DOMAIN}/authenticate`;
 export const ADD_TO_DL_API = `${DOMAIN}/add_to_download_queue?id=`;

@@ -25,7 +25,7 @@ const TOKEN_DIR = __dirname + "/.credentials/";
 const TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 const TEMP_DIR = __dirname + "/.temp/";
 const CHUNK_SIZE = 10000000;
-const PORT = 80;
+const PORT = 8080;
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 const DL_DIR = __dirname + "/downloaded/";
@@ -38,8 +38,8 @@ const credentials = {
     token_uri: "https://oauth2.googleapis.com/token",
     auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
     client_secret: "QlADgLswq3Syw3e44OwNS4oa",
-    redirect_uris: ["http://127.0.0.1/code"],
-    javascript_origins: ["http://127.0.0.1"],
+    redirect_uris: ["http://127.0.0.1:8080/code"],
+    javascript_origins: ["http://127.0.0.1:8080"],
   },
 };
 let authStatus;
