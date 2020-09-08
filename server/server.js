@@ -6,7 +6,7 @@ const app = express();
 const cors = require("cors");
 const axios = require("axios");
 const prettyBytes = require("pretty-bytes");
-const store = require("data-store")({ path: __dirname + "/store.json" });
+const store = require("data-store")({ path: __dirname + "/local_store.json" });
 const download = require("image-downloader");
 const stringHash = require("string-hash");
 const bodyParser = require("body-parser");
@@ -25,7 +25,7 @@ const TOKEN_DIR = __dirname + "/.credentials/";
 const TOKEN_PATH = TOKEN_DIR + "googleDriveAPI.json";
 const TEMP_DIR = __dirname + "/.temp/";
 const CHUNK_SIZE = 10000000;
-const PORT = 8080;
+const PORT = 80;
 const IMG_DIR = __dirname + "/img/";
 const placeholderImg = IMG_DIR + "placeholder.png";
 const DL_DIR = __dirname + "/downloaded/";
@@ -188,7 +188,10 @@ function startLocalServer(oauth2Client) {
           clearInterval(interval);
         }
       });
-    }, 5000);
+    }, 1000);
+    req.on("close", () => {
+      clearInterval(interval);
+    });
   });
 
   app.get("/img", async (req, res) => {
@@ -326,6 +329,8 @@ function startLocalServer(oauth2Client) {
     });
   }
 
+  let DOWNLOAD_MANAGER = [];
+
   app.get("/add_to_download_queue", (req, res) => {
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
       let file = null;
@@ -334,7 +339,6 @@ function startLocalServer(oauth2Client) {
           req.query.id,
           oauth2Client.credentials.access_token
         );
-        console.log(files);
         if (files.length === 1) {
           console.log("file exist in drive");
           file = files[0];
@@ -348,17 +352,16 @@ function startLocalServer(oauth2Client) {
           file = newFile;
         }
         if (file) {
-          store.set("downloads." + req.query.id, {
-            id: file.id,
+          DOWNLOAD_MANAGER.push({
             name: file.name,
-            size: file.size,
             progress: 0,
+            id: file.id,
+            size: file.size,
           });
           if (!downloaderRunning) fileDownloader();
           res.json(file);
         }
       } catch (error) {
-        console.log(error);
         res.json({ error: JSON.stringify(error) });
       }
     });
@@ -366,30 +369,23 @@ function startLocalServer(oauth2Client) {
 
   let downloaderRunning = false;
   async function fileDownloader() {
-    if (!store.get("downloads")) {
-      console.log("Downloading");
-      downloaderRunning = false;
-      return;
-    }
-    let toDownloadList = Object.entries(store.get("downloads")).filter(
-      ([, value]) => value.progress === 0
-    );
-    if (toDownloadList.length === 0) {
+    if (DOWNLOAD_MANAGER.length === 0) {
       downloaderRunning = false;
       return;
     }
     downloaderRunning = true;
-    let firstItemKey = toDownloadList[0][0];
-    let firstItemValue = toDownloadList[0][1];
+    console.log("Downloading", DOWNLOAD_MANAGER[0]);
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
       var access_token = oauth2Client.credentials.access_token;
       try {
         var auth = "Bearer ".concat(access_token);
         var folder = __dirname + "/downloaded";
-        var dest = fs.createWriteStream(folder + `/${firstItemValue.name}`);
+        var dest = fs.createWriteStream(
+          folder + `/${DOWNLOAD_MANAGER[0].name}`
+        );
         var options = {
           host: "www.googleapis.com",
-          path: "/drive/v3/files/" + firstItemValue.id + "?alt=media",
+          path: "/drive/v3/files/" + DOWNLOAD_MANAGER[0].id + "?alt=media",
           method: "GET",
           headers: {
             Authorization: auth,
@@ -397,15 +393,14 @@ function startLocalServer(oauth2Client) {
         };
         callback = function (response) {
           var progress = 0;
-          const interval = setInterval(() => {
-            store.set(`downloads.${firstItemKey}.progress`, progress);
-          }, 1000);
           response.on("data", function (chunk) {
             progress += chunk.length;
+            if (DOWNLOAD_MANAGER[0]) {
+              DOWNLOAD_MANAGER[0].progress = progress;
+            }
           });
           response.on("end", function () {
-            store.set(`downloads.${firstItemKey}.progress`, progress);
-            clearInterval(interval);
+            DOWNLOAD_MANAGER.shift();
             fileDownloader();
           });
           response.pipe(dest);
@@ -446,29 +441,46 @@ function startLocalServer(oauth2Client) {
   app.get("/downloaded", (req, res) => {
     fs.readdir(__dirname + "/downloaded", (err, files) => {
       if (err) res.json([]);
-      else res.json(files);
+      else
+        res.json(
+          files
+            .filter((f) => f.includes(".mp4"))
+            .map(function (fileName) {
+              return {
+                name: fileName,
+                time: fs
+                  .statSync(__dirname + "/downloaded" + "/" + fileName)
+                  .mtime.getTime(),
+              };
+            })
+            .sort(function (a, b) {
+              return a.time - b.time;
+            })
+            .map(function (v) {
+              return v.name;
+            })
+            .reverse()
+        );
     });
   });
 
   app.get("/downloading", (req, res) => {
-    fileDownloader();
     res.set({
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
-
-      // enabling CORS
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers":
         "Origin, X-Requested-With, Content-Type, Accept",
     });
-    if (store.get("downloads"))
-      res.write(`data: ${JSON.stringify(store.get("downloads"))}\n\n`);
-    else res.write(`data: ${JSON.stringify({})}\n\n`);
-    setInterval(() => {
-      if (store.get("downloads"))
-        res.write(`data: ${JSON.stringify(store.get("downloads"))}\n\n`);
+
+    let interval = setInterval(() => {
+      if (DOWNLOAD_MANAGER)
+        res.write(`data: ${JSON.stringify(DOWNLOAD_MANAGER)}\n\n`);
     }, 1000);
+    req.on("close", () => {
+      clearInterval(interval);
+    });
   });
 
   app.get("/code", function (req, res) {

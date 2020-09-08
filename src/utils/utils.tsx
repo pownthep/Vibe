@@ -8,7 +8,7 @@ import {
 } from "./interfaces";
 
 export const DATA_DOMAIN = "https://vibe-three.vercel.app";
-export const DOMAIN = "http://localhost:8080";
+export const DOMAIN = "http://localhost";
 export const DL_API = `${DOMAIN}/downloading`;
 export const AUTH_API = `${DOMAIN}/authenticate`;
 export const ADD_TO_DL_API = `${DOMAIN}/add_to_download_queue?id=`;
@@ -30,6 +30,11 @@ export const controlBtnColor = {
 
 export const deleteFile = async (id: String) => {
   const res = await fetch(`${DOMAIN}/delete/${id}`);
+  return await res.json();
+};
+
+export const getDownloadedFiles = async (): Promise<Array<string>> => {
+  const res = await fetch(`${DOMAIN}/downloaded`);
   return await res.json();
 };
 export const getQuota = async (): Promise<Quota> => {
@@ -77,7 +82,7 @@ export const openPath = (path: String): void => {
   window.openPath(path);
 };
 
-export const getShow = async (id: String): Promise<Show> => {
+export const getShow = async (id: number): Promise<Show> => {
   try {
     const res = await fetch(SHOWS_PATH + id + ".json");
     const data = await res.json();
@@ -184,8 +189,6 @@ export const searchIMDB = async (
 };
 
 export const getIMDBInfo = async (url: string): Promise<any> => {
-  const res = await fetch(
-    `${DOMAIN}/imdb?url=https://www.imdb.com${url}`
-  );
+  const res = await fetch(`${DOMAIN}/imdb?url=https://www.imdb.com${url}`);
   return await res.json();
 };

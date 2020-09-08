@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactMPV } from "mpv.js";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
@@ -14,6 +14,7 @@ import {
   handleError,
   getURL,
   getLink,
+  DOMAIN,
 } from "../utils/utils";
 import { Show, Episode, HistoryItem, Favourites } from "../utils/interfaces";
 import EpisodeList from "./episodelist";
@@ -25,17 +26,19 @@ import Audio from "./audio";
 import Subtitle from "./subtitle";
 import Fullscreen from "./fullscreen";
 import FavouriteBtn from "./favourite_btn";
-import { Divider, Typography } from "@material-ui/core";
+import { Divider, Typography, IconButton } from "@material-ui/core";
 import IdleTimer from "react-idle-timer";
-import nProgress from "nprogress";
 import SearchBar from "./search_bar";
+import LaunchIcon from "@material-ui/icons/Launch";
+import Container from "./container";
 
-type PlayerParams = {
+type Props = {
+  setPlayerNode?: any;
   id: string;
   epId?: string;
+  miniplayer: boolean;
+  timePos?: number;
 };
-
-type Props = RouteComponentProps<PlayerParams>;
 
 type State = {
   pause: boolean;
@@ -96,9 +99,8 @@ class Player extends React.PureComponent<Props, State> {
   async componentDidMount() {
     try {
       // Get show data
-      const showId = this.props.match.params.id;
-      const filtered = await getShow(showId);
-
+      const showId = this.props.id;
+      const filtered = await getShow(Number(showId));
       // Check favorite
       const favouritesString = localStorage.getItem("favourites");
       let localFavourites: { [index: string]: boolean } = {};
@@ -112,21 +114,20 @@ class Player extends React.PureComponent<Props, State> {
           favourited: favourited,
         });
       }
+      if (filtered.imdb) {
+        const res = await fetch(`${DOMAIN}/imdb?url=${this.state.data.imdb}`);
+        const data = await res.json();
+        this.setState({ imdb: data });
+      }
     } catch (error) {
       handleError(error);
-    }
-    if (this.state.data.imdb) {
-      const res = await fetch(
-        `http://localhost:8080/imdb?url=${this.state.data.imdb}`
-      );
-      const data = await res.json();
-      this.setState({ imdb: data });
     }
     nprogress.done();
   }
 
   componentWillUnmount() {
-    nProgress.configure({ parent: "body" });
+    console.time("componentWillUnmount");
+    nprogress.configure({ parent: "body" });
     this._isMounted = false;
     nprogress.done();
     if (!this.state.currentEpisode) return;
@@ -135,6 +136,16 @@ class Player extends React.PureComponent<Props, State> {
       timePos: this.state["time-pos"],
       currentTime: new Date().getTime(),
     });
+    if (!this.props.miniplayer)
+      this.props.setPlayerNode(
+        <Player
+          id={this.props.id}
+          epId={this.state.currentEpisode.id}
+          miniplayer={true}
+          timePos={this.state["time-pos"]}
+        />
+      );
+    console.timeEnd("componentWillUnmount");
   }
 
   togglePause = () => {
@@ -149,12 +160,16 @@ class Player extends React.PureComponent<Props, State> {
     ["pause", "time-pos", "duration", "eof-reached"].forEach(observe);
     this.mpv.property("hwdec", "auto");
     this.mpv.command("set", "ao-volume", this.state.volume_value);
-    if (this.props.match.params.epId && this._isMounted) {
-      const epId = this.props.match.params.epId;
+    if (this.props.epId && this._isMounted) {
+      const epId = this.props.epId;
       const historyString = localStorage.getItem(`history`);
       if (historyString) {
         const episode = JSON.parse(historyString)[epId];
-        this.handleEpisodeChange(episode.id, episode.ep, episode.timePos);
+        this.handleEpisodeChange(
+          episode.id,
+          episode.ep,
+          this.props.timePos ? this.props.timePos : episode.timePos
+        );
       }
     }
   };
@@ -167,7 +182,6 @@ class Player extends React.PureComponent<Props, State> {
         this.setState({ pause: value });
         break;
       case "duration":
-        console.log(value);
         this.setState({
           currentEpisode: {
             ...this.state.currentEpisode,
@@ -214,28 +228,20 @@ class Player extends React.PureComponent<Props, State> {
   };
 
   handleEpisodeChange = (id: string, name: string, timePos: number = 0) => {
-    nProgress.configure({ parent: "#player" });
+    if (!this.props.miniplayer) this.props.setPlayerNode(null);
+    nprogress.configure({ parent: "#player" });
     if (!this.mpv) return;
-    console.log("Changing episode");
     nprogress.start();
 
     this.mpv.command("loadfile", getURL(id));
-    console.log("loading url");
     this.setState({ "time-pos": timePos });
     this.mpv.property("time-pos", timePos);
-    // window.access(filePath, (err: any) => {
-    //   if (err) {
-    //   } else {
-    //     this.mpv.command("loadfile", filePath);
-    //     console.log("loading file");
-    //   }
-    // });
 
     const newEpisode: HistoryItem = {
       id: id,
       ep: name,
       title: this.state.data.name,
-      index: this.props.match.params.id,
+      index: Number(this.props.id),
       timePos: timePos,
       currentTime: new Date().getTime(),
       duration: -1,
@@ -348,17 +354,16 @@ class Player extends React.PureComponent<Props, State> {
     });
   };
 
-  render() {
-    return (
-      <>
-        {this.state.data && (
+  MPVPlayer = () => (
+    <>
+      {this.state.data && (
+        <Container>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "60% 40%",
-              paddingTop: 25,
-              overflow: "auto",
-              height: "100vh",
+              overflow: this.props.miniplayer ? "hidden" : "auto",
+              height: this.props.miniplayer ? 270 : "calc(100vh - 45px)",
             }}
           >
             <IdleTimer
@@ -373,7 +378,7 @@ class Player extends React.PureComponent<Props, State> {
             <div>
               <div
                 ref={this.playerContainerEl}
-                className="player"
+                className={this.props.miniplayer ? "mini-player" : "player"}
                 style={{ cursor: this.state.active ? "default" : "none" }}
                 onMouseLeave={this.onLeavePlayer}
                 onMouseEnter={this.onEnterPlayer}
@@ -385,6 +390,24 @@ class Player extends React.PureComponent<Props, State> {
                     onPropertyChange={this.handlePropertyChange}
                     onMouseDown={this.togglePause}
                   />
+                  {this.props.miniplayer && (
+                    <div className="dark-overlay">
+                      <Link
+                        to={`/watch/${this.props.id}/${this.props.epId}/${this.state["time-pos"]}`}
+                        style={{ position: "absolute", top: 0, right: 0 }}
+                      >
+                        <IconButton>
+                          <LaunchIcon style={{ color: "white" }} />
+                        </IconButton>
+                      </Link>
+                      <div className="absolute-center">
+                        <Play
+                          pause={this.state.pause}
+                          togglePause={this.togglePause}
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div
                     className="controls"
                     style={{
@@ -393,6 +416,7 @@ class Player extends React.PureComponent<Props, State> {
                         this.state.pause
                           ? 1
                           : 0,
+                      display: this.props.miniplayer ? "none" : "block",
                     }}
                   >
                     <div className="absolute-center">
@@ -532,10 +556,14 @@ class Player extends React.PureComponent<Props, State> {
               />
             </div>
           </div>
-        )}
-      </>
-    );
+        </Container>
+      )}
+    </>
+  );
+
+  render() {
+    return this.MPVPlayer();
   }
 }
 
-export default withRouter(Player);
+export default Player;

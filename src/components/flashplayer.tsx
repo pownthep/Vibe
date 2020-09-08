@@ -53,7 +53,7 @@ const useStyles = makeStyles(() => ({
 type FlashPlayerProps = {
   match: {
     params: {
-      id: string;
+      id: number;
       epId: string;
     };
   };
@@ -286,7 +286,10 @@ function FlashPlayer(props: FlashPlayerProps) {
                 onTimeUpdate={updateSeekBar}
                 onSeeking={() => nprogress.start()}
                 onSeeked={() => nprogress.done()}
-                onError={(e) => {handleError(e); nprogress.done()}}
+                onError={(e) => {
+                  handleError(e);
+                  nprogress.done();
+                }}
               />
               <div className="loader" hidden={!state.loadingData}>
                 <CircularProgress />

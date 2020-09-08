@@ -49,7 +49,7 @@ export interface HistoryItem {
   id: string;
   ep: string;
   title: string;
-  index: string;
+  index: number;
   timePos: number;
   currentTime: number;
   duration: number | null;

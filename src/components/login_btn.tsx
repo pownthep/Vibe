@@ -5,16 +5,29 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  makeStyles,
 } from "@material-ui/core";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
-import { getQuota } from "../utils/utils";
+import { getQuota, DOMAIN } from "../utils/utils";
+
+const useStyles = makeStyles((theme) => ({
+  orange: {
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+    backgroundColor: theme.palette.primary.main,
+    fontFamily: "'Times New Roman', Times, serif",
+  },
+  cta: {
+    background: theme.palette.primary.main,
+  },
+}));
 
 export default function LoginButton() {
   const [user, setUser] = useState(null as any);
   const [profile, setProfile] = useState(null as any);
+  const classes = useStyles();
 
   useEffect(() => {
-    let eventSource = new EventSource("http://localhost:8080/authenticate");
+    let eventSource = new EventSource(`${DOMAIN}/authenticate`);
     eventSource.onmessage = async (e) => {
       const user = JSON.parse(e.data);
       setUser(user);
@@ -32,18 +45,16 @@ export default function LoginButton() {
   return (
     <>
       <ListItem
+        className={user && !user.authenticated ? classes.cta : ""}
         button
         onClick={() => {
           if (user && !user.authenticated) window.openExternal(user.url);
         }}
-        style={{ marginTop: "auto" }}
+        style={{ margin: 5, borderRadius: 4, width: "auto" }}
       >
         {profile && (
           <ListItemAvatar>
-            <Avatar
-              alt={profile.name}
-              src={"https://vibe-three.vercel.app/icon.ico"}
-            />
+            <Avatar className={classes.orange}>V</Avatar>
           </ListItemAvatar>
         )}
         {user && !user.authenticated && (
@@ -56,7 +67,7 @@ export default function LoginButton() {
             profile ? (
               <strong>{profile.name}</strong>
             ) : (
-              <strong>Authenticate</strong>
+              <strong>Authenticate app</strong>
             )
           }
         />

@@ -4,7 +4,8 @@
 node_modules/**
 img/**
 cached.json
-server.bundle.js
+bundle.js
 cached.json
 downloaded/**
 chunks
+local_store.json

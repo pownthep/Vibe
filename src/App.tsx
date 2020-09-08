@@ -30,8 +30,9 @@ import Darkmode from "./components/darkmode";
 import "./App.css";
 import LoginButton from "./components/login_btn";
 import Titlebar from "./components/titlebar";
+import Draggable from "react-draggable";
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,16 +60,22 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     height: 36,
   },
-  drawerPaper: {
+  drawerPaperLight: {
     width: drawerWidth,
     borderRight: "none",
     "-webkit-app-region": "no-drag",
     zIndex: 9,
+    background: "#fafafa",
+  },
+  drawerPaperDark: {
+    width: drawerWidth,
+    borderRight: "none",
+    "-webkit-app-region": "no-drag",
+    zIndex: 9,
+    background: "#303030",
   },
   content: {
     flexGrow: 1,
-    paddingLeft: 20,
-    paddingRight: 20,
   },
   search: {
     position: "relative",
@@ -95,6 +102,11 @@ const useStyles = makeStyles((theme) => ({
   },
   inputRoot: {
     color: "inherit",
+  },
+  listItem: {
+    width: "auto",
+    margin: 5,
+    borderRadius: 4,
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -131,14 +143,19 @@ export const navState = atom({
   default: "",
 });
 
+export const playerNode = atom({
+  key: "miniplayer",
+  default: null,
+});
+
 function ResponsiveDrawer(props: any) {
   const { window } = props;
   const classes = useStyles();
   const themeStateValue = useRecoilValue(themeState);
   const theme = createMuiTheme(themeStateValue as any);
-
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [navSate] = useRecoilState(navState);
+  const [player, setPlayer] = useRecoilState(playerNode);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -193,9 +210,14 @@ function ResponsiveDrawer(props: any) {
     <div>
       <List disablePadding={true} dense={true}>
         <LoginButton />
-        <Divider />
         <Link to="/">
-          <ListItem button selected={navSate === "Home"}>
+          <ListItem
+            button
+            selected={navSate === "Home"}
+            classes={{
+              root: classes.listItem,
+            }}
+          >
             <ListItemIcon>
               <HomeRoundedIcon
                 style={
@@ -212,7 +234,13 @@ function ResponsiveDrawer(props: any) {
         </Link>
         {/* {routes.slice(1, 5).map(({ path, label, icon }) => ( */}
         <Link to="/favourites">
-          <ListItem button selected={navSate === "Favourites"}>
+          <ListItem
+            button
+            selected={navSate === "Favourites"}
+            classes={{
+              root: classes.listItem,
+            }}
+          >
             <ListItemIcon>
               <FavoriteRoundedIcon
                 style={
@@ -228,7 +256,13 @@ function ResponsiveDrawer(props: any) {
           </ListItem>
         </Link>
         <Link to="/downloader">
-          <ListItem button selected={navSate === "Downloads"}>
+          <ListItem
+            button
+            selected={navSate === "Downloads"}
+            classes={{
+              root: classes.listItem,
+            }}
+          >
             <ListItemIcon>
               <GetAppRoundedIcon
                 style={
@@ -244,7 +278,13 @@ function ResponsiveDrawer(props: any) {
           </ListItem>
         </Link>
         <Link to="/drive">
-          <ListItem button selected={navSate === "Google Drive"}>
+          <ListItem
+            button
+            selected={navSate === "Google Drive"}
+            classes={{
+              root: classes.listItem,
+            }}
+          >
             <ListItemIcon>
               <CloudRoundedIcon
                 style={
@@ -260,7 +300,13 @@ function ResponsiveDrawer(props: any) {
           </ListItem>
         </Link>
         <Link to="/history">
-          <ListItem button selected={navSate === "History"}>
+          <ListItem
+            button
+            selected={navSate === "History"}
+            classes={{
+              root: classes.listItem,
+            }}
+          >
             <ListItemIcon>
               <HistoryRoundedIcon
                 style={
@@ -282,6 +328,9 @@ function ResponsiveDrawer(props: any) {
             button
             key={routes[5].path}
             selected={navSate === "Settings"}
+            classes={{
+              root: classes.listItem,
+            }}
           >
             <ListItemIcon>{routes[5].icon}</ListItemIcon>
             <ListItemText primary={routes[5].label} />
@@ -314,7 +363,10 @@ function ResponsiveDrawer(props: any) {
               open={mobileOpen}
               onClose={handleDrawerToggle}
               classes={{
-                paper: classes.drawerPaper,
+                paper:
+                  themeStateValue.palette.type === "dark"
+                    ? classes.drawerPaperDark
+                    : classes.drawerPaperLight,
               }}
               ModalProps={{
                 keepMounted: true, // Better open performance on mobile.
@@ -326,7 +378,10 @@ function ResponsiveDrawer(props: any) {
           <Hidden xsDown implementation="css">
             <Drawer
               classes={{
-                paper: classes.drawerPaper,
+                paper:
+                  themeStateValue.palette.type === "dark"
+                    ? classes.drawerPaperDark
+                    : classes.drawerPaperLight,
               }}
               variant="permanent"
               open
@@ -335,7 +390,7 @@ function ResponsiveDrawer(props: any) {
             </Drawer>
           </Hidden>
         </nav>
-        <main className={classes.content}>
+        <main className={classes.content} id="main">
           <Switch>
             {routes.map((route) => (
               <Route
@@ -346,14 +401,39 @@ function ResponsiveDrawer(props: any) {
               />
             ))}
             <Route
-              key={"/watch/:id/:epId?"}
+              key={"/watch/:id/:epId?/:timePos?"}
               exact={true}
-              path="/watch/:id/:epId?"
-              component={Player}
+              path="/watch/:id/:epId?/:timePos?"
+              render={(props) => (
+                <Player
+                  miniplayer={false}
+                  epId={props.match.params.epId}
+                  id={props.match.params.id}
+                  setPlayerNode={setPlayer}
+                  timePos={props.match.params.timePos}
+                />
+              )}
             />
             <Route render={() => <Redirect to="/" />} />
           </Switch>
         </main>
+        {player && (
+          <Draggable>
+            <div
+              style={{
+                position: "fixed",
+                width: 240,
+                height: 135,
+                bottom: 0,
+                left: 0,
+                zIndex: 10000000,
+                overflow: "hidden",
+              }}
+            >
+              {player}
+            </div>
+          </Draggable>
+        )}
       </div>
     </ThemeProvider>
   );

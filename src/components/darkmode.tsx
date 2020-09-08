@@ -18,6 +18,7 @@ function Darkmode() {
 
   return (
     <ListItem
+      style={{ margin: 5, borderRadius: 4, width: "auto" }}
       button
       onClick={() => {
         setTheme((old) => ({

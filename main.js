@@ -37,11 +37,8 @@ function createWindow() {
     webPreferences: {
       plugins: true,
       preload: path.join(__dirname, "preload.js"),
+      enableRemoteModule: true,
     },
-    // icon:
-    //   process.platform !== "darwin"
-    //     ? path.join(__dirname, "assets/icon.ico")
-    //     : path.join(__dirname, "assets/icon.icns"),
   });
 
   win.setMenuBarVisibility(false);
@@ -50,7 +47,7 @@ function createWindow() {
     require(__dirname + "/server/server.js");
     win.loadURL("http://localhost:3000");
   } else {
-    require(__dirname + "/server/server.bundle.js");
+    require(__dirname + "/server/bundle.js");
     win.loadFile(path.join(__dirname, "/build/index.html"));
   }
   win.webContents.setAudioMuted(true);

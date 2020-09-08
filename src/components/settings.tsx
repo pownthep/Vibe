@@ -6,11 +6,23 @@ import Divider from "@material-ui/core/Divider";
 import { getCacheSize, deleteCache } from "../utils/utils";
 import { useSetRecoilState } from "recoil";
 import { navState } from "../App";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    width: "100%",
+    height: "calc(100vh - 25px)",
+    marginTop: "25px",
+    background: theme.palette.background.paper,
+    borderTopLeftRadius: 8,
+    padding: 10,
+  },
+}));
 
 export default function Settings() {
   const [size, setSize] = useState("0 B");
   const setNavState = useSetRecoilState(navState);
-
+  const classes = useStyles();
   useEffect(() => {
     setNavState("Settings");
     if (!window.remote) return;
@@ -27,15 +39,7 @@ export default function Settings() {
   };
   if (window.electron) {
     return (
-      <div
-        style={{
-          paddingTop: 13,
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          fontWeight: "bold",
-        }}
-      >
+      <div className={classes.container}>
         <IconButton color="secondary" onClick={clearCache}>
           <DeleteIcon style={{ color: "red" }} />
         </IconButton>

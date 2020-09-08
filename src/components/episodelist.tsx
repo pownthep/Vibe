@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { IconButton, Typography } from "@material-ui/core";
+import { IconButton, Typography, makeStyles } from "@material-ui/core";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
@@ -14,8 +14,13 @@ type EpisodeListProps = {
   handleDownload?: any;
 };
 
+const useStyles = makeStyles((theme) => ({
+  list: {},
+}));
+
 export default memo(
   ({ list, setId, name, handleDownload }: EpisodeListProps) => {
+    const classes = useStyles();
     const Row = ({ index, style }: any) => {
       return (
         <div style={style}>
@@ -24,6 +29,7 @@ export default memo(
             style={{
               display: "grid",
               gridTemplateColumns: "40% 60%",
+              padding: 5,
             }}
           >
             <img
@@ -86,10 +92,10 @@ export default memo(
         {({ height, width }) => {
           return (
             <List
-              className="List"
-              height={height - 55}
+              className={classes.list}
+              height={height - 75}
               itemCount={list.length}
-              itemSize={120}
+              itemSize={105}
               width={width}
             >
               {Row}

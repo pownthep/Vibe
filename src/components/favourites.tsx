@@ -6,12 +6,11 @@ import GridListTileBar from "@material-ui/core/GridListTileBar";
 import IconButton from "@material-ui/core/IconButton";
 import { Link } from "react-router-dom";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import Grow from "@material-ui/core/Grow";
 import { getLink } from "../utils/utils";
 import { useSetRecoilState } from "recoil";
 import { navState } from "../App";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
@@ -28,11 +27,21 @@ const useStyles = makeStyles(() => ({
     background:
       "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
       "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+    borderRadius: 4,
   },
   banner: {
     width: "100%",
     height: 230,
     objectFit: "cover",
+    borderRadius: 4,
+  },
+  container: {
+    width: "100%",
+    height: "calc(100vh - 25px)",
+    marginTop: "25px",
+    background: theme.palette.background.paper,
+    borderTopLeftRadius: 8,
+    padding: 10,
   },
 }));
 
@@ -43,7 +52,6 @@ export default function Favourites() {
   if (favouritesString) localFavourites = JSON.parse(favouritesString);
   const classes = useStyles();
   const [favourites, setFavourites] = useState(localFavourites);
-  const [checked] = React.useState(true);
 
   const deleteFav = (id: string): void => {
     const prev: { [index: string]: any } = { ...favourites };
@@ -57,47 +65,42 @@ export default function Favourites() {
   }, [setNavState]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        paddingTop: 25,
-        overflow: "auto",
-      }}
-    >
+    <div className={classes.container}>
       {favourites && (
         <div className={classes.root}>
           <GridList
             cellHeight={230}
-            spacing={1}
+            spacing={5}
             className={classes.gridList}
             cols={4}
           >
-            {Object.keys(favourites).map((key, index) => (
-              <Grow in={checked} timeout={300 + index * 50} key={key}>
-                <GridListTile>
-                  <Link to={"/watch/" + key}>
-                    <img
-                      src={getLink(window.data[parseInt(key)].banner)}
-                      alt="cover"
-                      className={classes.banner}
-                    />
-                  </Link>
-                  <GridListTileBar
-                    title={window.data[parseInt(key)].name}
-                    titlePosition="top"
-                    actionIcon={
-                      <IconButton
-                        aria-label="Unfavourite"
-                        onClick={() => deleteFav(key)}
-                      >
-                        <HighlightOffIcon style={{ color: "white" }} />
-                      </IconButton>
-                    }
-                    actionPosition="left"
+            {Object.keys(favourites).map((key) => (
+              <GridListTile
+                key={key}
+                className="animated animatedFadeInUp fadeInUp"
+                style={{ borderRadius: 4, overflow: "hidden" }}
+              >
+                <Link to={"/watch/" + key}>
+                  <img
+                    src={getLink(window.data[parseInt(key)].banner)}
+                    alt="cover"
+                    className={classes.banner}
                   />
-                </GridListTile>
-              </Grow>
+                </Link>
+                <GridListTileBar
+                  title={window.data[parseInt(key)].name}
+                  titlePosition="top"
+                  actionIcon={
+                    <IconButton
+                      aria-label="Unfavourite"
+                      onClick={() => deleteFav(key)}
+                    >
+                      <HighlightOffIcon style={{ color: "white" }} />
+                    </IconButton>
+                  }
+                  actionPosition="left"
+                />
+              </GridListTile>
             ))}
           </GridList>
         </div>

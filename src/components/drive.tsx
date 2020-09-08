@@ -9,7 +9,7 @@ import { DriveInfo, DriveState } from "../utils/interfaces";
 import { useSetRecoilState } from "recoil";
 import { navState } from "../App";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     display: "inline-block",
@@ -19,7 +19,14 @@ const useStyles = makeStyles({
     textAlign: "center",
     fontSize: 20,
   },
-});
+  container: {
+    width: "100%",
+    height: "calc(100vh - 25px)",
+    marginTop: "25px",
+    background: theme.palette.background.paper,
+    borderTopLeftRadius: 8,
+  },
+}));
 
 export default function Drive() {
   const setNavState = useSetRecoilState(navState);
@@ -82,13 +89,7 @@ export default function Drive() {
   }, [setNavState]);
   if (window.electron) {
     return (
-      <div
-        style={{
-          width: "100%",
-          height: "100vh",
-          paddingTop: "25px",
-        }}
-      >
+      <div className={classes.container}>
         <div className={classes.root}>
           {`${state.info.usedString} / ${state.info.totalString} used`}
         </div>

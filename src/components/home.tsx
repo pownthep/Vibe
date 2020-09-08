@@ -7,17 +7,27 @@ import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import { useSetRecoilState } from "recoil";
 import { navState } from "../App";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    width: "100%",
+    height: "calc(100vh - 25px)",
+    marginTop: "25px",
+    background: theme.palette.background.paper,
+    borderTopLeftRadius: 8,
+    padding: 15,
+  },
+}));
 
 export default function Home() {
   const setNavState = useSetRecoilState(navState);
+  const [showPlayer] = useState(false);
   const [shows] = useState(window.data);
-  const item = {
-    width: 185,
-    height: 265,
-    rowHeight: 310,
-    viewMode: 1,
-  };
-  let itemsPerRow = 1;
+  const classes = useStyles();
+  let itemsPerRow = 10;
+  let itemWidth = 150;
+  let itemHeight = 200;
 
   const history = useHistory();
 
@@ -47,6 +57,8 @@ export default function Home() {
         >
           {shows.slice(start, end).map(({ id, name, poster }) => (
             <Poster
+              width={itemWidth}
+              height={itemHeight}
               image={poster}
               name={name}
               key={id}
@@ -61,24 +73,19 @@ export default function Home() {
 
   return (
     <>
-      {shows ? (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            paddingTop: 25,
-          }}
-        >
+      {shows && !showPlayer ? (
+        <div className={classes.container}>
           <AutoSizer>
             {({ height, width }) => {
-              itemsPerRow = Math.floor(width / item.width);
+              itemWidth = (width - 200) / itemsPerRow;
+              itemHeight = itemWidth * 1.5;
               var rowCount = Math.ceil(shows.length / itemsPerRow);
               return (
                 <List
                   className="List"
                   height={height}
                   itemCount={rowCount}
-                  itemSize={item.rowHeight}
+                  itemSize={itemHeight + 35}
                   width={width}
                 >
                   {Row}

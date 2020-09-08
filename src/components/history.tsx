@@ -14,10 +14,20 @@ import { Typography } from "@material-ui/core";
 import { useSetRecoilState } from "recoil";
 import { navState } from "../App";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "calc(100vh - 81px)",
+    background: theme.palette.background.paper,
+    padding: 10,
+    borderRadius: 4,
+  },
+  container: {
+    width: "100%",
+    height: "calc(100vh - 25px)",
+    marginTop: "25px",
+    background: theme.palette.background.paper,
+    borderTopLeftRadius: 8,
   },
   thumbnailCtn: {
     position: "relative",
@@ -96,7 +106,7 @@ export default function History() {
     ({ index, style }: any): JSX.Element => {
       var rowItem = history[index];
       return (
-        <div style={style}>
+        <div style={style} className="animated animatedFadeInUp fadeInUp">
           {rowItem ? (
             <div
               className={classes.listItemContainer}
@@ -161,13 +171,7 @@ export default function History() {
   );
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        paddingTop: 13,
-      }}
-    >
+    <div className={classes.container}>
       <Tooltip title="Clear history" placement="right-start">
         <IconButton
           edge="end"
