@@ -2,9 +2,11 @@ export interface DriveInfo {
   name: string;
   size: string;
   id: string;
-  tableData: {
-    id: number;
-  };
+  mimeType: string;
+  hasThumbnail: boolean;
+  ownedByMe: boolean;
+  thumbnailLink: string;
+  iconLink: string;
 }
 
 export interface Episode {
@@ -33,15 +35,15 @@ export interface Quota {
       url: string;
     };
   };
-  usedNumber: number;
-  totalNumber: number;
-  usedString: string;
-  totalString: string;
+  limit: number;
+  usage: number;
+  usageInDrive: number;
+  usageInDriveTrash: number;
 }
 
 export interface DriveState {
   data: Array<DriveInfo>;
-  info: Quota;
+  info: Quota | null;
   loading: boolean;
 }
 

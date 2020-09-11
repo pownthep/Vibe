@@ -10,7 +10,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { fade, makeStyles, createMuiTheme } from "@material-ui/core/styles";
 import { Switch, Route, Redirect, Link } from "react-router-dom";
-import Player from "./components/player";
 import { NavRoute } from "./utils/interfaces";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import FavoriteRoundedIcon from "@material-ui/icons/FavoriteRounded";
@@ -18,19 +17,21 @@ import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 import CloudRoundedIcon from "@material-ui/icons/CloudRounded";
 import HistoryRoundedIcon from "@material-ui/icons/HistoryRounded";
 import SettingsRoundedIcon from "@material-ui/icons/SettingsRounded";
-import Home from "./components/home";
-import FavouritePage from "./components/favourites";
-import HistoryPage from "./components/history";
-import SettingsPage from "./components/settings";
-import DrivePage from "./components/drive";
-import DownloadPage from "./components/download";
+import Home from "./pages/home";
+import FavouritePage from "./pages/favourites";
+import HistoryPage from "./pages/history";
+import SettingsPage from "./pages/settings";
+import DrivePage from "./pages/drive";
+import DownloadPage from "./pages/download";
 import { atom, useRecoilValue, useRecoilState } from "recoil";
 import { ThemeProvider } from "@material-ui/styles";
-import Darkmode from "./components/darkmode";
-import "./App.css";
-import LoginButton from "./components/login_btn";
-import Titlebar from "./components/titlebar";
-import Draggable from "react-draggable";
+import Darkmode from "./components/sidebar-components/darkmode";
+import LoginButton from "./components/sidebar-components/login_btn";
+import Titlebar from "./components/common-components/titlebar";
+import Upload from "./pages/upload";
+import CloudUploadRoundedIcon from "@material-ui/icons/CloudUploadRounded";
+import PlayerBar from "./components/player-ui-components/player_bar";
+import ShowPage from "./pages/show_page";
 
 const drawerWidth = 180;
 
@@ -64,15 +65,15 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     borderRight: "none",
     "-webkit-app-region": "no-drag",
-    zIndex: 9,
     background: "#fafafa",
+    zIndex: 1,
   },
   drawerPaperDark: {
     width: drawerWidth,
     borderRight: "none",
     "-webkit-app-region": "no-drag",
-    zIndex: 9,
     background: "#303030",
+    zIndex: 1,
   },
   content: {
     flexGrow: 1,
@@ -155,7 +156,6 @@ function ResponsiveDrawer(props: any) {
   const theme = createMuiTheme(themeStateValue as any);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [navSate] = useRecoilState(navState);
-  const [player, setPlayer] = useRecoilState(playerNode);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -168,6 +168,13 @@ function ResponsiveDrawer(props: any) {
       component: Home,
       label: "Home",
       icon: <HomeRoundedIcon />,
+    },
+    {
+      path: "/upload",
+      exact: true,
+      component: Upload,
+      label: "Upload",
+      icon: <CloudUploadRoundedIcon />,
     },
     {
       path: "/favourites",
@@ -210,6 +217,7 @@ function ResponsiveDrawer(props: any) {
     <div>
       <List disablePadding={true} dense={true}>
         <LoginButton />
+        <div className="margin-top-36"></div>
         <Link to="/">
           <ListItem
             button
@@ -232,7 +240,28 @@ function ResponsiveDrawer(props: any) {
             <ListItemText primary="Home" />
           </ListItem>
         </Link>
-        {/* {routes.slice(1, 5).map(({ path, label, icon }) => ( */}
+        <Link to="/upload">
+          <ListItem
+            button
+            selected={navSate === "Upload"}
+            classes={{
+              root: classes.listItem,
+            }}
+          >
+            <ListItemIcon>
+              <CloudUploadRoundedIcon
+                style={
+                  {
+                    color:
+                      navSate === "Upload" &&
+                      themeStateValue.palette.primary.main,
+                  } as any
+                }
+              />
+            </ListItemIcon>
+            <ListItemText primary="Upload" />
+          </ListItem>
+        </Link>
         <Link to="/favourites">
           <ListItem
             button
@@ -321,19 +350,19 @@ function ResponsiveDrawer(props: any) {
             <ListItemText primary="History" />
           </ListItem>
         </Link>
-        {/* ))} */}
         <Divider />
-        <Link to={routes[5].path}>
+        <Link to="/settings">
           <ListItem
             button
-            key={routes[5].path}
             selected={navSate === "Settings"}
             classes={{
               root: classes.listItem,
             }}
           >
-            <ListItemIcon>{routes[5].icon}</ListItemIcon>
-            <ListItemText primary={routes[5].label} />
+            <ListItemIcon>
+              <SettingsRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
           </ListItem>
         </Link>
         <Darkmode />
@@ -404,36 +433,12 @@ function ResponsiveDrawer(props: any) {
               key={"/watch/:id/:epId?/:timePos?"}
               exact={true}
               path="/watch/:id/:epId?/:timePos?"
-              render={(props) => (
-                <Player
-                  miniplayer={false}
-                  epId={props.match.params.epId}
-                  id={props.match.params.id}
-                  setPlayerNode={setPlayer}
-                  timePos={props.match.params.timePos}
-                />
-              )}
+              render={(props) => <ShowPage showId={props.match.params.id} />}
             />
             <Route render={() => <Redirect to="/" />} />
           </Switch>
         </main>
-        {player && (
-          <Draggable>
-            <div
-              style={{
-                position: "fixed",
-                width: 240,
-                height: 135,
-                bottom: 0,
-                left: 0,
-                zIndex: 10000000,
-                overflow: "hidden",
-              }}
-            >
-              {player}
-            </div>
-          </Draggable>
-        )}
+        <PlayerBar />
       </div>
     </ThemeProvider>
   );

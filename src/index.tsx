@@ -4,11 +4,16 @@ import App from "./App";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import "./index.css";
+import "./css/animation.css";
+import "./css/nprogress.css";
+import "./css/seekbar.css";
+import "./css/utils.css";
 import { Show } from "./utils/interfaces";
-import { getCatalogue, handleError } from "./utils/utils";
+import { handleError } from "./utils/utils";
 import { BrowserRouter as Router } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import ResponsiveDrawer from "./App";
+import { getCatalogue } from "./utils/api";
 
 declare global {
   interface Window {
@@ -31,6 +36,7 @@ declare global {
 
 (async () => {
   try {
+    nprogress.configure({ easing: "ease", speed: 700 });
     nprogress.start();
     if (localStorage["data"]) {
       window.data = JSON.parse(localStorage["data"]);

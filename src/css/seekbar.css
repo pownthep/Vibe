@@ -1,0 +1,115 @@
+.ui-video-seek-slider {
+  position: relative;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.ui-video-seek-slider:focus {
+  outline: none;
+}
+.ui-video-seek-slider .track {
+  padding: 10px 0;
+  cursor: pointer;
+  outline: none;
+}
+.ui-video-seek-slider .track:focus {
+  border: 0;
+  outline: none;
+}
+.ui-video-seek-slider .track .main {
+  width: 100%;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 60px;
+  position: absolute;
+  left: 0;
+  top: 8.5px;
+  overflow: hidden;
+  transition: transform 0.4s;
+  outline: none;
+}
+.ui-video-seek-slider .track .main:focus {
+  border: 0;
+  outline: none;
+}
+.ui-video-seek-slider .track .main .buffered {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.3);
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0.8);
+  z-index: 2;
+  transform-origin: 0 0;
+  transition: 0.5s transform;
+  border-radius: 60px;
+}
+.ui-video-seek-slider .track .main .seek-hover {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  transform: scaleX(0.6);
+  transform-origin: 0 0;
+  opacity: 0;
+  transition: opacity 0.4s;
+  border-radius: 60px;
+}
+.ui-video-seek-slider .track .main .connect {
+  position: absolute;
+  background-color: var(--primary-color);
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  left: 0;
+  transform: scaleX(0.13);
+  transform-origin: 0 0;
+  border-radius: 60px;
+}
+.ui-video-seek-slider .track.active .main {
+  transform: scaleY(1.2);
+}
+.ui-video-seek-slider .thumb {
+  pointer-events: none;
+  position: absolute;
+  width: 15px;
+  height: 0px;
+  left: -6px;
+  top: 4px;
+  z-index: 4;
+  transform: translateX(100px);
+}
+.ui-video-seek-slider .thumb .handler {
+  transition: transform 0.2s;
+  border-radius: 100%;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary-color);
+  opacity: 0;
+  transform: scale(0.4);
+  border-radius: 60px;
+}
+.ui-video-seek-slider .thumb.active .handler {
+  opacity: 1;
+  transform: scale(1);
+}
+.ui-video-seek-slider .hover-time {
+  position: absolute;
+  background-color: rgb(0, 0, 0);
+  line-height: 18px;
+  font-size: 14px;
+  color: rgb(255, 255, 255);
+  top: -25px;
+  left: 0;
+  padding: 5px 10px;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateX(150px);
+  pointer-events: none;
+}
+.ui-video-seek-slider .hover-time.active {
+  opacity: 1;
+}
+.ui-video-seek-slider:hover .track .main .seek-hover {
+  opacity: 1;
+}

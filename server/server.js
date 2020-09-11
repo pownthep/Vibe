@@ -11,6 +11,7 @@ const download = require("image-downloader");
 const stringHash = require("string-hash");
 const bodyParser = require("body-parser");
 const HTMLParser = require("node-html-parser");
+const { getIMBD, moveFile } = require("./utils");
 
 // Express setup
 app.use(cors());
@@ -42,7 +43,10 @@ const credentials = {
     javascript_origins: ["http://127.0.0.1:8080"],
   },
 };
+
 let authStatus;
+let downloaderRunning = false;
+let DOWNLOAD_MANAGER = [];
 
 // Check for img dir or create one
 fs.access(IMG_DIR, fs.constants.F_OK, (err) => {
@@ -139,6 +143,10 @@ function startLocalServer(oauth2Client) {
   });
 
   app.get("/search", async (req, res) => {
+    if (store.get(`search.${req.query.text}`)) {
+      res.json(store.get(`search.${req.query.text}`));
+      return;
+    }
     const response = await axios.get(
       `https://www.imdb.com/find?q=${req.query.text}`
     );
@@ -157,6 +165,7 @@ function startLocalServer(oauth2Client) {
         .getAttribute("href"),
       title: d.querySelector(".result_text").text,
     }));
+    store.set(`search.${req.query.text}`, findSection);
     res.json(findSection);
   });
 
@@ -216,21 +225,14 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/cachesize", (req, res) => {
+  app.get("/cache/size", (req, res) => {
     fs.readdir(TEMP_DIR, (err, files) => {
       let bytes = files ? files.length * 20 * 1000000 : 0;
       res.json({ size: prettyBytes(bytes) });
     });
   });
 
-  app.get("/dash", async () => {
-    try {
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  app.get("/clearcache", (req, res) => {
+  app.get("/cache/clear", (req, res) => {
     fs.rmdir(TEMP_DIR, { recursive: true }, (err) => {
       if (err) {
         console.error(err);
@@ -264,187 +266,29 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/drive", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var options = {
-        host: "www.googleapis.com",
-        path: `/drive/v3/files?&fields=nextPageToken,files(name,id,size,ownedByMe,mimeType)&pageSize=1000&orderBy=quotaBytesUsed%20desc`,
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + access_token,
-          Accept: "application/json",
-        },
-      };
-
-      callback = function (response) {
-        var allData = "";
-        response.on("data", function (chunk) {
-          allData += chunk;
-        });
-        response.on("end", function () {
-          var info = JSON.parse(allData);
-          if (!info.error) {
-            var files = info.files.filter(
-              (file) =>
-                file.size > 0 &&
-                file.ownedByMe &&
-                file.mimeType.includes("video")
-            );
-            store.set("files", files);
-            isLatest = true;
-            res.json(files);
-          } else console.log(info.error);
-        });
-      };
-
-      https.request(options, callback).end();
-    });
-  });
-
-  app.get("/delete/:id", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var fileId = req.params.id;
-      httpDeleteFile(fileId, access_token, res);
-    });
-  });
-
-  function checkFile(fileId, token) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        var headers = {
-          headers: {
-            Authorization: "Bearer " + token,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        };
-        var searchUrl = `https://www.googleapis.com/drive/v3/files?q=name%20contains%20%22${fileId}%22&fields=files(name%2Cid%2CmimeType%2Csize)`;
-        const searchRes = await axios.get(searchUrl, headers);
-        resolve(searchRes.data.files);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  let DOWNLOAD_MANAGER = [];
-
-  app.get("/add_to_download_queue", (req, res) => {
+  app.get("/token", (req, res) => {
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-      let file = null;
-      try {
-        const files = await checkFile(
-          req.query.id,
-          oauth2Client.credentials.access_token
-        );
-        if (files.length === 1) {
-          console.log("file exist in drive");
-          file = files[0];
-        } else {
-          console.log("copying file to drive");
-          const newFile = await httpCopyFile(
-            req.query.id,
-            oauth2Client.credentials.access_token,
-            `${req.query.id}.mp4`
-          );
-          file = newFile;
-        }
-        if (file) {
-          DOWNLOAD_MANAGER.push({
-            name: file.name,
-            progress: 0,
-            id: file.id,
-            size: file.size,
-          });
-          if (!downloaderRunning) fileDownloader();
-          res.json(file);
-        }
-      } catch (error) {
-        res.json({ error: JSON.stringify(error) });
-      }
+      res.json(oauth2Client.credentials.access_token);
     });
   });
 
-  let downloaderRunning = false;
-  async function fileDownloader() {
-    if (DOWNLOAD_MANAGER.length === 0) {
-      downloaderRunning = false;
-      return;
-    }
-    downloaderRunning = true;
-    console.log("Downloading", DOWNLOAD_MANAGER[0]);
-    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      try {
-        var auth = "Bearer ".concat(access_token);
-        var folder = __dirname + "/downloaded";
-        var dest = fs.createWriteStream(
-          folder + `/${DOWNLOAD_MANAGER[0].name}`
-        );
-        var options = {
-          host: "www.googleapis.com",
-          path: "/drive/v3/files/" + DOWNLOAD_MANAGER[0].id + "?alt=media",
-          method: "GET",
-          headers: {
-            Authorization: auth,
-          },
-        };
-        callback = function (response) {
-          var progress = 0;
-          response.on("data", function (chunk) {
-            progress += chunk.length;
-            if (DOWNLOAD_MANAGER[0]) {
-              DOWNLOAD_MANAGER[0].progress = progress;
-            }
-          });
-          response.on("end", function () {
-            DOWNLOAD_MANAGER.shift();
-            fileDownloader();
-          });
-          response.pipe(dest);
-        };
-        var req = https.request(options, callback).end();
-      } catch (error) {
-        console.log(error);
-      }
+  app.get("/download/add", (req, res) => {
+    DOWNLOAD_MANAGER.push({
+      name: req.query.name,
+      progress: 0,
+      id: req.query.id,
+      size: req.query.size,
     });
-  }
-
-  app.get("/download/:index", (req, res) => {
-    var errorList = [];
-    fs.readFile(
-      "../public/data/shows/" + req.params.index + ".json",
-      async (err, data) => {
-        if (err) res.status(500).json(err);
-        else {
-          const json = JSON.parse(data);
-          const episodes = json.episodes.filter((e) => e.size);
-          for (ep of episodes) {
-            try {
-              console.log(`Downloading: `, ep.name);
-              await downloadVideo(ep.id);
-              console.log("Done: ", ep.name);
-            } catch (error) {
-              errorList.push(ep);
-              console.log(error);
-            }
-          }
-          console.log("Errors: ", errorList);
-          res.json(errorList);
-        }
-      }
-    );
+    if (!downloaderRunning) fileDownloader();
+    res.status(200).json({});
   });
 
-  app.get("/downloaded", (req, res) => {
+  app.get("/download/files", (req, res) => {
     fs.readdir(__dirname + "/downloaded", (err, files) => {
       if (err) res.json([]);
       else
         res.json(
           files
-            .filter((f) => f.includes(".mp4"))
             .map(function (fileName) {
               return {
                 name: fileName,
@@ -464,7 +308,7 @@ function startLocalServer(oauth2Client) {
     });
   });
 
-  app.get("/downloading", (req, res) => {
+  app.get("/download/progress", (req, res) => {
     res.set({
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
@@ -502,53 +346,88 @@ function startLocalServer(oauth2Client) {
     }
   });
 
-  app.get("/stream", (req, res) => {
+  app.get("/file/check", (req, res) => {
     fs.access(
-      `${__dirname}/downloaded/${req.query.id}.mp4`,
+      `${__dirname}/downloaded/${req.query.name}`,
       fs.constants.F_OK,
       (err) => {
-        if (err) {
-          refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-            var access_token = oauth2Client.credentials.access_token;
-            var fileId = req.query.id;
-            try {
-              const files = await checkFile(fileId, access_token);
-              if (files.length === 1) {
-                console.log("file exist in drive");
-                var fileInfo = files[0];
-                performRequest_default(req, res, access_token, fileInfo);
-              } else {
-                console.log("copying file to drive");
-                const copiedFile = await httpCopyFile(
-                  fileId,
-                  access_token,
-                  `${req.query.id}.mp4`
-                ).catch((error) => {
-                  console.log(error);
-                  throw error;
-                });
-                performRequest_default(req, res, access_token, copiedFile);
-              }
-            } catch (error) {
-              res.status(500).json(error);
-              console.log(error);
-            }
-          });
-        } else {
-          res.sendFile(`${__dirname}/downloaded/${req.query.id}.mp4`);
-        }
+        if (err) res.json({ exist: false });
+        else res.json({ exist: true });
       }
     );
   });
 
-  app.get("/stream2", (req, res) => {
-    const range = req.headers.range;
-    downloadVideo(req.query.id, res, req, range, req.query.size);
+  app.get("/stream", (req, res) => {
+    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      var access_token = oauth2Client.credentials.access_token;
+      var fileId = req.query.id;
+      var fileSize = req.query.size;
+      performRequest_default(req, res, access_token, {
+        id: fileId,
+        size: fileSize,
+      });
+    });
   });
 
-  function downloadVideo(id, res, req, range, fileSize) {
-    console.log(id, range, fileSize);
+  app.listen(PORT);
+  console.log("Server started at port: " + PORT);
+
+  async function fileDownloader() {
+    if (DOWNLOAD_MANAGER.length === 0) {
+      downloaderRunning = false;
+      return;
+    }
+    downloaderRunning = true;
     refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
+      const access_token = oauth2Client.credentials.access_token;
+      try {
+        const auth = "Bearer ".concat(access_token);
+        const currentPath =
+          __dirname +
+          "/downloading" +
+          `/${DOWNLOAD_MANAGER[0].id}@${DOWNLOAD_MANAGER[0].name}`;
+        const newPath =
+          __dirname +
+          "/downloaded" +
+          `/${DOWNLOAD_MANAGER[0].id}@${DOWNLOAD_MANAGER[0].name}`;
+        const dest = fs.createWriteStream(currentPath);
+        const options = {
+          host: "www.googleapis.com",
+          path: "/drive/v3/files/" + DOWNLOAD_MANAGER[0].id + "?alt=media",
+          method: "GET",
+          headers: {
+            Authorization: auth,
+          },
+        };
+        callback = function (response) {
+          let progress = 0;
+          response.on("data", function (chunk) {
+            progress += chunk.length;
+            if (DOWNLOAD_MANAGER[0]) {
+              DOWNLOAD_MANAGER[0].progress = progress;
+            }
+          });
+          response.on("end", function () {
+            DOWNLOAD_MANAGER.shift();
+            fileDownloader();
+            moveFile(currentPath, newPath);
+          });
+          response.pipe(dest);
+        };
+        var req = https.request(options, callback).end();
+      } catch (error) {
+        console.log(error);
+        DOWNLOAD_MANAGER.shift();
+        fileDownloader();
+      }
+    });
+  }
+
+  function performRequest_default(req, res, access_token, fileInfo) {
+    var fileSize = fileInfo.size;
+    var fileId = fileInfo.id;
+    const range = req.headers.range;
+    if (range) {
       const parts = range.replace(/bytes=/, "").split("-");
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
@@ -559,366 +438,192 @@ function startLocalServer(oauth2Client) {
         "Content-Length": chunksize,
         "Content-Type": "video/mp4",
       };
+      //console.log(chunksize);
       res.writeHead(206, head);
-      var access_token = oauth2Client.credentials.access_token;
-      try {
-        var auth = "Bearer ".concat(access_token);
-        const response = await axios({
-          url: `https://www.googleapis.com/drive/v3/files/${id}?alt=media`,
-          method: "GET",
-          responseType: "stream",
-          headers: {
-            Authorization: auth,
-          },
-        });
-        response.data.pipe(res);
-        var progress = 0;
-        var interval = setInterval(() => {
-          console.log(prettyBytes(progress));
-        }, 1000);
-        response.data.on("data", (data) => {
-          progress += data.length;
-        });
-        response.data.on("end", function () {
-          console.log("data", "end");
-          if (!req.aborted) {
-            res.end();
-          }
-          clearInterval(interval);
-        });
-        res.once("close", function () {
-          console.log("closed");
-          clearInterval(interval);
-          if (typeof response.abort === "function") response.abort();
-          if (typeof response.destroy === "function") response.destroy();
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    });
+      downloadFile(
+        fileId,
+        access_token,
+        start,
+        end,
+        res,
+        () => {
+          res.end();
+        },
+        (richiesta) => {
+          res.once("close", function () {
+            if (typeof richiesta.abort === "function") richiesta.abort();
+            if (typeof richiesta.destroy === "function") richiesta.destroy();
+          });
+        }
+      );
+    } else {
+      console.log("No requested range");
+      const head = {
+        "Content-Length": fileSize,
+        "Content-Type": "video/mp4",
+      };
+      res.writeHead(200, head);
+      downloadFile(
+        fileId,
+        access_token,
+        0,
+        fileSize - 1,
+        res,
+        () => {
+          res.end();
+        },
+        (richiesta) => {
+          res.once("close", function () {
+            if (typeof richiesta.abort === "function") richiesta.abort();
+            if (typeof richiesta.destroy === "function") richiesta.destroy();
+          });
+        }
+      );
+    }
   }
 
-  app.get("/video/:id", (req, res) => {
-    refreshTokenIfNeed(oauth2Client, async (oauth2Client) => {
-      var access_token = oauth2Client.credentials.access_token;
-      var fileId = req.params.id;
-      try {
-        const files = await checkFile(fileId, access_token);
-        if (files.length === 1) {
-          console.log("file exist in drive");
-          var fileInfo = files[0];
-          performRequest_default(req, res, access_token, fileInfo);
-        } else {
-          console.log("copying file to drive");
-          const copiedFile = await httpCopyFile(
+  function downloadFile(
+    fileId,
+    access_token,
+    start,
+    end,
+    pipe,
+    onEnd,
+    onStart
+  ) {
+    var startChunk = Math.floor(start / CHUNK_SIZE);
+    var chunkName = TEMP_DIR + fileId + "@" + startChunk;
+    if (fs.existsSync(chunkName)) {
+      console.log("req: " + start + " / " + end + "   offline");
+      var relativeStart =
+        start > startChunk * CHUNK_SIZE ? start - startChunk * CHUNK_SIZE : 0;
+      var relativeEnd =
+        end > (startChunk + 1) * CHUNK_SIZE
+          ? CHUNK_SIZE
+          : end - startChunk * CHUNK_SIZE;
+      let readStream = fs.createReadStream(chunkName, {
+        start: relativeStart,
+        end: relativeEnd,
+      });
+      readStream.pipe(pipe, { end: false });
+      readStream.on("data", () => {});
+      readStream.on("end", () => {
+        if (end >= (startChunk + 1) * CHUNK_SIZE) {
+          console.log("->");
+          downloadFile(
             fileId,
             access_token,
-            `[${req.params.id}]-${req.params.serieName}-${req.params.episodeName}`
+            (startChunk + 1) * CHUNK_SIZE,
+            end,
+            pipe,
+            onEnd,
+            onStart
           );
-          performRequest_default(req, res, access_token, copiedFile);
+        } else {
+          onEnd();
         }
-      } catch (error) {
-        res.status(500);
-      }
-    });
-  });
-
-  app.listen(PORT);
-  console.log("Server started at port: " + PORT);
-}
-
-function performRequest_default(req, res, access_token, fileInfo) {
-  var fileSize = fileInfo.size;
-  var fileId = fileInfo.id;
-  const range = req.headers.range;
-  if (range) {
-    const parts = range.replace(/bytes=/, "").split("-");
-    const start = parseInt(parts[0], 10);
-    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-    const chunksize = end - start + 1;
-    const head = {
-      "Content-Range": `bytes ${start}-${end}/${fileSize}`,
-      "Accept-Ranges": "bytes",
-      "Content-Length": chunksize,
-      //'Content-Type': 'video/mp4',
-      "Content-Type": "video/mp4",
-    };
-    //console.log(chunksize);
-    res.writeHead(206, head);
-    downloadFile(
-      fileId,
-      access_token,
-      start,
-      end,
-      res,
-      () => {
-        res.end();
-      },
-      (richiesta) => {
-        res.once("close", function () {
-          if (typeof richiesta.abort === "function") richiesta.abort();
-          if (typeof richiesta.destroy === "function") richiesta.destroy();
-        });
-      }
-    );
-  } else {
-    console.log("No requested range");
-    const head = {
-      "Content-Length": fileSize,
-      "Content-Type": "video/mp4",
-    };
-    res.writeHead(200, head);
-    downloadFile(
-      fileId,
-      access_token,
-      0,
-      fileSize - 1,
-      res,
-      () => {
-        res.end();
-      },
-      (richiesta) => {
-        res.once("close", function () {
-          if (typeof richiesta.abort === "function") richiesta.abort();
-          if (typeof richiesta.destroy === "function") richiesta.destroy();
-        });
-      }
-    );
+      });
+      readStream.on("close", () => {});
+      readStream.on("error", (err) => {
+        console.log(err);
+      });
+      onStart(readStream);
+    } else {
+      console.log("req: " + start + " / " + end + "   online");
+      httpDownloadFile(fileId, access_token, start, end, pipe, onEnd, onStart);
+    }
   }
-}
 
-function downloadFile(fileId, access_token, start, end, pipe, onEnd, onStart) {
-  var startChunk = Math.floor(start / CHUNK_SIZE);
-  var chunkName = TEMP_DIR + fileId + "@" + startChunk;
-  if (fs.existsSync(chunkName)) {
-    console.log("req: " + start + " / " + end + "   offline");
-    var relativeStart =
-      start > startChunk * CHUNK_SIZE ? start - startChunk * CHUNK_SIZE : 0;
-    var relativeEnd =
-      end > (startChunk + 1) * CHUNK_SIZE
-        ? CHUNK_SIZE
-        : end - startChunk * CHUNK_SIZE;
-    let readStream = fs.createReadStream(chunkName, {
-      start: relativeStart,
-      end: relativeEnd,
-    });
-    readStream.pipe(pipe, { end: false });
-    readStream.on("data", () => {
-      //onData(chunk)
-    });
-    readStream.on("end", () => {
-      if (end >= (startChunk + 1) * CHUNK_SIZE) {
-        //Da rivedere
-        console.log("->");
-        downloadFile(
-          fileId,
-          access_token,
-          (startChunk + 1) * CHUNK_SIZE,
-          end,
-          pipe,
-          onEnd,
-          onStart
-        );
-      } else {
-        onEnd();
-      }
-    });
-    readStream.on("close", () => {});
-    readStream.on("error", (err) => {
-      console.log(err);
-    });
-    onStart(readStream);
-  } else {
-    console.log("req: " + start + " / " + end + "   online");
-    httpDownloadFile(fileId, access_token, start, end, pipe, onEnd, onStart);
-  }
-}
-
-function httpDownloadFile(
-  fileId,
-  access_token,
-  start,
-  end,
-  pipe,
-  onEnd,
-  onStart
-) {
-  var options = {
-    host: "www.googleapis.com",
-    path: "/drive/v3/files/" + fileId + "?alt=media",
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + access_token,
-      Range: "bytes=" + start + "-" + end,
-    },
-  };
-
-  callback = function (response) {
-    var arrBuffer = [];
-    var arrBufferSize = 0;
-    response.pipe(pipe, { end: false });
-    response.on("data", function (chunk) {
-      var buffer = Buffer.from(chunk);
-      arrBuffer.push(buffer);
-      arrBufferSize += buffer.length;
-      var nextChunk = Math.floor((start + arrBufferSize) / CHUNK_SIZE);
-      var chunkName = TEMP_DIR + fileId + "@" + nextChunk;
-      if (fs.existsSync(chunkName) && start + arrBufferSize < end) {
-        req.abort();
-        downloadFile(
-          fileId,
-          access_token,
-          start + arrBufferSize,
-          end,
-          pipe,
-          onEnd,
-          onStart
-        );
-      } else {
-        if (arrBufferSize >= CHUNK_SIZE * 2) {
-          arrBuffer = [Buffer.concat(arrBuffer, arrBufferSize)];
-          arrBuffer = flushBuffers(arrBuffer, fileId, start);
-          arrBufferSize = arrBuffer[0].length;
-          var offset = Math.ceil(start / CHUNK_SIZE) * CHUNK_SIZE - start;
-          start += CHUNK_SIZE + offset;
-        }
-      }
-    });
-    response.on("end", function () {
-      //Aggiungere il controllo se c'è un errore
-      if (!req.aborted) {
-        onEnd();
-      }
-    });
-  };
-
-  var req = https.request(options, callback);
-  req.on("error", function () {});
-  req.end();
-  onStart(req);
-}
-
-function httpCopyFile(fileId, access_token, fileName) {
-  return new Promise((resolve, reject) => {
-    const data = JSON.stringify({
-      name: fileName,
-    });
+  function httpDownloadFile(
+    fileId,
+    access_token,
+    start,
+    end,
+    pipe,
+    onEnd,
+    onStart
+  ) {
     var options = {
       host: "www.googleapis.com",
-      path: "/drive/v3/files/" + fileId + "/copy?fields=name,id,mimeType,size",
-      method: "POST",
+      path: "/drive/v3/files/" + fileId + "?alt=media",
+      method: "GET",
       headers: {
         Authorization: "Bearer " + access_token,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Content-Length": data.length,
+        Range: "bytes=" + start + "-" + end,
       },
     };
-    var req = https.request(options, async (res) => {
-      var body = "";
-      res.on("data", function (chunk) {
-        body += chunk;
+
+    callback = function (response) {
+      var arrBuffer = [];
+      var arrBufferSize = 0;
+      response.pipe(pipe, { end: false });
+      response.on("data", function (chunk) {
+        var buffer = Buffer.from(chunk);
+        arrBuffer.push(buffer);
+        arrBufferSize += buffer.length;
+        var nextChunk = Math.floor((start + arrBufferSize) / CHUNK_SIZE);
+        var chunkName = TEMP_DIR + fileId + "@" + nextChunk;
+        if (fs.existsSync(chunkName) && start + arrBufferSize < end) {
+          req.abort();
+          downloadFile(
+            fileId,
+            access_token,
+            start + arrBufferSize,
+            end,
+            pipe,
+            onEnd,
+            onStart
+          );
+        } else {
+          if (arrBufferSize >= CHUNK_SIZE * 2) {
+            arrBuffer = [Buffer.concat(arrBuffer, arrBufferSize)];
+            arrBuffer = flushBuffers(arrBuffer, fileId, start);
+            arrBufferSize = arrBuffer[0].length;
+            var offset = Math.ceil(start / CHUNK_SIZE) * CHUNK_SIZE - start;
+            start += CHUNK_SIZE + offset;
+          }
+        }
       });
-      res.on("end", function () {
-        let json = JSON.parse(body);
-        isLatest = false;
-        resolve(json);
+      response.on("end", function () {
+        if (!req.aborted) {
+          onEnd();
+        }
       });
-    });
-    req.on("error", function (err) {
-      console.log(error);
-      reject(err);
-    });
-    req.write(data);
+    };
+
+    var req = https.request(options, callback);
+    req.on("error", function () {});
     req.end();
-  });
-}
-
-function httpDeleteFile(fileId, access_token, response) {
-  var options = {
-    host: "www.googleapis.com",
-    path: "/drive/v3/files/" + fileId,
-    method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + access_token,
-      Accept: "application/json",
-    },
-  };
-  var req = https.request(options, async (res) => {
-    var body = "";
-    res.on("data", function (chunk) {
-      body += chunk;
-    });
-    res.on("end", function () {
-      if (body.length === 0) {
-        var pairId = store.get(`drive.${fileId}`);
-        store.del(`drive.${pairId}`);
-        store.del(`drive.${fileId}`);
-        response.json({ deleted: true });
-        isLatest = false;
-      } else response.json({ deleted: false });
-    });
-  });
-  req.on("error", function () {
-    response.json({ deleted: false });
-  });
-  req.end();
-}
-
-function flushBuffers(arrBuffer, fileId, startByte) {
-  var dirtyBuffer = Buffer.alloc(CHUNK_SIZE);
-  var offset = Math.ceil(startByte / CHUNK_SIZE) * CHUNK_SIZE - startByte;
-  arrBuffer[0].copy(dirtyBuffer, 0, offset, offset + CHUNK_SIZE);
-  var chunkName =
-    TEMP_DIR + fileId + "@" + Math.floor((offset + startByte) / CHUNK_SIZE);
-  try {
-    fs.mkdirSync(TEMP_DIR);
-  } catch (err) {
-    if (err.code != "EEXIST") {
-      throw err;
-    }
+    onStart(req);
   }
-  fs.writeFile(chunkName, dirtyBuffer, (err) => {
-    if (err) throw err;
-    console.log("The chunk has been saved!");
-  });
-  var remainBufferSize = arrBuffer[0].length - CHUNK_SIZE - offset;
-  var remainBuffer = Buffer.alloc(remainBufferSize);
-  if (remainBuffer.length > 0) {
-    arrBuffer[0].copy(
-      remainBuffer,
-      0,
-      CHUNK_SIZE + offset,
-      arrBuffer[0].length
-    );
-  }
-  return [remainBuffer];
-}
 
-const getIMBD = (url) => {
-  return new Promise(async (resolve, reject) => {
+  function flushBuffers(arrBuffer, fileId, startByte) {
+    var dirtyBuffer = Buffer.alloc(CHUNK_SIZE);
+    var offset = Math.ceil(startByte / CHUNK_SIZE) * CHUNK_SIZE - startByte;
+    arrBuffer[0].copy(dirtyBuffer, 0, offset, offset + CHUNK_SIZE);
+    var chunkName =
+      TEMP_DIR + fileId + "@" + Math.floor((offset + startByte) / CHUNK_SIZE);
     try {
-      const res = await axios.get(url);
-      const html = await res.data;
-      const DOM = HTMLParser.parse(html);
-      const rating = DOM.querySelector(".ratingValue").querySelector("strong")
-        .rawText;
-      const genre = DOM.querySelector(".title_wrapper")
-        .querySelector(".subtext")
-        .text.split("|")
-        .map((i) => i.trim().replace(/\n/gm, ""));
-      const desc = DOM.querySelector(".plot_summary")
-        .text.split("\n")
-        .map((i) => i.replace("|", "").trim())
-        .filter((i) => i.length > 0);
-
-      resolve({
-        rating: Number(rating),
-        genre: genre,
-        desc: desc,
-      });
-    } catch (error) {
-      reject(error);
+      fs.mkdirSync(TEMP_DIR);
+    } catch (err) {
+      if (err.code != "EEXIST") {
+        throw err;
+      }
     }
-  });
-};
+    fs.writeFile(chunkName, dirtyBuffer, (err) => {
+      if (err) throw err;
+      console.log("The chunk has been saved!");
+    });
+    var remainBufferSize = arrBuffer[0].length - CHUNK_SIZE - offset;
+    var remainBuffer = Buffer.alloc(remainBufferSize);
+    if (remainBuffer.length > 0) {
+      arrBuffer[0].copy(
+        remainBuffer,
+        0,
+        CHUNK_SIZE + offset,
+        arrBuffer[0].length
+      );
+    }
+    return [remainBuffer];
+  }
+}
