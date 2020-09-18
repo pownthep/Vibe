@@ -21,6 +21,7 @@ import {
   deleteFile,
 } from "../utils/api";
 import { handleError } from "../utils/utils";
+import { playerState } from "../components/player-ui-components/player_bar";
 
 const useStyles = makeStyles((theme) => ({
   rowItem: {
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Drive() {
   const setNavState = useSetRecoilState(navState);
+  const setPlayerState = useSetRecoilState(playerState);
   const classes = useStyles();
   const [data, setData] = useState([]);
   const [mounted, setMount] = useState(true);
@@ -63,14 +65,26 @@ export default function Drive() {
   };
 
   const Row = ({ index, style }: any) => {
-    const { id, name, size, mimeType, ownedByMe } = data[index];
+    const {
+      id,
+      name,
+      size,
+      mimeType,
+      ownedByMe,
+      hasThumbnail,
+      thumbnailLink,
+    } = data[index];
     return (
       <div style={style}>
         <div className={classes.rowItem}>
           <img
-            src={getImage(
-              "https://drive-thirdparty.googleusercontent.com/16/type/video/x-matroska"
-            )}
+            src={
+              hasThumbnail
+                ? getImage(thumbnailLink)
+                : getImage(
+                    "https://drive-thirdparty.googleusercontent.com/16/type/video/x-matroska"
+                  )
+            }
             alt="thumbnail"
             className={classes.rowItemImg}
           />
@@ -83,7 +97,18 @@ export default function Drive() {
             </Typography>
           </div>
           <div className={classes.rowItemAction}>
-            <IconButton>
+            <IconButton
+              onClick={() =>
+                setPlayerState({
+                  showTitle: "Drive",
+                  episodeId: id,
+                  episodeSize: size,
+                  episodeTitle: name,
+                  fullscreen: false,
+                  timePos: 0,
+                })
+              }
+            >
               <PlayCircleFilledRoundedIcon />
             </IconButton>
             <IconButton onClick={() => handleDelete(id)} disabled={!ownedByMe}>
@@ -118,7 +143,8 @@ export default function Drive() {
       const text = e.target.value;
       searchDrive(text)
         .then((json) => {
-          setData(json);
+          console.log(json);
+          setData(json.files);
         })
         .catch((e) => handleError(e))
         .finally(() => {

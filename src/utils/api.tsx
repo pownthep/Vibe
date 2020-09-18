@@ -47,7 +47,7 @@ export const getMyDriveItem = async (): Promise<any> => {
     console.time("gettting my files");
     const ak = await getToken();
     const res = await fetch(
-      `${GOOGLE_DRIVE_API_V3}/files?access_token=${ak}&q=mimeType contains 'video'&fields=files(name,id,size,ownedByMe,mimeType)`
+      `${GOOGLE_DRIVE_API_V3}/files?access_token=${ak}&q=mimeType contains 'video'&fields=files(name,id,size,ownedByMe,mimeType,hasThumbnail,thumbnailLink)`
     );
     const data = await res.json();
     console.timeEnd("gettting my files");

@@ -173,7 +173,7 @@ export default function ShowPageHeader({ showTitle, poster, banner }: Props) {
           <p className={classes.centered}>Size</p>
           <p></p>
         </div>
-        <Divider />
+        <Divider style={{ marginRight: 50 }} />
       </div>
     </div>
   );

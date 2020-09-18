@@ -87,13 +87,13 @@ class Player extends React.Component<Props, State> {
     ["pause", "time-pos", "duration", "eof-reached"].forEach(observe);
     this.mpv.property("hwdec", "auto");
     this.mpv.command("set", "ao-volume", this.state.volume_value);
-    this.handleEpisodeChange(
-      this.props.episodeId,
-      this.props.episodeTitle,
-      this.state["time-pos"],
-      this.props.episodeSize
-    );
-    console.log("handleMPVReady");
+    if (this.props.episodeId.length > 0)
+      this.handleEpisodeChange(
+        this.props.episodeId,
+        this.props.episodeTitle,
+        this.state["time-pos"],
+        this.props.episodeSize
+      );
   };
 
   handlePropertyChange = (name: string, value: any) => {
@@ -134,6 +134,16 @@ class Player extends React.Component<Props, State> {
       openFullscreen();
     }
     this.setState({ fullscreen: !this.state.fullscreen });
+  };
+
+  toggleThreatreMode = () => {
+    const node = this.playerContainerEl.current;
+    if (!node) return;
+    if (this.state.fullscreen) {
+      node.className = "player";
+    } else {
+      node.className = "webfullscreen";
+    }
   };
 
   handleSeek = (newValue: number) => {

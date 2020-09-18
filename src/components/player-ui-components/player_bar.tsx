@@ -34,7 +34,14 @@ export type PlayerState = {
 
 export const playerState = atom({
   key: "playerState",
-  default: null,
+  default: {
+    showTitle: "",
+    episodeTitle: "",
+    fullscreen: false,
+    episodeId: "",
+    timePos: 0,
+    episodeSize: 0,
+  },
 });
 
 export default function PlayerBar() {

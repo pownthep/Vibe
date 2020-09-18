@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Episode } from "../../utils/interfaces";
 import { makeStyles, IconButton } from "@material-ui/core";
 import prettyBytes from "pretty-bytes";
@@ -63,12 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ShowPageEpisode({
-  episode,
-  onClick,
-  showTitle,
-  index,
-}: Props) {
+function ShowPageEpisode({ episode, onClick, showTitle, index }: Props) {
   const classes = useStyles();
 
   return (
@@ -99,3 +94,5 @@ export default function ShowPageEpisode({
     </div>
   );
 }
+
+export default memo(ShowPageEpisode);
