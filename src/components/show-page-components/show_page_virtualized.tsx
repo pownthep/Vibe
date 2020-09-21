@@ -56,7 +56,7 @@ function ShowPageVirtualized({ show, episodeOnClick }: Props) {
   return (
     <div
       style={{
-        paddingBottom: barVisible ? 120 : 0,
+        paddingBottom: barVisible ? 90 : 0,
         height: "calc(100vh - 25px)",
         width: "100%",
       }}

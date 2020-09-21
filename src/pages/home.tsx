@@ -79,7 +79,7 @@ export default function Home() {
       {shows && !showPlayer ? (
         <div
           className={classes.container}
-          style={{ paddingBottom: barVisible ? 120 : 0 }}
+          style={{ paddingBottom: barVisible ? 110 : 0 }}
         >
           <AutoSizer>
             {({ height, width }) => {

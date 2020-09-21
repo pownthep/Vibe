@@ -26,7 +26,7 @@ body {
 
 ::-webkit-scrollbar-track {
   border-radius: 0px;
-  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
   background: var(--scrollbarBG);
 }
 

@@ -74,6 +74,162 @@
   },
   {
     "id": 0,
+    "name": "Drifters",
+    "banner": "https://i2.wp.com/wallur.com/wp-content/uploads/2016/12/drifters-background-15.png?resize=1920%2C1080",
+    "rating": 7.8,
+    "desc": "Siblings Sora and Shiro together make up the most feared team of pro gamers in the world, The Blank. When they manage to beat god himself in a game of chess, they are sent to a world where all disputes are settled with games.",
+    "trailer": "quj8sK3Phh8",
+    "keywords": "Adventure,Comedy,Ecchi,Fantasy,Game,Supernatural",
+    "poster": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21123-bCuqm8wLDqOw.png",
+    "episodes": [
+      {
+        "id": "151Ii6EFR55IPQbl2mwDVKfH9tJfGjJ_B",
+        "name": "01. Fight Song.mkv",
+        "size": "475514900"
+      },
+      {
+        "id": "1w-J2UBJhi70oBVYBCsj5LTG8t8vo2FVf",
+        "name": "02. Footsteps.mkv",
+        "size": "386223228"
+      },
+      {
+        "id": "1T4qxlUC3pC0BBoyDg6X8ORJuZoyYSqMs",
+        "name": "03. Army of Ours Sortie at Dawn.mkv",
+        "size": "367084877"
+      },
+      {
+        "id": "1IfhDZKFusgI-i_JofWkZ1fwvQj2XhD85",
+        "name": "04. Active Heart.mkv",
+        "size": "303516577"
+      },
+      {
+        "id": "19xOVj-2aDXD7Szta7Lum9yyeKuQnINvk",
+        "name": "05. Bring Back Love.mkv",
+        "size": "303741050"
+      },
+      {
+        "id": "1LquPtBiQKzs_srnrYOQ6C09czpZBMgW_",
+        "name": "06. Men of Destiny.mkv",
+        "size": "347351289"
+      },
+      {
+        "id": "1_TRQ7-YkstI1OUd7sMmpy4N60gscN5AF",
+        "name": "07. Chaos Diver.mkv",
+        "size": "396404940"
+      },
+      {
+        "id": "1gcKqJwt8zsXlYMVRul2QXIQZLvj15T_r",
+        "name": "08. Mystery Call Me.mkv",
+        "size": "321830261"
+      },
+      {
+        "id": "1nGeopn0Ct5J5a12vBQz9HltQW37sL74a",
+        "name": "09. Serious Bomber.mkv",
+        "size": "302769944"
+      },
+      {
+        "id": "1ErfwCxh9qCtsc1XYkWnYfYQ3iXkkmgFd",
+        "name": "10. Baba Yetu.mkv",
+        "size": "342699866"
+      },
+      {
+        "id": "18STS983M1RhObbht57j3qAqrFykuD98h",
+        "name": "11. The Adventure of the Pistol Daimyo - Bullet Counting Song.mkv",
+        "size": "339873924"
+      },
+      {
+        "id": "1YUXLbtovPLT49EbpR3CG9COw5BmZ8Mbp",
+        "name": "12. Staring at Shinsengumi - The Song of the Fervid Kyushu Man.mkv",
+        "size": "325685789"
+      },
+      {
+        "id": "1BtFxVEw1vb50WAAvHjGmdGqPFeLCQ4LR",
+        "name": "13. OVA 1.mkv",
+        "size": "156978703"
+      },
+      {
+        "id": "1ldGtbSsprubBCxes8Cnf99hYNBgGw9Cb",
+        "name": "14. OVA 2.mkv",
+        "size": "141590616"
+      }
+    ],
+    "imdb": "https://www.imdb.com/title/tt3431758"
+  },
+  {
+    "id": 0,
+    "name": "Mao Gakuin no Futekigosha",
+    "banner": "https://wallpaperaccess.com/full/2409654.jpg",
+    "rating": 7.8,
+    "desc": "Siblings Sora and Shiro together make up the most feared team of pro gamers in the world, The Blank. When they manage to beat god himself in a game of chess, they are sent to a world where all disputes are settled with games.",
+    "trailer": "quj8sK3Phh8",
+    "keywords": "Adventure,Comedy,Ecchi,Fantasy,Game,Supernatural",
+    "poster": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx112301-P1K5zjiQfacn.jpg",
+    "episodes": [
+      {
+        "id": "1zLcPxigKWtlVOQI97DTKtEwJTzcY1DLR",
+        "name": "1. The Misfit of Demon King Academy",
+        "size": "395852947"
+      },
+      {
+        "id": "1ROrLxyiwU2X3E5-nNXnvMoqDF92ito3X",
+        "name": "2. The Witch of Destruction",
+        "size": "1441284752"
+      },
+      {
+        "id": "1k6vEsEKzdRR5NlCB7U0tRfTLTx-hiy3Q",
+        "name": "3. Sasha's True Intentions",
+        "size": "297151596"
+      },
+      {
+        "id": "18jfJJThrrbJzIjSAcKPAdpGnAHkGmp-7",
+        "name": "4. 15th Birthday",
+        "size": "409321834"
+      },
+      {
+        "id": "19K8CeNjr-9VvJKvwnyXYghYRkSYOtBmm",
+        "name": "5. The Transfer Student",
+        "size": "294541443"
+      },
+      {
+        "id": "1knk2N4DblRe6XHiUwK6yn90Cx1KP63EL",
+        "name": "6. Magic Sword Tournament",
+        "size": "228593549"
+      },
+      {
+        "id": "1gwW4Z67SY5uk1RisOGxMP0BLyro-JIXt",
+        "name": "7. Mother's Words",
+        "size": "351887580"
+      },
+      {
+        "id": "1A6jaqCtsDz83hhnjYySLqVxyQ_lcf4Q3",
+        "name": "8. The Final Duel",
+        "size": "386402599"
+      },
+      {
+        "id": "1MzRhwYTnyCvXdZWa5CyorkLxfb1scZk5",
+        "name": "9. The Mystery of the Hero Academy",
+        "size": "302269707"
+      },
+      {
+        "id": "1Pqn4JsgLQDIQkpGNZAQiSoC2m-KXbuiA",
+        "name": "10. Inter-Academy Exams",
+        "size": "356325499"
+      },
+      {
+        "id": "1oka9JadlMxQtB0rRb0Njdk5J53woojSy",
+        "name": "11. The Glow of Life",
+        "size": "538548291"
+      },
+      {
+        "id": "1wKf7WLI-IEvgS-zMxubqCufBSFw-SROY",
+        "name": "12. Taboo Magic",
+        "size": "1440094901"
+      }
+    ],
+    "imdb": "https://www.imdb.com/title/tt3431758"
+  },
+  {
+    "id": 0,
     "name": "Re: Zero kara hajimeru isekai seikatsu Season 2",
     "banner": "https://image.tmdb.org/t/p/original/c7IWqmIHgcfeBeeDAsuCO4qCpDh.jpg",
     "rating": 7.8,

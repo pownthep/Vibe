@@ -217,7 +217,7 @@ function ResponsiveDrawer(props: any) {
     <div>
       <List disablePadding={true} dense={true}>
         <LoginButton />
-        <div className="margin-top-36"></div>
+        {/* <div className="margin-top-36"></div> */}
         <Link to="/">
           <ListItem
             button
