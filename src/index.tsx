@@ -28,11 +28,14 @@ declare global {
     readFile: any;
     writeFile: any;
     os: any;
+    cachedStorage: any;
   }
   interface HTMLVideoElement {
     audioTracks: any;
   }
 }
+
+window.cachedStorage = {};
 
 (async () => {
   try {

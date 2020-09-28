@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   img: {
     width: "100%",
     height: "inherit",
-    borderRadius: 5,
+    borderRadius: 3,
     // boxShadow: `0 14px 30px ${theme.palette.primary.main}26,0 4px 4px ${theme.palette.primary.main}0d`,
     boxShadow: "'0 3px 5px 2px rgba(255, 105, 135, .3)'",
   },
@@ -55,7 +55,7 @@ export default function Poster({
           display="block"
           gutterBottom
           noWrap={true}
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", fontSize: 12 }}
         >
           {name}
         </Typography>

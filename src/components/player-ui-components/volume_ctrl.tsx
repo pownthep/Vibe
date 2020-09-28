@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import VolumeDownRoundedIcon from "@material-ui/icons/VolumeDownRounded";
 import VolumeOffRoundedIcon from "@material-ui/icons/VolumeOffRounded";
 import VolumeUpRoundedIcon from "@material-ui/icons/VolumeUpRounded";
-import { IconButton, Slider } from "@material-ui/core";
+import { IconButton, makeStyles, Slider } from "@material-ui/core";
 
 type Props = {
   value: number;
@@ -10,7 +10,15 @@ type Props = {
   color?: string;
 };
 
+const useStyles = makeStyles((theme) => ({
+  slider: {
+    color: theme.palette.type === "light" ? "inherit" : "white",
+  },
+}));
+
 function VolumeCtrl({ value, setVolume, color }: Props) {
+  const classes = useStyles();
+
   const toggleMute = (e: any) => {
     if (value > 0) setVolume(0);
     else setVolume(50);
@@ -19,6 +27,7 @@ function VolumeCtrl({ value, setVolume, color }: Props) {
   const handleSlider = (e: any, value: any) => {
     setVolume(value);
   };
+
   const style = {
     color: color ? color : "inherit",
   };
@@ -48,6 +57,7 @@ function VolumeCtrl({ value, setVolume, color }: Props) {
         onChange={handleSlider}
         aria-labelledby="discrete-slider-custom"
         step={1}
+        classes={{ root: classes.slider }}
       />
     </div>
   );

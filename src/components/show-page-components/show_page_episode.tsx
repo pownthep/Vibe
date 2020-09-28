@@ -5,6 +5,8 @@ import prettyBytes from "pretty-bytes";
 import CloudDownloadRoundedIcon from "@material-ui/icons/CloudDownloadRounded";
 import PlayCircleFilledRoundedIcon from "@material-ui/icons/PlayCircleFilledRounded";
 import { getThumbnail, downloadFile } from "../../utils/api";
+import { useRecoilValue } from "recoil";
+import { playerState } from "../player-ui-components/player_bar";
 
 type Props = {
   episode: Episode;
@@ -23,20 +25,23 @@ type Props = {
 const useStyles = makeStyles((theme) => ({
   episode: {
     height: 90,
-    width: "98%",
+    width: "calc(100% - 110px)",
     display: "grid",
-    gridTemplateColumns: "60px 160px 2fr repeat(3, 1fr)",
+    gridTemplateColumns: "160px 2fr repeat(3, 1fr)",
     "&:hover": {
       background: theme.palette.action.hover,
-      boxShadow: theme.shadows[1],
     },
-    borderRadius: 4,
+    marginLeft: 60,
+    marginRight: 50,
+    borderRadius: 8,
+    overflow: "hidden",
+    background:
+      theme.palette.type === "light" ? "white" : "rgba(255,255,255, 0.02)",
   },
   thumbnail: {
     width: 160,
     height: 90,
     objectFit: "cover",
-    borderRadius: 3,
   },
   marginAuto: {
     marginRight: "auto",
@@ -65,10 +70,19 @@ const useStyles = makeStyles((theme) => ({
 
 function ShowPageEpisode({ episode, onClick, showTitle, index }: Props) {
   const classes = useStyles();
+  const state = useRecoilValue(playerState);
 
   return (
-    <div className={classes.episode}>
-      <p className={classes.start}>{index}</p>
+    <div
+      className={classes.episode}
+      style={{
+        background:
+          state.episodeId === episode.id
+            ? "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)"
+            : "",
+      }}
+    >
+      {/* <p className={classes.start}>{index}</p> */}
       <img
         src={getThumbnail(episode.id)}
         alt="thumbnail"

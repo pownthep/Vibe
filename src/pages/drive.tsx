@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: theme.palette.background.default,
+    background:
+      theme.palette.type === "light" ? "white" : "rgba(255,255,255, 0.02)",
   },
   rowItemDetal: {
     marginRight: "auto",

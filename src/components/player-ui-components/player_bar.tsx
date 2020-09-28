@@ -6,17 +6,17 @@ import { atom, useRecoilValue } from "recoil";
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "fixed",
-    bottom: "0px",
+    bottom: "11px",
     left: "180px",
     height: "90px",
-    width: "calc(100vw - 180px)",
+    width: "calc(100vw - 190px)",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     overflow: "hidden",
-    background: "var(--thumbBG)",
+    background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
     zIndex: 1201,
-    borderRadius: 0,
+    borderRadius: 8,
   },
   player: {
     height: 90,

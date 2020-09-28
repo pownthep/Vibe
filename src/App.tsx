@@ -130,7 +130,7 @@ export const themeState = atom({
     palette: {
       type: "dark",
       primary: {
-        main: "#ff3d00",
+        main: "#2196F3",
       },
       secondary: {
         main: "#ff6333",
@@ -350,7 +350,7 @@ function ResponsiveDrawer(props: any) {
             <ListItemText primary="History" />
           </ListItem>
         </Link>
-        <Divider />
+        <Divider style={{ margin: 10 }} />
         <Link to="/settings">
           <ListItem
             button

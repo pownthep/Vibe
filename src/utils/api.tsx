@@ -8,7 +8,8 @@ import {
 } from "./interfaces";
 
 export const GOOGLE_DRIVE_API_V3 = "https://www.googleapis.com/drive/v3";
-export const DATA_DOMAIN = "https://vibe-three.vercel.app";
+// export const DATA_DOMAIN = "https://vibe-three.vercel.app";
+export const DATA_DOMAIN = "http://localhost:3000";
 export const JSON_URL = `${DATA_DOMAIN}/data/trimmed-desktop.json`;
 export const API_DOMAIN = "http://localhost:8080";
 export const DL_FOLDER_PATH = `${window.directory}/server/downloaded`;
@@ -206,4 +207,60 @@ export const searchIMDB = async (
 export const getIMDBInfo = async (url: string): Promise<any> => {
   const res = await fetch(`${API_DOMAIN}/imdb?url=https://www.imdb.com${url}`);
   return await res.json();
+};
+
+export const getAnilistInfo = async (title: string): Promise<any> => {
+  if (window.cachedStorage[title]) return window.cachedStorage[title];
+  var query = `
+  query ($id: Int, $page: Int, $perPage: Int, $search: String) {
+    Page (page: $page, perPage: $perPage) {
+      media (id: $id, search: $search, type: ANIME) {
+        id
+        title {
+          userPreferred
+        }
+        bannerImage
+        description
+        genres
+        status
+        duration
+        averageScore
+        episodes
+        format
+        type
+        trailer {
+          id
+        }
+      }
+    }
+  }
+`;
+
+  // Define our query variables and values that will be used in the query request
+  var variables = {
+    perPage: 1,
+    search: title,
+  };
+
+  // Define the config we'll need for our Api request
+  var url = "https://graphql.anilist.co",
+    options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: query,
+        variables: variables,
+      }),
+    };
+  try {
+    const res = await fetch(url, options);
+    const data = await res.json();
+    window.cachedStorage[title] = data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
 };

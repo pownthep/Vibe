@@ -2,10 +2,7 @@ import React, { memo } from "react";
 import { VariableSizeList as List } from "react-window";
 import ShowPageHeader from "./show_page_header";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { useRecoilValue } from "recoil";
 import ShowPageEpisode from "./show_page_episode";
-import { playerState } from "../player-ui-components/player_bar";
-import { vh } from "../../utils/utils";
 import { Show } from "../../utils/interfaces";
 
 type Props = {
@@ -21,10 +18,8 @@ type Props = {
 };
 
 function ShowPageVirtualized({ show, episodeOnClick }: Props) {
-  const barVisible = useRecoilValue(playerState);
-
   const getItemSize = (index: number) => {
-    if (index === 0) return vh(50);
+    if (index === 0) return 665;
     else return 100;
   };
 
@@ -37,12 +32,13 @@ function ShowPageVirtualized({ show, episodeOnClick }: Props) {
             poster={show.poster}
             banner={show.banner}
             imdb={show.imdb}
+            type={show.type}
           />
         </div>
       );
     } else {
       return (
-        <div style={style} className="padding-left-50">
+        <div style={style}>
           <ShowPageEpisode
             index={index}
             episode={show.episodes[index - 1]}
@@ -56,8 +52,7 @@ function ShowPageVirtualized({ show, episodeOnClick }: Props) {
   return (
     <div
       style={{
-        paddingBottom: barVisible ? 90 : 0,
-        height: "calc(100vh - 25px)",
+        height: "inherit",
         width: "100%",
       }}
     >

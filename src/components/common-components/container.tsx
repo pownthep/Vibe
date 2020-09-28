@@ -3,13 +3,12 @@ import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: "100%",
-    height: "calc(100vh - 25px)",
+    width: "calc(100vw - 190px)",
+    height: "calc(100vh - 136px)",
     marginTop: "25px",
-    background: theme.palette.background.paper,
-    borderTopLeftRadius: 8,
-    overflow: "auto",
-    boxShadow: theme.shadows[10],
+    background: "var(--thumbBG)",
+    borderRadius: 8,
+    overflow: "hidden",
   },
 }));
 

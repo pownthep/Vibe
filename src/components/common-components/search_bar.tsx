@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     width: "100%",
+    background: "var(--thumbBG)",
+    boxShadow: "none",
+    borderRadius: 0,
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -42,8 +45,8 @@ export default function SearchBar({ onChangeHandler, onKeyHandler }: Props) {
         onChange={onChangeHandler}
         onKeyDown={onKeyHandler}
         className={classes.input}
-        placeholder="Search episode"
-        inputProps={{ "aria-label": "search episode" }}
+        placeholder="Search Drive"
+        inputProps={{ "aria-label": "search drive" }}
       />
     </Paper>
   );

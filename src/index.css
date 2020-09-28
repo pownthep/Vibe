@@ -1,5 +1,11 @@
+@import url("https://rsms.me/inter/inter.css");
+
+* {
+  font-family: "Inter", sans-serif;
+}
+
 :root {
-  --primary-color: #ff3d00;
+  --primary-color: #2196f3;
   --scrollbarBG: #f2f3f5;
   --thumbBG: #e3e5e8;
 }
@@ -21,17 +27,17 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 0px;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 0px;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  border: none;
   background: var(--scrollbarBG);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 0px;
+  border-radius: 8px;
   background-color: var(--thumbBG);
   border: none;
 }
@@ -199,7 +205,5 @@ input:focus {
 }
 
 .poster {
-  width: 180px;
-  height: 265px;
   cursor: "pointer";
 }

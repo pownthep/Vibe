@@ -5,18 +5,17 @@ import { useHistory } from "react-router-dom";
 import Poster from "../components/common-components/poster";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
-import { useSetRecoilState, useRecoilValue } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { navState } from "../App";
 import { makeStyles } from "@material-ui/core";
-import { playerState } from "../components/player-ui-components/player_bar";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
-    width: "100%",
-    height: "calc(100vh - 25px)",
+    width: "calc(100vw - 190px)",
+    height: "calc(100vh - 136px)",
     marginTop: "25px",
-    background: theme.palette.background.paper,
-    borderTopLeftRadius: 8,
+    background: "var(--thumbBG)",
+    borderRadius: 8,
     padding: 15,
   },
 }));
@@ -29,8 +28,6 @@ export default function Home() {
   let itemsPerRow = 10;
   let itemWidth = 150;
   let itemHeight = 200;
-
-  const barVisible = useRecoilValue(playerState);
 
   const history = useHistory();
 
@@ -54,8 +51,6 @@ export default function Home() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingRight: 5,
-            paddingLeft: 5,
           }}
         >
           {shows.slice(start, end).map(({ id, name, poster }) => (
@@ -77,10 +72,7 @@ export default function Home() {
   return (
     <>
       {shows && !showPlayer ? (
-        <div
-          className={classes.container}
-          style={{ paddingBottom: barVisible ? 110 : 0 }}
-        >
+        <div className={classes.container}>
           <AutoSizer>
             {({ height, width }) => {
               itemWidth = (width - 200) / itemsPerRow;

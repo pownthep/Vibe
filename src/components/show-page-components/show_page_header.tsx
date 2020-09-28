@@ -1,80 +1,76 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, Divider } from "@material-ui/core";
-import { API_DOMAIN, getImage } from "../../utils/api";
+import { makeStyles } from "@material-ui/core";
+import { API_DOMAIN, getAnilistInfo, getImage } from "../../utils/api";
+import parse from "html-react-parser";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 type Props = {
   showTitle: string;
   poster: string;
   banner: string;
   imdb?: string;
+  type?: string;
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "50vh",
+    height: "60vh",
     position: "relative",
     width: "100%",
   },
-  overlay: {
-    background: `linear-gradient(to top, ${theme.palette.background.paper}, rgba(0,0,0,0)),
-      linear-gradient(40deg, ${theme.palette.background.paper}, rgba(0,0,0,0))
-    `,
-    position: "absolute",
-    top: 0,
-    right: 0,
-    zIndex: 2,
-    width: "100%",
-    height: "inherit",
-  },
   banner: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    zIndex: 1,
     width: "100%",
-    height: "inherit",
+    height: "300px",
     objectFit: "cover",
   },
   content: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    zIndex: 3,
     width: "100%",
     height: "inherit",
   },
   poster: {
     width: "100%",
-    borderRadius: 8,
-    boxShadow: theme.shadows[3],
+    height: 340,
+    boxShadow: theme.shadows[2],
+    objectFit: "cover",
+    borderRadius: 4,
+    marginTop: -115,
   },
   info: {
-    position: "absolute",
-    bottom: "20%",
-    left: 110,
     display: "grid",
-    gridTemplateColumns: "1fr 6fr",
+    gridTemplateColumns: "220px auto",
+    height: 300,
+    paddingLeft: 60,
+    paddingRight: 50,
   },
   metadata: {
     paddingLeft: 30,
+    overflow: "auto",
   },
   showTitle: {
     margin: 0,
   },
   desc: {
-    maxWidth: 700,
-  },
-  headers: {
-    paddingLeft: 50,
-    marginBottom: 5,
+    marginBottom: 0,
     position: "absolute",
     bottom: 0,
-    zIndex: 3,
-    width: "100%",
+    maxWidth: "70%",
+    maxHeight: 155,
+    overflow: "auto",
+    // display: "flex",
+    // justifyContent: "flex-start",
+    // alignItems: "flex-end",
+  },
+  headers: {
+    width: "calc(100% - 110px)",
+    background: "var(--scrollbarBG)",
+    fontWeight: "bold",
+    marginLeft: 60,
+    marginRight: 50,
+    borderRadius: 50,
   },
   columns: {
     display: "grid",
-    gridTemplateColumns: "60px 160px 2fr repeat(3, 1fr)",
+    gridTemplateColumns: "160px 2fr repeat(3, 1fr)",
   },
   centered: {
     display: "flex",
@@ -94,53 +90,86 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     paddingLeft: 30,
     paddingRight: 30,
-    overflow: "hidden",
   },
 }));
 
-export default function ShowPageHeader({ showTitle, poster, banner }: Props) {
-  const [data, setData] = useState<any | null>(null);
+export default function ShowPageHeader({
+  showTitle,
+  poster,
+  banner,
+  type,
+}: Props) {
+  const [imdb, setIMDB] = useState<any | null>(null);
+  const [anilist, setAnilist] = useState<any | null>(null);
   const [mounted, setMounted] = useState(true);
 
   const classes = useStyles();
 
   useEffect(() => {
     const setup = async () => {
-      const search = await fetch(
-        `${API_DOMAIN}/search?text=${showTitle.replace("Season", "")}`
-      );
-      const result = await search.json();
-      if (!result || result.length === 0) return;
-      const res = await fetch(
-        `${API_DOMAIN}/imdb?url=https://www.imdb.com${result[0].link}`
-      );
-      const data = await res.json();
-      if (mounted) setData(data);
+      if (type) {
+        const search = await fetch(
+          `${API_DOMAIN}/search?text=${showTitle.replace("Season", "")}`
+        );
+        const result = await search.json();
+        if (!result || result.length === 0) return;
+        const res = await fetch(
+          `${API_DOMAIN}/imdb?url=https://www.imdb.com${result[0].link}`
+        );
+        const data = await res.json();
+        if (mounted) setIMDB(data);
+      } else {
+        const info = await getAnilistInfo(showTitle);
+        setAnilist(info.data.Page.media[0]);
+      }
     };
     setup();
     return () => {
       setMounted(false);
     };
-  }, [mounted, showTitle]);
+  }, [mounted, showTitle, type]);
 
   return (
     <div className={classes.root}>
       <div className={classes.content}>
+        <div style={{ height: 300 }}>
+          {!type ? (
+            <>
+              {anilist ? (
+                <img
+                  src={anilist && getImage(anilist.bannerImage)}
+                  alt="banner"
+                  className={classes.banner}
+                />
+              ) : (
+                <Skeleton variant="rect" width="100%" height={300} />
+              )}
+            </>
+          ) : (
+            <img
+              src={getImage(banner)}
+              alt="banner"
+              className={classes.banner}
+            />
+          )}
+        </div>
         <div className={classes.info}>
           <img src={getImage(poster)} alt="poster" className={classes.poster} />
           <div className={classes.metadata}>
             <h1 className={classes.showTitle}>{showTitle}</h1>
-            {data && data.genre && (
-              <div className="animated animatedFadeInUp fadeInUp">
-                <p>
+            {imdb && imdb.genre && (
+              <div
+                className="animated animatedFadeInUp fadeInUp"
+                style={{ position: "relative", height: 185 }}
+              >
+                <p style={{ margin: 0 }}>
                   <span role="img" aria-label="stars">
-                    ⭐{data.rating}
+                    ⭐{imdb.rating} | {imdb.genre.map((i: string) => `${i} | `)}
                   </span>
                 </p>
-                <p>{data.genre.map((i: string) => `${i} | `)}</p>
-                <p className={classes.desc}>{data.desc[0]}</p>
-                <p>
-                  {data.desc
+                <p className={classes.desc}>
+                  {imdb.desc[0]}
+                  {imdb.desc
                     .slice(1)
                     .filter(
                       (i: string) =>
@@ -159,21 +188,41 @@ export default function ShowPageHeader({ showTitle, poster, banner }: Props) {
                 </p>
               </div>
             )}
+            {anilist && (
+              <div
+                className="animated animatedFadeInUp fadeInUp"
+                style={{ position: "relative", height: 185 }}
+              >
+                <p style={{ margin: 0 }}>
+                  <span role="img" aria-label="stars">
+                    ⭐{anilist.averageScore / 10}
+                    {" | "}
+                    {anilist.genres.map((i: string) => `${i} | `)}{" "}
+                    {anilist.status}
+                  </span>
+                </p>
+                <div className={classes.desc}>{parse(anilist.description)}</div>
+              </div>
+            )}
+            {!anilist && !imdb && (
+              <div>
+                <Skeleton variant="rect" height={17} width={400} />
+                <br />
+                <Skeleton variant="rect" height={151} width="70%" />
+              </div>
+            )}
           </div>
         </div>
-      </div>
-      <img src={getImage(banner)} alt="banner" className={classes.banner} />
-      <div className={classes.overlay}></div>
-      <div className={classes.headers}>
-        <div className={classes.columns}>
-          <p className={classes.start}>#</p>
-          <p></p>
-          <p className={classes.start}>Name</p>
-          <p className={classes.centered}>Show</p>
-          <p className={classes.centered}>Size</p>
-          <p></p>
+        <div className={classes.headers}>
+          <div className={classes.columns}>
+            {/* <p className={classes.start}>#</p> */}
+            <p className={classes.start}> Thumbnail</p>
+            <p className={classes.start}>Name</p>
+            <p className={classes.centered}>Show</p>
+            <p className={classes.centered}>Size</p>
+            <p className={classes.centered}> Action</p>
+          </div>
         </div>
-        <Divider style={{ marginRight: 50 }} />
       </div>
     </div>
   );

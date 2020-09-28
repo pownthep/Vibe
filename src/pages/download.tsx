@@ -19,11 +19,11 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
   },
   container: {
-    width: "100%",
-    height: "calc(100vh - 25px)",
+    width: "calc(100vw - 190px)",
+    height: "calc(100vh - 136px)",
     marginTop: "25px",
-    background: theme.palette.background.paper,
-    borderTopLeftRadius: 8,
+    background: "var(--thumbBG)",
+    borderRadius: 8,
     padding: 10,
   },
 }));
