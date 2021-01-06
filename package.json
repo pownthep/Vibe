@@ -65,7 +65,7 @@
     "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.2",
     "autosuggest-highlight": "^3.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "browserify": "^16.5.1",
     "colorthief": "^2.3.0",
     "concurrently": "^5.2.0",
