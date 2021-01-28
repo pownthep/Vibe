@@ -8,8 +8,8 @@ import {
 } from "./interfaces";
 
 export const GOOGLE_DRIVE_API_V3 = "https://www.googleapis.com/drive/v3";
-// export const DATA_DOMAIN = "https://vibe-three.vercel.app";
-export const DATA_DOMAIN = "http://localhost:3000";
+export const DATA_DOMAIN = "https://vibe-three.vercel.app";
+// export const DATA_DOMAIN = "http://localhost:3000";
 export const JSON_URL = `${DATA_DOMAIN}/data/trimmed-desktop.json`;
 export const API_DOMAIN = "http://localhost:8080";
 export const DL_FOLDER_PATH = `${window.directory}/server/downloaded`;
