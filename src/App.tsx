@@ -32,6 +32,7 @@ import Upload from "./pages/upload";
 import CloudUploadRoundedIcon from "@material-ui/icons/CloudUploadRounded";
 import PlayerBar from "./components/player-ui-components/player_bar";
 import ShowPage from "./pages/show_page";
+import ReactionPlayer from "./components/player-ui-components/reaction_player";
 
 const drawerWidth = 180;
 
@@ -375,70 +376,16 @@ function ResponsiveDrawer(props: any) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Titlebar
+      {/* <Titlebar
         backgroundColor={
           themeStateValue.palette.type === "dark" ? "#212121" : "#f5f5f5"
         }
-      />
+      /> */}
       <div className={`${themeStateValue.palette.type}`}>
         <CssBaseline />
-        <nav className={classes.drawer} aria-label="mailbox folders">
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Hidden smUp implementation="css">
-            <Drawer
-              container={container}
-              variant="temporary"
-              anchor={theme.direction === "rtl" ? "right" : "left"}
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              classes={{
-                paper:
-                  themeStateValue.palette.type === "dark"
-                    ? classes.drawerPaperDark
-                    : classes.drawerPaperLight,
-              }}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Drawer
-              classes={{
-                paper:
-                  themeStateValue.palette.type === "dark"
-                    ? classes.drawerPaperDark
-                    : classes.drawerPaperLight,
-              }}
-              variant="permanent"
-              open
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </nav>
         <main className={classes.content} id="main">
-          <Switch>
-            {routes.map((route) => (
-              <Route
-                key={route.path}
-                exact={route.exact}
-                path={route.path}
-                component={route.component}
-              />
-            ))}
-            <Route
-              key={"/watch/:id/:epId?/:timePos?"}
-              exact={true}
-              path="/watch/:id/:epId?/:timePos?"
-              render={(props) => <ShowPage showId={props.match.params.id} />}
-            />
-            <Route render={() => <Redirect to="/" />} />
-          </Switch>
+          <ReactionPlayer />
         </main>
-        <PlayerBar />
       </div>
     </ThemeProvider>
   );

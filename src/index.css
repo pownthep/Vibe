@@ -207,3 +207,12 @@ input:focus {
 .poster {
   cursor: "pointer";
 }
+
+.youtube-player {
+  height: 100vh;
+  width: 100vw;
+  pointer-events: none;
+  position: absolute;
+  top: 0px;
+  z-index: 2;
+}

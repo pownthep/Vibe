@@ -5,6 +5,9 @@
   "dependencies": {
     "mpv.js": "^0.3.0",
     "react": "^16.13.1",
+    "react-player": "^2.8.2",
+    "react-rnd": "^10.2.4",
+    "react-youtube": "^7.13.1",
     "v8-compile-cache": "^2.1.1"
   },
   "description": "Stream and download videos from google drive in an instant. No ads. No bullshit.",
@@ -65,7 +68,7 @@
     "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.2",
     "autosuggest-highlight": "^3.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "browserify": "^16.5.1",
     "colorthief": "^2.3.0",
     "concurrently": "^5.2.0",
@@ -86,7 +89,7 @@
     "isomorphic-fetch": "^2.2.1",
     "material-table": "^1.61.0",
     "memoize-one": "^5.1.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-html-parser": "^1.2.20",
     "node-vibrant": "^3.1.5",
     "nodemon": "^2.0.4",
@@ -114,7 +117,7 @@
     "tauri": "^0.12.0",
     "typescript": "^4.0.2",
     "uglify-js": "^3.9.4",
-    "wait-on": "^5.0.1"
+    "wait-on": "^5.2.1"
   },
   "homepage": "./",
   "main": "main.js",

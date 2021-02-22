@@ -5,3 +5,19 @@
 .margin-top-36 {
   margin-top: 36px;
 }
+
+.reaction-player-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+@media (orientation: portrait) {
+  .reaction-player-container {
+    position: relative;
+    width: 100vw;
+    height: 30vh;
+    overflow: hidden;
+  }
+}
