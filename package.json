@@ -71,7 +71,7 @@
     "concurrently": "^5.2.0",
     "cors": "^2.8.5",
     "data-store": "^4.0.3",
-    "electron": "^9.0.3",
+    "electron": "^11.5.0",
     "electron-packager": "^14.2.1",
     "express": "^4.16.2",
     "express-end": "0.0.8",
